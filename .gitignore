@@ -1,6 +1,12 @@
 HELP.md
 .gradle
-build/
+build/bootJarMainClassName
+build/classes
+build/kotlin
+build/reports
+build/resources
+build/test-results/test
+build/tmp
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
