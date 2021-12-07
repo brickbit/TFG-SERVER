@@ -14,6 +14,7 @@ import java.io.FileOutputStream
 class ExcelService( val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
     var numSubjects: Int = 5
     var numClassesPerSubject: Int = 1
+    val schedule = createSchedule()
 
     fun createFile() {
         val workbook: Workbook = XSSFWorkbook()
@@ -46,6 +47,7 @@ class ExcelService( val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
         //val row = sheet.getRow(3)
         //val cell = row.createCell(3)
         //cell.setCellValue("John Smith")
+        fillData(sheet)
         closeFile(workbook)
     }
 
@@ -139,6 +141,16 @@ class ExcelService( val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
             val row: Row = sheet.getRow(index + 1)
             val cell: Cell = row.createCell(0)
             cell.setCellValue(value)
+        }
+    }
+
+    private fun fillData(sheet: Sheet) {
+        schedule.semester.list.mapIndexed { index, day ->
+            day.mapIndexed{ i, subject ->
+                val row: Row = sheet.getRow(i + 2)
+                val cell: Cell = row.createCell(index+1)
+                cell.setCellValue(subject.acronym)
+            }
         }
     }
 
