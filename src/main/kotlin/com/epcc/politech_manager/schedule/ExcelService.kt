@@ -11,7 +11,8 @@ import java.io.File
 import java.io.FileOutputStream
 
 @Service
-class ExcelService( val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
+class ExcelService( ) {
+    var scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT
     var numSubjects: Int = 5
     var numClassesPerSubject: Int = 1
     val schedule = createSchedule()
@@ -19,6 +20,8 @@ class ExcelService( val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
     fun createFile() {
         val workbook: Workbook = XSSFWorkbook()
         val sheet: Sheet = workbook.createSheet("Degrees")
+
+        scheduleType = determineScheduleType()
 
         when(scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
@@ -49,6 +52,22 @@ class ExcelService( val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
         //cell.setCellValue("John Smith")
         fillData(sheet)
         closeFile(workbook)
+    }
+
+    private fun determineScheduleType(): ScheduleType {
+        if (schedule.semester.list.size <= 5) {
+            return ScheduleType.ONE_SUBJECT
+        } else {
+            schedule.semester.list.map { day ->
+                day.map { hour ->
+                    print(hour.size)
+                    if (hour.size > 1) {
+                        return ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM
+                    }
+                }
+            }
+        }
+        return ScheduleType.MULTIPLE_SUBJECT
     }
 
     private fun createHeader(sheet: Sheet, row: Row) {
@@ -146,10 +165,12 @@ class ExcelService( val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
 
     private fun fillData(sheet: Sheet) {
         schedule.semester.list.mapIndexed { index, day ->
-            day.mapIndexed{ i, subject ->
+            day.mapIndexed{ i, hour ->
                 val row: Row = sheet.getRow(i + 2)
-                val cell: Cell = row.createCell(index+1)
-                cell.setCellValue(subject.acronym)
+                hour.mapIndexed { j, subject ->
+                    val cell: Cell = row.createCell(index + 1)
+                    cell.setCellValue(subject.acronym)
+                }
             }
         }
     }

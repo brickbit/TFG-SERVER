@@ -3,7 +3,7 @@ package com.epcc.politech_manager.schedule
 import com.epcc.politech_manager.degree.Degrees
 
 data class ScheduleDegree(val degrees: Degrees, val semester: SemesterDegree)
-data class SemesterDegree(val list: List<List<SubjectDegree>>)
+data class SemesterDegree(val list: List<List<List<SubjectDegree>>>)
 data class SubjectDegree(val id: String,val name: String, val acronym: String, val seminary: Boolean,val laboratory: Boolean, val time: Int, val classrooms: List<ClassroomDegree>, val department: DepartmentDegree)
 data class ClassroomDegree(val id: String, val name: String, val pavilion: Pavilion)
 data class DepartmentDegree(val id: String, val name: String)
@@ -37,11 +37,71 @@ fun createSchedule(): ScheduleDegree {
     val degree = Degrees("d0", "Grado en Edificación", 8)
     val schedule = ScheduleDegree(degree, SemesterDegree(
             list = listOf(
-                    listOf(calculusSeminary,calculusSeminary,calculus,calculus,materialFundamentals,materialFundamentals,materialFundamentals,materialFundamentals,materialFundamentalsLaboratory,materialFundamentalsLaboratory,materialFundamentalsLaboratory,materialFundamentalsLaboratory),
-                    listOf(calculus,calculus,graphicalExpressionFundamentals,graphicalExpressionFundamentals,structureFundamentals,structureFundamentals,materialFundamentals,materialFundamentals,materialFundamentalsLaboratory,materialFundamentalsLaboratory,materialFundamentalsLaboratory,materialFundamentalsLaboratory),
-                    listOf(economics,economics,economics,economics,structureFundamentals,structureFundamentals,graphicalExpressionFundamentals,graphicalExpressionFundamentals,graphicalExpressionFundamentalsSeminary,graphicalExpressionFundamentalsSeminary,graphicalExpressionFundamentalsSeminary,graphicalExpressionFundamentalsSeminary),
-                    listOf(economics,economics,economicsSeminary,economicsSeminary,calculus,calculus,structureFundamentals,structureFundamentals,structureFundamentalsLaboratory,structureFundamentalsLaboratory,structureFundamentalsLaboratory,structureFundamentalsLaboratory),
-                    listOf(buildingReservation,buildingReservation,buildingReservation,buildingReservation,buildingReservation,buildingReservation,buildingReservation,buildingReservation,buildingReservation,buildingReservation,buildingReservation,buildingReservation)
+                    listOf(
+                            listOf(calculusSeminary),
+                            listOf(calculusSeminary),
+                            listOf(calculus),
+                            listOf(calculus),
+                            listOf(materialFundamentals),
+                            listOf(materialFundamentals),
+                            listOf(materialFundamentals),
+                            listOf(materialFundamentals),
+                            listOf(materialFundamentalsLaboratory),
+                            listOf(materialFundamentalsLaboratory),
+                            listOf(materialFundamentalsLaboratory),
+                            listOf(materialFundamentalsLaboratory)),
+                    listOf(
+                            listOf(calculus),
+                            listOf(calculus),
+                            listOf(graphicalExpressionFundamentals),
+                            listOf(graphicalExpressionFundamentals),
+                            listOf(structureFundamentals),
+                            listOf(structureFundamentals),
+                            listOf(materialFundamentals),
+                            listOf(materialFundamentals),
+                            listOf(materialFundamentalsLaboratory),
+                            listOf(materialFundamentalsLaboratory),
+                            listOf(materialFundamentalsLaboratory),
+                            listOf(materialFundamentalsLaboratory)),
+                    listOf(
+                            listOf(economics),
+                            listOf(economics),
+                            listOf(economics),
+                            listOf(economics),
+                            listOf(structureFundamentals),
+                            listOf(structureFundamentals),
+                            listOf(graphicalExpressionFundamentals),
+                            listOf(graphicalExpressionFundamentals),
+                            listOf(graphicalExpressionFundamentalsSeminary),
+                            listOf(graphicalExpressionFundamentalsSeminary),
+                            listOf(graphicalExpressionFundamentalsSeminary),
+                            listOf(graphicalExpressionFundamentalsSeminary)),
+                    listOf(
+                            listOf(economics),
+                            listOf(economics),
+                            listOf(economicsSeminary),
+                            listOf(economicsSeminary),
+                            listOf(calculus),
+                            listOf(calculus),
+                            listOf(structureFundamentals),
+                            listOf(structureFundamentals),
+                            listOf(structureFundamentalsLaboratory),
+                            listOf(structureFundamentalsLaboratory),
+                            listOf(structureFundamentalsLaboratory),
+                            listOf(structureFundamentalsLaboratory)),
+                    listOf(
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation),
+                            listOf(buildingReservation))
             )
     ))
 

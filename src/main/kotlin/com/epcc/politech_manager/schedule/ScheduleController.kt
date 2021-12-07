@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class ScheduleController(val service: ScheduleService) {
 
-    val excelService = ExcelService(scheduleType = ScheduleType.ONE_SUBJECT)
+    val excelService = ExcelService()
 
     @GetMapping("/schedule")
     fun index(): List<SchedulesBO> {
