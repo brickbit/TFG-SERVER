@@ -1,13 +1,11 @@
 package com.epcc.politech_manager.schedule
 
-import org.apache.poi.util.IOUtils
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.function.RequestPredicates.contentType
 import java.io.File
 import java.net.MalformedURLException
 import java.nio.file.Path

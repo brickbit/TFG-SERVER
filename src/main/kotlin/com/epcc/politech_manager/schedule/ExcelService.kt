@@ -1,21 +1,19 @@
 package com.epcc.politech_manager.schedule
 
-import org.apache.poi.ss.usermodel.Cell
-import org.apache.poi.ss.usermodel.Row
-import org.apache.poi.ss.usermodel.Sheet
-import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileOutputStream
 
+
 @Service
 class ExcelService( ) {
     var scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT
     var numSubjects: Int = 5
     var numClassesPerSubject: Int = 1
-    val schedule = createSchedule()
+    val schedule = createBuildingSchedule()
 
     fun createFile() {
         val workbook: Workbook = XSSFWorkbook()
@@ -42,44 +40,48 @@ class ExcelService( ) {
             sheet.createRow(i)
         }
 
-        createHeader(sheet,sheet.getRow(0))
-        createHoursRow(sheet)
+        createHeader(sheet,sheet.getRow(0),workbook)
+        createHoursRow(sheet, workbook)
 
         val subjects = listOf("AL","CAL","FIS","IP","TC")
-        createSubjectHeader(subjects, sheet.getRow(1))
-        //val row = sheet.getRow(3)
-        //val cell = row.createCell(3)
-        //cell.setCellValue("John Smith")
-        fillData(sheet)
+        createSubjectHeader(subjects, sheet.getRow(1),workbook)
+
+        fillData(sheet,workbook)
         closeFile(workbook)
     }
 
     private fun determineScheduleType(): ScheduleType {
-        if (schedule.semester.list.size <= 5) {
-            return ScheduleType.ONE_SUBJECT
-        } else {
-            schedule.semester.list.map { day ->
-                day.map { hour ->
-                    print(hour.size)
-                    if (hour.size > 1) {
-                        return ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM
-                    }
+        schedule.semester.list.map { day ->
+            day.map { hour ->
+                print(hour.size)
+                if (hour.size in 2..5) {
+                    return ScheduleType.MULTIPLE_SUBJECT
+                } else if (hour.size > 5) {
+                    return ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM
                 }
             }
         }
-        return ScheduleType.MULTIPLE_SUBJECT
+
+        return ScheduleType.ONE_SUBJECT
     }
 
-    private fun createHeader(sheet: Sheet, row: Row) {
-        /*val headerStyle = workbook.createCellStyle()
+    private fun setStyle(workbook: Workbook): CellStyle {
+        val headerStyle = workbook.createCellStyle()
         //headerStyle.fillForegroundColor = IndexedColors.LIGHT_BLUE.getIndex()
         //headerStyle.fillPattern = FillPatternType.SOLID_FOREGROUND
 
         val font = (workbook as XSSFWorkbook).createFont()
-        font.fontName = "Arial"
-        font.fontHeightInPoints = 12.toShort()
+        font.fontName = "Comic Sans MS"
+        font.fontHeightInPoints = 10.toShort()
         font.bold = true
-        headerStyle.setFont(font)*/
+        headerStyle.alignment = HorizontalAlignment.CENTER
+        headerStyle.verticalAlignment = VerticalAlignment.CENTER
+        headerStyle.setFont(font)
+        return headerStyle
+    }
+
+    private fun createHeader(sheet: Sheet, row: Row, workbook: Workbook) {
+        val headerStyle = setStyle(workbook)
 
         val days = listOf("Lunes","Martes","Miércoles","Jueves","Viernes")
         val headerDays = mutableListOf("")
@@ -91,18 +93,18 @@ class ExcelService( ) {
         headerDays.mapIndexed {index, value ->
             when(scheduleType) {
                 ScheduleType.ONE_SUBJECT -> {
-                    sheet.setColumnWidth(index, 3000)
+                    sheet.setColumnWidth(index, 5000)
                 }
                 ScheduleType.MULTIPLE_SUBJECT -> {
-                    sheet.setColumnWidth(index, 1000)
+                    sheet.setColumnWidth(index, 1500)
                 }
                 ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
-                    sheet.setColumnWidth(index, 1000)
+                    sheet.setColumnWidth(index, 1500)
                 }
             }
             val headerCell: Cell = row.createCell(index)
             headerCell.setCellValue(value)
-            //headerCell.cellStyle = headerStyle
+            headerCell.cellStyle = headerStyle
         }
         if(numSubjects>1) {
             sheet.addMergedRegion(CellRangeAddress(0, 0, 1, numSubjects * numClassesPerSubject))
@@ -113,8 +115,10 @@ class ExcelService( ) {
         }
     }
 
-    private fun createSubjectHeader(subjects: List<String>,row: Row) {
-        val listSubjects = mutableListOf<String>("Hora")
+    private fun createSubjectHeader(subjects: List<String>,row: Row, workbook: Workbook) {
+        val headerStyle = setStyle(workbook)
+
+        val listSubjects = mutableListOf("Hora")
         for(i in 0..4) {
             subjects.map {
                 for (j in 0..2) {
@@ -129,6 +133,7 @@ class ExcelService( ) {
                 for (i in 1..numSubjects * numClassesPerSubject * 5) {
                     val cell: Cell = row.createCell(i)
                     cell.setCellValue("Asignatura")
+                    cell.cellStyle = headerStyle
                 }
             }
             ScheduleType.MULTIPLE_SUBJECT -> {
@@ -140,36 +145,59 @@ class ExcelService( ) {
                         module = numSubjects * numClassesPerSubject
                     }
                     cell.setCellValue(subjects[module - 1])
+                    cell.cellStyle = headerStyle
                 }
             }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
                 for (i in 1 until numSubjects * numClassesPerSubject * 5 + 1) {
                     val cell: Cell = row.createCell(i)
                     cell.setCellValue(listSubjects[i])
+                    cell.cellStyle = headerStyle
                 }
             }
         }
 
     }
 
-    private fun createHoursRow(sheet: Sheet) {
+    private fun createHoursRow(sheet: Sheet, workbook: Workbook) {
         sheet.setColumnWidth(0, 2500)
+        val headerStyle = setStyle(workbook)
 
         val hours = listOf("HORA","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","15:30","16:00","16:30","17:00","18:00","18:30","19:00","19:30","20:00","20:30","21:00")
         hours.mapIndexed { index, value ->
             val row: Row = sheet.getRow(index + 1)
             val cell: Cell = row.createCell(0)
             cell.setCellValue(value)
+            cell.cellStyle = headerStyle
         }
     }
 
-    private fun fillData(sheet: Sheet) {
+    private fun fillData(sheet: Sheet, workbook: Workbook) {
+        val headerStyle = setStyle(workbook)
+
         schedule.semester.list.mapIndexed { index, day ->
             day.mapIndexed{ i, hour ->
                 val row: Row = sheet.getRow(i + 2)
                 hour.mapIndexed { j, subject ->
-                    val cell: Cell = row.createCell(index + 1)
-                    cell.setCellValue(subject.acronym)
+                    val cell: Cell = when(scheduleType) {
+                        ScheduleType.ONE_SUBJECT -> row.createCell(index + j + 1)
+                        ScheduleType.MULTIPLE_SUBJECT -> row.createCell(index*5 + j + 1)
+                        ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> row.createCell(index*15 + j + 1)
+                    }
+                    if(subject != null) {
+                        when(scheduleType) {
+                            ScheduleType.ONE_SUBJECT -> {
+                                val seminary: String = if (subject.seminary) { " sem" } else { "" }
+                                val laboratory: String = if (subject.laboratory) { " lab" } else { "" }
+                                cell.setCellValue(subject.name + seminary + laboratory)
+                                cell.cellStyle = headerStyle
+                            }
+                            ScheduleType.MULTIPLE_SUBJECT -> cell.setCellValue(subject.acronym)
+                            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> cell.setCellValue(subject.acronym)
+                        }
+                    } else {
+                        cell.setCellValue("")
+                    }
                 }
             }
         }
