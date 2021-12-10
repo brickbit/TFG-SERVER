@@ -56,7 +56,7 @@ class ExcelService( ) {
 
             }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
-                
+
             }
         }
 

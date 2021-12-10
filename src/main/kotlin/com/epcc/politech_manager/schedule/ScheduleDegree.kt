@@ -30,9 +30,9 @@ fun createBuildingSchedule(): ScheduleDegree {
     val structureFundamentals = SubjectDegree("116","FUND ESTRUCTURAS","FE","A",false,false,false,180, listOf(buildingClassroom),buildingDepartment,3)
     val economics = SubjectDegree("117","ECONOMÍA Y EMPRESA","EE","A",false,false,false,180, listOf(buildingClassroom),economicsDepartment,4)
     val graphicalExpressionFundamentalsSeminary = SubjectDegree("119","FUND EXP GRÁFICA","SFEG","A",true,false,false,120, listOf(designClassroom),graphicalExpressionDepartment,0)
-    val economicsSeminary = SubjectDegree("1110","ECONOMÍA Y EMPRESA","SEE","A",false,false,false,180, listOf(buildingClassroom),economicsDepartment,4)
+    val economicsSeminary = SubjectDegree("1110","E. y E.","SEE","A",true,false,false,180, listOf(buildingClassroom),economicsDepartment,4)
     val structureFundamentalsLaboratory = SubjectDegree("1111","FUND ESTRUCTURAS","LFE","A",false,true,false,180, listOf(buildingClassroom),buildingDepartment,3)
-    val buildingReservation = SubjectDegree("1112","RESERVADO VISITAS A OBRA","RVO","A",false,false, false,360,listOf(),buildingDepartment,5)
+    val buildingReservation = SubjectDegree("1112","RESERVADO \nVISITAS\n A OBRA","RVO","A",false,false, false,360,listOf(),buildingDepartment,5)
 
     val degree = Degrees("d0", "Grado en Edificación", 8)
     val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(
