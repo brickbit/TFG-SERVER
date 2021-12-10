@@ -13,7 +13,7 @@ class ExcelService( ) {
     var scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT
     var numSubjects: Int = 5
     var numClassesPerSubject: Int = 1
-    val schedule = createComputerScienceDegree()//createBuildingSchedule()
+    val schedule = createBuildingSchedule()
 
     fun createFile() {
         val workbook: Workbook = XSSFWorkbook()
@@ -42,13 +42,24 @@ class ExcelService( ) {
 
         createHeader(sheet,sheet.getRow(0),workbook)
         createHoursRow(sheet, workbook)
-        
+
         val subjects = listOf("AL","CAL","FIS","IP","TC")
         createSubjectHeader(subjects, sheet.getRow(1),workbook)
 
         fillData(sheet,workbook)
-        mergeSameSubjects(sheet)
-        //mergeSameSubjects(sheet)
+
+        when (scheduleType) {
+            ScheduleType.ONE_SUBJECT -> {
+                mergeSameSubjects(sheet)
+            }
+            ScheduleType.MULTIPLE_SUBJECT -> {
+
+            }
+            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
+                
+            }
+        }
+
         closeFile(workbook)
     }
 
@@ -236,43 +247,55 @@ class ExcelService( ) {
     }
 
     private fun mergeSameSubjects(sheet: Sheet) {
-        var listToMerge = mutableListOf<Pair<Int,Int>>()
-        var previousSubject: SubjectDegree? = null
-        schedule.semester.list.mapIndexed { index, day ->
-            day.mapIndexed { i, hour ->
-                val row: Row = sheet.getRow(i + 2)
-                hour.mapIndexed { j, subject ->
-                    if(previousSubject!=null) {
-                        if(i-1 >= 0) {
-                            if(day[i][j]?.id == day[i-1][j]?.id) {
-                                listToMerge.add(Pair(i+2,index+1))
-                                /*if(!merged) {
-                                    println("$i $j $index")
-                                    sheet.addMergedRegion(CellRangeAddress(i + 1, i + 2, index + 1, index + 1))
-                                    merged = true
-                                } else {
-                                    merged = !merged
-                                }*/
+        val listSubject = getListOfSubjects()
+        val mergeList: MutableList<MutableList<Pair<Int, Int>>> = mutableListOf()
+        listSubject.map {
+            mergeList.add(mutableListOf())
+        }
+        listSubject.mapIndexed { k, subject ->
+            schedule.semester.list.mapIndexed { index, day ->
+                day.mapIndexed { i, hour ->
+                    hour.mapIndexed { j, value ->
+                        value?.let {
+                            if (subject.id == it.id) {
+                                println("${i + 2} ${index + 1}")
+                                mergeList[k].add(Pair(i+2,index+1))
                             }
                         }
                     }
-                    previousSubject = subject
                 }
             }
         }
-        println(listToMerge)
-        val fixedList = mutableListOf<Pair<Int,Int>>()
-        listToMerge.mapIndexed { i, value ->
-            if(i+1 < listToMerge.size) {
-                if (listToMerge[i + 1].first - value.first != 1) {
-                    fixedList.add(value)
+        println(mergeList)
+        val pairs: MutableList<Map<Int, List<Pair<Int, Int>>>> = mutableListOf()
+        mergeList.map { pairList ->
+            pairs.add(pairList.groupBy { it.second })
+        }
+        pairs.map { map ->
+            map.values.map { list ->
+                val col = list[0].second
+                val firstRow = list[0].first
+                val lastRow = list.last().first
+                sheet.addMergedRegion(CellRangeAddress(firstRow, lastRow, col, col))
+            }
+        }
+        println(pairs)
+    }
+
+    private fun getListOfSubjects(): List<SubjectDegree> {
+        val listSubject = mutableListOf<SubjectDegree>()
+        schedule.semester.list.map { day ->
+            day.map { hour ->
+                hour.map {
+                    it?.let { subject ->
+                        if (!listSubject.contains(subject)) {
+                            listSubject.add(subject)
+                        }
+                    }
                 }
             }
         }
-        println(fixedList)
-        fixedList.map {
-            //sheet.addMergedRegion(CellRangeAddress(it.first, it.first+1, it.second, it.second))
-        }
+        return listSubject
     }
 }
 
