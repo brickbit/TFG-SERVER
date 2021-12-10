@@ -4,7 +4,7 @@ import com.epcc.politech_manager.degree.Degrees
 
 data class ScheduleDegree(val degrees: Degrees, val year: String, val semester: SemesterDegree)
 data class SemesterDegree(val list: List<List<List<SubjectDegree?>>>)
-data class SubjectDegree(val id: String,val name: String, val acronym: String, val group: String, val seminary: Boolean,val laboratory: Boolean, val english: Boolean, val time: Int, val classrooms: List<ClassroomDegree>, val department: DepartmentDegree)
+data class SubjectDegree(val id: String,val name: String, val acronym: String, val group: String, val seminary: Boolean,val laboratory: Boolean, val english: Boolean, val time: Int, val classrooms: List<ClassroomDegree>, val department: DepartmentDegree, val color: Int)
 data class ClassroomDegree(val id: String, val name: String, val pavilion: Pavilion)
 data class DepartmentDegree(val id: String, val name: String)
 enum class Pavilion {
@@ -22,17 +22,17 @@ fun createBuildingSchedule(): ScheduleDegree {
     val economicsDepartment = DepartmentDegree("4","Economía")
 
 
-    val calculusSeminary = SubjectDegree("se0s","CÁLCULO","SCAL","A",true,false, false,60, listOf(mathematicsClassroom),mathematicsDepartment)
-    val calculus = SubjectDegree("se0","CÁLCULO","CAL","A",false,false,false,180, listOf(buildingClassroom),mathematicsDepartment)
-    val materialFundamentals = SubjectDegree("se1","FUND MATERIALES","FMAT","A",false,false,false,180, listOf(buildingClassroom),buildingDepartment)
-    val materialFundamentalsLaboratory = SubjectDegree("se1","FUND MATERIALES","LFMAT","A",false,true,false,240, listOf(buildingClassroom),buildingDepartment)
-    val graphicalExpressionFundamentals = SubjectDegree("se2","FUND EXP GRÁFICA","FEG","A",false,false,false,120, listOf(designClassroom),graphicalExpressionDepartment)
-    val structureFundamentals = SubjectDegree("se3","FUND ESTRUCTURAS","FE","A",false,false,false,180, listOf(buildingClassroom),buildingDepartment)
-    val economics = SubjectDegree("se4","ECONOMÍA Y EMPRESA","EE","A",false,false,false,180, listOf(buildingClassroom),economicsDepartment)
-    val graphicalExpressionFundamentalsSeminary = SubjectDegree("se2s","FUND EXP GRÁFICA","SFEG","A",true,false,false,120, listOf(designClassroom),graphicalExpressionDepartment)
-    val economicsSeminary = SubjectDegree("se4","ECONOMÍA Y EMPRESA","SEE","A",false,false,false,180, listOf(buildingClassroom),economicsDepartment)
-    val structureFundamentalsLaboratory = SubjectDegree("se3l","FUND ESTRUCTURAS","LFE","A",false,true,false,180, listOf(buildingClassroom),buildingDepartment)
-    val buildingReservation = SubjectDegree("ro","RESERVADO VISITAS A OBRA","RVO","A",false,false, false,360,listOf(),buildingDepartment)
+    val calculusSeminary = SubjectDegree("111","CÁLCULO","SCAL","A",true,false, false,60, listOf(mathematicsClassroom),mathematicsDepartment,2)
+    val calculus = SubjectDegree("112","CÁLCULO","CAL","A",false,false,false,180, listOf(buildingClassroom),mathematicsDepartment,2)
+    val materialFundamentals = SubjectDegree("113","FUND MATERIALES","FMAT","A",false,false,false,180, listOf(buildingClassroom),buildingDepartment,1)
+    val materialFundamentalsLaboratory = SubjectDegree("114","FUND MATERIALES","LFMAT","A",false,true,false,240, listOf(buildingClassroom),buildingDepartment,1)
+    val graphicalExpressionFundamentals = SubjectDegree("115","FUND EXP GRÁFICA","FEG","A",false,false,false,120, listOf(designClassroom),graphicalExpressionDepartment,0)
+    val structureFundamentals = SubjectDegree("116","FUND ESTRUCTURAS","FE","A",false,false,false,180, listOf(buildingClassroom),buildingDepartment,3)
+    val economics = SubjectDegree("117","ECONOMÍA Y EMPRESA","EE","A",false,false,false,180, listOf(buildingClassroom),economicsDepartment,4)
+    val graphicalExpressionFundamentalsSeminary = SubjectDegree("119","FUND EXP GRÁFICA","SFEG","A",true,false,false,120, listOf(designClassroom),graphicalExpressionDepartment,0)
+    val economicsSeminary = SubjectDegree("1110","ECONOMÍA Y EMPRESA","SEE","A",false,false,false,180, listOf(buildingClassroom),economicsDepartment,4)
+    val structureFundamentalsLaboratory = SubjectDegree("1111","FUND ESTRUCTURAS","LFE","A",false,true,false,180, listOf(buildingClassroom),buildingDepartment,3)
+    val buildingReservation = SubjectDegree("1112","RESERVADO VISITAS A OBRA","RVO","A",false,false, false,360,listOf(),buildingDepartment,5)
 
     val degree = Degrees("d0", "Grado en Edificación", 8)
     val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(
@@ -119,16 +119,16 @@ fun createComputerScienceDegree(): ScheduleDegree {
     val mathematicsDepartment = DepartmentDegree("1","Matemáticas")
     val softwareDepartment = DepartmentDegree("2","Ingeniería de sistemas informáticos y telemáticos")
 
-    val physics = SubjectDegree("sic0l","Física","FIS","A",false,false,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment)
-    val physicsLaboratory = SubjectDegree("sic0l","Laboratorio Física","LFIS","A",false,true,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment)
-    val ip = SubjectDegree("sic1l","Introducción a la programación","IP","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment)
-    val ipLaboratory = SubjectDegree("sic1l","Laboratorio Introducción a la programación","LIP","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment)
-    val algebraSeminary = SubjectDegree("sic2s","Seminario Algebra","SAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment)
-    val algebra = SubjectDegree("sic2s","Algebra","AL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment)
-    val calculusSeminary = SubjectDegree("sic3s","Seminario Cálculo","SCAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment)
-    val calculus = SubjectDegree("sic3s","Cálculo","CAL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment)
-    val tcLaboratory = SubjectDegree("sic4l","Laboratorio Tecnología de computadores","LTC","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment)
-    val tc = SubjectDegree("sic4l","Tecnología de computadores","LTC","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment)
+    val physics = SubjectDegree("sic0l","Física","FIS","A",false,false,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment,0)
+    val physicsLaboratory = SubjectDegree("sic0l","Laboratorio Física","LFIS","A",false,true,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment,1)
+    val ip = SubjectDegree("sic1l","Introducción a la programación","IP","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,2)
+    val ipLaboratory = SubjectDegree("sic1l","Laboratorio Introducción a la programación","LIP","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,3)
+    val algebraSeminary = SubjectDegree("sic2s","Seminario Algebra","SAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,4)
+    val algebra = SubjectDegree("sic2s","Algebra","AL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,5)
+    val calculusSeminary = SubjectDegree("sic3s","Seminario Cálculo","SCAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,6)
+    val calculus = SubjectDegree("sic3s","Cálculo","CAL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,7)
+    val tcLaboratory = SubjectDegree("sic4l","Laboratorio Tecnología de computadores","LTC","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,8)
+    val tc = SubjectDegree("sic4l","Tecnología de computadores","LTC","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,9)
 
     val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(
             list = listOf(

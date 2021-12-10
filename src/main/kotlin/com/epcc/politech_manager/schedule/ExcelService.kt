@@ -1,5 +1,6 @@
 package com.epcc.politech_manager.schedule
 
+import org.apache.poi.hssf.record.cf.BorderFormatting.BORDER_THIN
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -47,13 +48,14 @@ class ExcelService( ) {
         createSubjectHeader(subjects, sheet.getRow(1),workbook)
 
         fillData(sheet,workbook)
+        mergeSameSubjects(sheet)
+        //mergeSameSubjects(sheet)
         closeFile(workbook)
     }
 
     private fun determineScheduleType(): ScheduleType {
         schedule.semester.list.map { day ->
             day.map { hour ->
-                print(hour.size)
                 if (hour.size in 2..5) {
                     return ScheduleType.MULTIPLE_SUBJECT
                 } else if (hour.size > 5) {
@@ -65,14 +67,30 @@ class ExcelService( ) {
         return ScheduleType.ONE_SUBJECT
     }
 
-    private fun setStyle(workbook: Workbook): CellStyle {
+    private fun setStyle(workbook: Workbook,fontSize: Int, color: CellColor): CellStyle {
         val headerStyle = workbook.createCellStyle()
-        //headerStyle.fillForegroundColor = IndexedColors.LIGHT_BLUE.getIndex()
-        //headerStyle.fillPattern = FillPatternType.SOLID_FOREGROUND
+        when (color) {
+            CellColor.BLUE -> headerStyle.fillForegroundColor = IndexedColors.LIGHT_TURQUOISE.getIndex()
+            CellColor.RED -> headerStyle.fillForegroundColor = IndexedColors.CORAL.getIndex()
+            CellColor.YELLOW -> headerStyle.fillForegroundColor = IndexedColors.LIGHT_YELLOW.getIndex()
+            CellColor.GOLD -> headerStyle.fillForegroundColor = IndexedColors.GOLD.getIndex()
+            CellColor.GREEN -> headerStyle.fillForegroundColor = IndexedColors.LIGHT_GREEN.getIndex()
+            CellColor.WHITE -> headerStyle.fillForegroundColor = IndexedColors.WHITE.getIndex()
+        }
+        headerStyle.borderTop = BorderStyle.THIN
+        headerStyle.topBorderColor = IndexedColors.BLACK.getIndex()
+        headerStyle.borderBottom = BorderStyle.THIN
+        headerStyle.bottomBorderColor = IndexedColors.BLACK.getIndex()
+        headerStyle.borderLeft = BorderStyle.THIN
+        headerStyle.leftBorderColor = IndexedColors.BLACK.getIndex()
+        headerStyle.borderRight = BorderStyle.THIN
+        headerStyle.rightBorderColor = IndexedColors.BLACK.getIndex()
+
+        headerStyle.fillPattern = FillPatternType.SOLID_FOREGROUND
 
         val font = (workbook as XSSFWorkbook).createFont()
         font.fontName = "Comic Sans MS"
-        font.fontHeightInPoints = 10.toShort()
+        font.fontHeightInPoints = fontSize.toShort()
         font.bold = true
         headerStyle.alignment = HorizontalAlignment.CENTER
         headerStyle.verticalAlignment = VerticalAlignment.CENTER
@@ -81,7 +99,7 @@ class ExcelService( ) {
     }
 
     private fun createHeader(sheet: Sheet, row: Row, workbook: Workbook) {
-        val headerStyle = setStyle(workbook)
+        val headerStyle = setStyle(workbook,10,CellColor.WHITE)
 
         val days = listOf("Lunes","Martes","Miércoles","Jueves","Viernes")
         val headerDays = mutableListOf("")
@@ -116,7 +134,7 @@ class ExcelService( ) {
     }
 
     private fun createSubjectHeader(subjects: List<String>,row: Row, workbook: Workbook) {
-        val headerStyle = setStyle(workbook)
+        val headerStyle = setStyle(workbook,9,CellColor.WHITE)
 
         val listSubjects = mutableListOf("Hora")
         for(i in 0..4) {
@@ -161,7 +179,7 @@ class ExcelService( ) {
 
     private fun createHoursRow(sheet: Sheet, workbook: Workbook) {
         sheet.setColumnWidth(0, 2500)
-        val headerStyle = setStyle(workbook)
+        val headerStyle = setStyle(workbook,8,CellColor.WHITE)
 
         val hours = listOf("HORA","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","15:30","16:00","16:30","17:00","18:00","18:30","19:00","19:30","20:00","20:30","21:00")
         hours.mapIndexed { index, value ->
@@ -173,8 +191,6 @@ class ExcelService( ) {
     }
 
     private fun fillData(sheet: Sheet, workbook: Workbook) {
-        val headerStyle = setStyle(workbook)
-
         schedule.semester.list.mapIndexed { index, day ->
             day.mapIndexed{ i, hour ->
                 val row: Row = sheet.getRow(i + 2)
@@ -190,7 +206,7 @@ class ExcelService( ) {
                                 val seminary: String = if (subject.seminary) { " sem" } else { "" }
                                 val laboratory: String = if (subject.laboratory) { " lab" } else { "" }
                                 cell.setCellValue(subject.name + seminary + laboratory)
-                                cell.cellStyle = headerStyle
+                                cell.cellStyle = setStyle(workbook,9,subject.color.toCellColor())
                             }
                             ScheduleType.MULTIPLE_SUBJECT -> cell.setCellValue(subject.acronym)
                             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> cell.setCellValue(subject.acronym)
@@ -212,5 +228,64 @@ class ExcelService( ) {
         workbook.write(outputStream)
         workbook.close()
     }
+
+    private fun mergeSameSubjects(sheet: Sheet) {
+        var listToMerge = mutableListOf<Pair<Int,Int>>()
+        var previousSubject: SubjectDegree? = null
+        schedule.semester.list.mapIndexed { index, day ->
+            day.mapIndexed { i, hour ->
+                val row: Row = sheet.getRow(i + 2)
+                hour.mapIndexed { j, subject ->
+                    if(previousSubject!=null) {
+                        if(i-1 >= 0) {
+                            if(day[i][j]?.id == day[i-1][j]?.id) {
+                                listToMerge.add(Pair(i+2,index+1))
+                                /*if(!merged) {
+                                    println("$i $j $index")
+                                    sheet.addMergedRegion(CellRangeAddress(i + 1, i + 2, index + 1, index + 1))
+                                    merged = true
+                                } else {
+                                    merged = !merged
+                                }*/
+                            }
+                        }
+                    }
+                    previousSubject = subject
+                }
+            }
+        }
+        println(listToMerge)
+        val fixedList = mutableListOf<Pair<Int,Int>>()
+        listToMerge.mapIndexed { i, value ->
+            if(i+1 < listToMerge.size) {
+                if (listToMerge[i + 1].first - value.first != 1) {
+                    fixedList.add(value)
+                }
+            }
+        }
+        println(fixedList)
+        fixedList.map {
+            //sheet.addMergedRegion(CellRangeAddress(it.first, it.first+1, it.second, it.second))
+        }
+    }
 }
 
+enum class CellColor{
+    BLUE,
+    RED,
+    YELLOW,
+    GOLD,
+    GREEN,
+    WHITE
+}
+
+fun Int.toCellColor(): CellColor {
+    return when(this) {
+        0 -> CellColor.BLUE
+        1 -> CellColor.RED
+        2 -> CellColor.YELLOW
+        3 -> CellColor.GOLD
+        4 -> CellColor.GREEN
+        else -> CellColor.WHITE
+    }
+}
