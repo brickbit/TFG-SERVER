@@ -1,6 +1,5 @@
 package com.epcc.politech_manager.schedule
 
-import org.apache.poi.hssf.record.cf.BorderFormatting.BORDER_THIN
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -14,7 +13,7 @@ class ExcelService( ) {
     var scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT
     var numSubjects: Int = 5
     var numClassesPerSubject: Int = 1
-    val schedule = createBuildingSchedule()
+    val schedule = createComputerScienceDegree()//createBuildingSchedule()
 
     fun createFile() {
         val workbook: Workbook = XSSFWorkbook()
@@ -43,7 +42,7 @@ class ExcelService( ) {
 
         createHeader(sheet,sheet.getRow(0),workbook)
         createHoursRow(sheet, workbook)
-
+        
         val subjects = listOf("AL","CAL","FIS","IP","TC")
         createSubjectHeader(subjects, sheet.getRow(1),workbook)
 
@@ -78,13 +77,13 @@ class ExcelService( ) {
             CellColor.WHITE -> headerStyle.fillForegroundColor = IndexedColors.WHITE.getIndex()
         }
         headerStyle.borderTop = BorderStyle.THIN
-        headerStyle.topBorderColor = IndexedColors.BLACK.getIndex()
+        headerStyle.topBorderColor = IndexedColors.GREY_40_PERCENT.getIndex()
         headerStyle.borderBottom = BorderStyle.THIN
-        headerStyle.bottomBorderColor = IndexedColors.BLACK.getIndex()
+        headerStyle.bottomBorderColor = IndexedColors.GREY_40_PERCENT.getIndex()
         headerStyle.borderLeft = BorderStyle.THIN
-        headerStyle.leftBorderColor = IndexedColors.BLACK.getIndex()
+        headerStyle.leftBorderColor = IndexedColors.GREY_40_PERCENT.getIndex()
         headerStyle.borderRight = BorderStyle.THIN
-        headerStyle.rightBorderColor = IndexedColors.BLACK.getIndex()
+        headerStyle.rightBorderColor = IndexedColors.GREY_40_PERCENT.getIndex()
 
         headerStyle.fillPattern = FillPatternType.SOLID_FOREGROUND
 
@@ -209,7 +208,14 @@ class ExcelService( ) {
                                 cell.cellStyle = setStyle(workbook,9,subject.color.toCellColor())
                             }
                             ScheduleType.MULTIPLE_SUBJECT -> cell.setCellValue(subject.acronym)
-                            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> cell.setCellValue(subject.acronym)
+                            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM ->{
+                                val seminary: String = if (subject.seminary) { "sem " } else { "" }
+                                val laboratory: String = if (subject.laboratory) { "lab " } else { "" }
+                                val english = if(subject.english) { "ING "} else{ "" }
+                                val group: String = if (!subject.laboratory && !subject.seminary && !subject.english) { "gg " } else { "" }
+                                cell.setCellValue(seminary + laboratory + group + english + subject.group)
+                                cell.cellStyle = setStyle(workbook,9,subject.color.toCellColor())
+                            }
                         }
                     } else {
                         cell.setCellValue("")

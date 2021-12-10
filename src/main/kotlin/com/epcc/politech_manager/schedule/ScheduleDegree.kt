@@ -119,16 +119,17 @@ fun createComputerScienceDegree(): ScheduleDegree {
     val mathematicsDepartment = DepartmentDegree("1","Matemáticas")
     val softwareDepartment = DepartmentDegree("2","Ingeniería de sistemas informáticos y telemáticos")
 
-    val physics = SubjectDegree("sic0l","Física","FIS","A",false,false,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment,0)
-    val physicsLaboratory = SubjectDegree("sic0l","Laboratorio Física","LFIS","A",false,true,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment,1)
-    val ip = SubjectDegree("sic1l","Introducción a la programación","IP","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,2)
-    val ipLaboratory = SubjectDegree("sic1l","Laboratorio Introducción a la programación","LIP","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,3)
-    val algebraSeminary = SubjectDegree("sic2s","Seminario Algebra","SAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,4)
-    val algebra = SubjectDegree("sic2s","Algebra","AL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,5)
-    val calculusSeminary = SubjectDegree("sic3s","Seminario Cálculo","SCAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,6)
-    val calculus = SubjectDegree("sic3s","Cálculo","CAL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,7)
-    val tcLaboratory = SubjectDegree("sic4l","Laboratorio Tecnología de computadores","LTC","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,8)
-    val tc = SubjectDegree("sic4l","Tecnología de computadores","LTC","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,9)
+    val physics = SubjectDegree("sic0l","Física","FIS","A",false,false,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment,4)
+    val physicsLaboratory = SubjectDegree("sic0l","Laboratorio Física","LFIS","A",false,true,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment,4)
+    val ip = SubjectDegree("sic1l","Introducción a la programación","IP","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,0)
+    val ipLaboratory = SubjectDegree("sic1l","Laboratorio Introducción a la programación","LIP","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,0)
+    val algebraSeminary = SubjectDegree("sic2s","Seminario Algebra","SAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,2)
+    val algebraEnglish = SubjectDegree("sic2s","Algebra","AL","",false,false,true,60, listOf(mathematicsClassroom),mathematicsDepartment,2)
+    val algebra = SubjectDegree("sic2s","Algebra","AL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,2)
+    val calculusSeminary = SubjectDegree("sic3s","Seminario Cálculo","SCAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,3)
+    val calculus = SubjectDegree("sic3s","Cálculo","CAL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,3)
+    val tcLaboratory = SubjectDegree("sic4l","Laboratorio Tecnología de computadores","LTC","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,1)
+    val tc = SubjectDegree("sic4l","Tecnología de computadores","LTC","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,1)
 
     val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(
             list = listOf(
@@ -161,8 +162,8 @@ fun createComputerScienceDegree(): ScheduleDegree {
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(algebra,algebra,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,algebra,null,null,null,null,null,null,null,null,null,null,tc,null,null),
+                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
+                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
                             listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
@@ -187,8 +188,8 @@ fun createComputerScienceDegree(): ScheduleDegree {
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(algebra,algebra,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,algebra,null,null,null,null,null,null,null,null,null,null,tc,null,null),
+                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
+                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
                             listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
@@ -213,8 +214,8 @@ fun createComputerScienceDegree(): ScheduleDegree {
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(algebra,algebra,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,algebra,null,null,null,null,null,null,null,null,null,null,tc,null,null),
+                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
+                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
                             listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
@@ -237,8 +238,8 @@ fun createComputerScienceDegree(): ScheduleDegree {
                     listOf(
                             listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,algebraSeminary,null,null,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,algebraSeminary,null,null,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
+                            listOf(algebraSeminary,algebraEnglish,null,null,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
+                            listOf(algebraSeminary,algebraEnglish,null,null,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
                             listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
                             listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
                             listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
