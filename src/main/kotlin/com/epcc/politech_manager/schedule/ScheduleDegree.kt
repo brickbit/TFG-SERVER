@@ -189,7 +189,7 @@ fun createComputerScienceDegree(): ScheduleDegree {
     val calculusSeminary = SubjectDegree("sic3s","Seminario Cálculo","SCAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,3)
     val calculus = SubjectDegree("sic3s","Cálculo","CAL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,3)
     val tcLaboratory = SubjectDegree("sic4l","Laboratorio Tecnología de computadores","LTC","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,1)
-    val tc = SubjectDegree("sic4l","Tecnología de computadores","LTC","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,1)
+    val tc = SubjectDegree("sic4l","Tecnología de computadores","TC","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,1)
 
     val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(
             list = listOf(

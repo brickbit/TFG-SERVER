@@ -13,7 +13,7 @@ class ExcelService( ) {
     var scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT
     var numSubjects: Int = 5
     var numClassesPerSubject: Int = 1
-    val schedule = createBuildingSchedule()
+    val schedule = createComputerScienceDegree()//createBuildingSchedule()
 
     fun createFile() {
         val workbook: Workbook = XSSFWorkbook()
@@ -43,7 +43,7 @@ class ExcelService( ) {
         createHeader(sheet,sheet.getRow(0),workbook)
         createHoursRow(sheet, workbook)
 
-        val subjects = listOf("AL","CAL","FIS","IP","TC")
+        val subjects = getListOfSubjects().filter { !it.seminary && !it.laboratory && !it.english }.sortedBy { it.acronym }
         createSubjectHeader(subjects, sheet.getRow(1),workbook)
 
         fillData(sheet,workbook)
@@ -51,6 +51,16 @@ class ExcelService( ) {
         when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
                 mergeSameSubjects(sheet)
+                if (isEmptyAfternoon()) {
+                    for (i in 14..25) {
+                        sheet.createRow(i)
+                    }
+                }
+                if (isEmptyMorning()) {
+                    for (i in 0..14) {
+                        sheet.createRow(i)
+                    }
+                }
             }
             ScheduleType.MULTIPLE_SUBJECT -> {
 
@@ -143,25 +153,23 @@ class ExcelService( ) {
         }
     }
 
-    private fun createSubjectHeader(subjects: List<String>,row: Row, workbook: Workbook) {
-        val headerStyle = setStyle(workbook,9,CellColor.WHITE)
+    private fun createSubjectHeader(subjects: List<SubjectDegree>,row: Row, workbook: Workbook) {
 
         val listSubjects = mutableListOf("Hora")
         for(i in 0..4) {
             subjects.map {
                 for (j in 0..2) {
-                    listSubjects.add(it)
+                    listSubjects.add(it.acronym)
                 }
             }
         }
-
 
         when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
                 for (i in 1..numSubjects * numClassesPerSubject * 5) {
                     val cell: Cell = row.createCell(i)
                     cell.setCellValue("Asignatura")
-                    cell.cellStyle = headerStyle
+                    cell.cellStyle = setStyle(workbook,9,CellColor.WHITE)
                 }
             }
             ScheduleType.MULTIPLE_SUBJECT -> {
@@ -172,15 +180,25 @@ class ExcelService( ) {
                     if (module == 0) {
                         module = numSubjects * numClassesPerSubject
                     }
-                    cell.setCellValue(subjects[module - 1])
-                    cell.cellStyle = headerStyle
+                    cell.setCellValue(subjects[module - 1].acronym)
+                    cell.cellStyle = setStyle(workbook,9,CellColor.WHITE)
                 }
             }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
                 for (i in 1 until numSubjects * numClassesPerSubject * 5 + 1) {
                     val cell: Cell = row.createCell(i)
                     cell.setCellValue(listSubjects[i])
-                    cell.cellStyle = headerStyle
+
+                    val subjectsForDay = mutableListOf<SubjectDegree>()
+                    subjects.map {
+                        subjectsForDay.add(it)
+                        subjectsForDay.add(it)
+                        subjectsForDay.add(it)
+                    }
+                    val subjectsForWeek = List(5) {subjectsForDay}.flatten().toMutableList()
+                    subjectsForWeek.add(0,subjects[0])
+
+                    cell.cellStyle = setStyle(workbook,9,subjectsForWeek[i].color.toCellColor())
                 }
             }
         }
@@ -296,6 +314,42 @@ class ExcelService( ) {
             }
         }
         return listSubject
+    }
+
+    private fun isEmptyAfternoon(): Boolean {
+        var nulls = 0
+        schedule.semester.list.map { day ->
+            day.mapIndexed { i, _ ->
+                if (i < 12) {
+                    if(day[i+12].contains(null)) {
+                        nulls++
+                    }
+                }
+            }
+        }
+        return when (scheduleType) {
+            ScheduleType.ONE_SUBJECT -> nulls == 60
+            ScheduleType.MULTIPLE_SUBJECT -> nulls == 275
+            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> nulls == 825
+        }
+    }
+
+    private fun isEmptyMorning(): Boolean {
+        var nulls = 0
+        schedule.semester.list.map { day ->
+            day.mapIndexed { i, _ ->
+                if (i < 12) {
+                    if (day[i].contains(null)) {
+                        nulls++
+                    }
+                }
+            }
+        }
+        return when (scheduleType) {
+            ScheduleType.ONE_SUBJECT -> nulls == 55
+            ScheduleType.MULTIPLE_SUBJECT -> nulls == 275
+            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> nulls == 825
+        }
     }
 }
 
