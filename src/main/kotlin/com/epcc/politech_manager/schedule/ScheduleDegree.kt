@@ -3,23 +3,23 @@ package com.epcc.politech_manager.schedule
 import com.epcc.politech_manager.degree.Degrees
 
 data class ScheduleDegree(val degrees: Degrees, val year: String, val semester: SemesterDegree)
-data class SemesterDegree(val list: List<List<List<SubjectDegree?>>>)
+data class SemesterDegree(val num: Int, val subjectsInSemester: List<List<List<SubjectDegree?>>>)
 data class SubjectDegree(val id: String,val name: String, val acronym: String, val group: String, val seminary: Boolean,val laboratory: Boolean, val english: Boolean, val time: Int, val classrooms: List<ClassroomDegree>, val department: DepartmentDegree, val color: Int)
-data class ClassroomDegree(val id: String, val name: String, val pavilion: Pavilion)
-data class DepartmentDegree(val id: String, val name: String)
+data class ClassroomDegree(val id: String, val name: String, val pavilion: Pavilion,val acronym: String)
+data class DepartmentDegree(val id: String, val name: String, val acronym: String)
 enum class Pavilion {
     TELECOMMUNICATION, COMPUTING, ARCHITECTURE, CIVIL_WORK, CENTRAL
 }
 
 fun createBuildingSchedule(): ScheduleDegree {
-    val mathematicsClassroom = ClassroomDegree("1","C-1B",Pavilion.CIVIL_WORK)
-    val buildingClassroom = ClassroomDegree("2","A-1",Pavilion.ARCHITECTURE)
-    val designClassroom = ClassroomDegree("3","A-6",Pavilion.ARCHITECTURE)
+    val mathematicsClassroom = ClassroomDegree("1","C-1B",Pavilion.CIVIL_WORK, "C-1B")
+    val buildingClassroom = ClassroomDegree("2","A-1",Pavilion.ARCHITECTURE, "A-1")
+    val designClassroom = ClassroomDegree("3","A-6",Pavilion.ARCHITECTURE, "A-6")
 
-    val mathematicsDepartment = DepartmentDegree("1","Matemáticas")
-    val buildingDepartment = DepartmentDegree("2","Construcción")
-    val graphicalExpressionDepartment = DepartmentDegree("3","Expresión gráfica")
-    val economicsDepartment = DepartmentDegree("4","Economía")
+    val mathematicsDepartment = DepartmentDegree("1","Matemáticas","MAT")
+    val buildingDepartment = DepartmentDegree("2","Construcción","CONS")
+    val graphicalExpressionDepartment = DepartmentDegree("3","Expresión gráfica","EX.GR")
+    val economicsDepartment = DepartmentDegree("4","Economía","EC")
 
 
     val calculusSeminary = SubjectDegree("111","CÁLCULO","SCAL","A",true,false, false,60, listOf(mathematicsClassroom),mathematicsDepartment,2)
@@ -35,8 +35,8 @@ fun createBuildingSchedule(): ScheduleDegree {
     val buildingReservation = SubjectDegree("1112","RESERVADO \nVISITAS\n A OBRA","RVO","A",false,false, false,360,listOf(),buildingDepartment,5)
 
     val degree = Degrees("d0", "Grado en Edificación", 8)
-    val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(
-            list = listOf(
+    val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(num = 0,
+            subjectsInSemester = listOf(
                     listOf(
                             listOf(calculusSeminary),
                             listOf(calculusSeminary),
@@ -171,142 +171,218 @@ fun createBuildingSchedule(): ScheduleDegree {
 fun createComputerScienceDegree(): ScheduleDegree {
     val degree = Degrees("d1", "Grado en Ingeniería informática en ingeniería de computadores", 8)
 
-    val physicsLaboratoryClassroom = ClassroomDegree("i0l","Laboratorio de física",Pavilion.COMPUTING)
-    val ipLaboratoryClassroom = ClassroomDegree("i1l1","Sala 1",Pavilion.COMPUTING)
-    val mathematicsClassroom = ClassroomDegree("1","C-1B",Pavilion.CIVIL_WORK)
+    val c3 = ClassroomDegree("1","C-3",Pavilion.CENTRAL, "C-3")
+    val c1b = ClassroomDegree("2","C-1B",Pavilion.CIVIL_WORK, "C-1B")
+    val c6 = ClassroomDegree("3","C-6",Pavilion.CENTRAL, "C-6")
+    val c4 = ClassroomDegree("4","C-4",Pavilion.CENTRAL, "C-4")
+    val o5 = ClassroomDegree("5","O-5",Pavilion.CIVIL_WORK, "O-5")
+    val c1 = ClassroomDegree("6","C-1",Pavilion.CENTRAL, "C-1")
+    val c2 = ClassroomDegree("7","C-2",Pavilion.CENTRAL, "C-2")
+    val lFis = ClassroomDegree("8","Laboratorio de física",Pavilion.COMPUTING, "LFIS")
+    val sala1 = ClassroomDegree("9","Sala 1",Pavilion.COMPUTING, "SALA1")
+    val laboratorio1 = ClassroomDegree("9","Laboratorio 1",Pavilion.COMPUTING, "LAB1")
+    val novell = ClassroomDegree("10","Novell",Pavilion.COMPUTING, "NOV")
+    val labDigSis = ClassroomDegree("11","Lab-Sistemas Digitales",Pavilion.COMPUTING, "LSD")
+    val labC3b = ClassroomDegree("12","Lab-C-3B",Pavilion.COMPUTING, "LC3B")
 
-    val physicsDepartment = DepartmentDegree("0","Física aplicada")
-    val mathematicsDepartment = DepartmentDegree("1","Matemáticas")
-    val softwareDepartment = DepartmentDegree("2","Ingeniería de sistemas informáticos y telemáticos")
 
-    val physics = SubjectDegree("sic0l","Física","FIS","A",false,false,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment,4)
-    val physicsLaboratory = SubjectDegree("sic0l","Laboratorio Física","LFIS","A",false,true,false,1200, listOf(physicsLaboratoryClassroom),physicsDepartment,4)
-    val ip = SubjectDegree("sic1l","Introducción a la programación","IP","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,0)
-    val ipLaboratory = SubjectDegree("sic1l","Laboratorio Introducción a la programación","LIP","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,0)
-    val algebraSeminary = SubjectDegree("sic2s","Seminario Algebra","SAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,2)
-    val algebraEnglish = SubjectDegree("sic2s","Algebra","AL","",false,false,true,60, listOf(mathematicsClassroom),mathematicsDepartment,2)
-    val algebra = SubjectDegree("sic2s","Algebra","AL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,2)
-    val calculusSeminary = SubjectDegree("sic3s","Seminario Cálculo","SCAL","A",true,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,3)
-    val calculus = SubjectDegree("sic3s","Cálculo","CAL","A",false,false,false,60, listOf(mathematicsClassroom),mathematicsDepartment,3)
-    val tcLaboratory = SubjectDegree("sic4l","Laboratorio Tecnología de computadores","LTC","A",false,true,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,1)
-    val tc = SubjectDegree("sic4l","Tecnología de computadores","TC","A",false,false,false,1080, listOf(ipLaboratoryClassroom),softwareDepartment,1)
+    val physicsDepartment = DepartmentDegree("0","Física aplicada","FIS")
+    val mathematicsDepartment = DepartmentDegree("1","Matemáticas","MAT")
+    val softwareDepartment = DepartmentDegree("2","Ingeniería de sistemas informáticos y telemáticos","ISIT")
+    val computerDepartment = DepartmentDegree("2","Tecnología de los computares y de las comunicaciones","TCC")
 
-    val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(
-            list = listOf(
+    val algebraSeminary1 = SubjectDegree("1","Seminario Algebra","AL","1",true,false,false,60, listOf(c3),mathematicsDepartment,2)
+    val algebraSeminary2 = SubjectDegree("2","Seminario Algebra","AL","2",true,false,false,60, listOf(c3),mathematicsDepartment,2)
+    val algebraSeminary3 = SubjectDegree("3","Seminario Algebra","AL","3",true,false,false,60, listOf(c3),mathematicsDepartment,2)
+    val algebraSeminary4 = SubjectDegree("4","Seminario Algebra","AL","4",true,false,false,60, listOf(c3),mathematicsDepartment,2)
+    val algebraSeminary5 = SubjectDegree("5","Seminario Algebra","AL","5",true,false,false,60, listOf(c3),mathematicsDepartment,2)
+    val algebraSeminary6 = SubjectDegree("6","Seminario Algebra","AL","6",true,false,false,60, listOf(c3),mathematicsDepartment,2)
+    val algebraSeminary7 = SubjectDegree("7","Seminario Algebra","AL","7",true,false,false,60, listOf(c3),mathematicsDepartment,2)
+    val algebraSeminary8 = SubjectDegree("8","Seminario Algebra","AL","8",true,false,false,60, listOf(c3),mathematicsDepartment,2)
+
+    val calculusSeminary1 = SubjectDegree("9","Seminario Cálculo","CAL","1",true,false,false,60, listOf(c4),mathematicsDepartment,3)
+    val calculusSeminary2 = SubjectDegree("10","Seminario Cálculo","CAL","2",true,false,false,60, listOf(c4),mathematicsDepartment,3)
+    val calculusSeminary3 = SubjectDegree("11","Seminario Cálculo","CAL","3",true,false,false,60, listOf(c4),mathematicsDepartment,3)
+    val calculusSeminary4 = SubjectDegree("12","Seminario Cálculo","CAL","4",true,false,false,60, listOf(c4),mathematicsDepartment,3)
+    val calculusSeminary5 = SubjectDegree("13","Seminario Cálculo","CAL","5",true,false,false,60, listOf(c4),mathematicsDepartment,3)
+    val calculusSeminary6 = SubjectDegree("14","Seminario Cálculo","CAL","6",true,false,false,60, listOf(c4),mathematicsDepartment,3)
+    val calculusSeminary7 = SubjectDegree("15","Seminario Cálculo","CAL","7",true,false,false,60, listOf(c4),mathematicsDepartment,3)
+
+    val physicsLaboratory1 = SubjectDegree("16","Laboratorio Física","FIS","1|2",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory2 = SubjectDegree("17","Laboratorio Física","FIS","3|4",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory3 = SubjectDegree("18","Laboratorio Física","FIS","5|6",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory4 = SubjectDegree("19","Laboratorio Física","FIS","7|8",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory5 = SubjectDegree("20","Laboratorio Física","FIS","9",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory6 = SubjectDegree("21","Laboratorio Física","FIS","10",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory7 = SubjectDegree("22","Laboratorio Física","FIS","11",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory8 = SubjectDegree("23","Laboratorio Física","FIS","12|13",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory9 = SubjectDegree("24","Laboratorio Física","FIS","14|15",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+    val physicsLaboratory10 = SubjectDegree("25","Laboratorio Física","FIS","16",false,true,false,1200, listOf(lFis),physicsDepartment,4)
+
+    val ipLaboratory1 = SubjectDegree("26","Laboratorio Introducción a la programación","IP","1",false,true,false,1080, listOf(sala1),softwareDepartment,0)
+    val ipLaboratory2 = SubjectDegree("27","Laboratorio Introducción a la programación","IP","2",false,true,false,1080, listOf(sala1),softwareDepartment,0)
+    val ipLaboratory3 = SubjectDegree("28","Laboratorio Introducción a la programación","IP","3",false,true,false,1080, listOf(sala1),softwareDepartment,0)
+    val ipLaboratory4 = SubjectDegree("29","Laboratorio Introducción a la programación","IP","4",false,true,false,1080, listOf(laboratorio1),softwareDepartment,0)
+    val ipLaboratory5 = SubjectDegree("30","Laboratorio Introducción a la programación","IP","5",false,true,false,1080, listOf(laboratorio1),softwareDepartment,0)
+    val ipLaboratory6 = SubjectDegree("31","Laboratorio Introducción a la programación","IP","6",false,true,false,1080, listOf(laboratorio1),softwareDepartment,0)
+    val ipLaboratory7 = SubjectDegree("32","Laboratorio Introducción a la programación","IP","7",false,true,false,1080, listOf(novell),softwareDepartment,0)
+    val ipLaboratory8 = SubjectDegree("33","Laboratorio Introducción a la programación","IP","8",false,true,false,1080, listOf(sala1),softwareDepartment,0)
+    val ipLaboratory9 = SubjectDegree("34","Laboratorio Introducción a la programación","IP","9",false,true,false,1080, listOf(sala1),softwareDepartment,0)
+    val ipLaboratory10 = SubjectDegree("35","Laboratorio Introducción a la programación","IP","10",false,true,false,1080, listOf(sala1),softwareDepartment,0)
+    val ipLaboratory11 = SubjectDegree("36","Laboratorio Introducción a la programación","IP","11",false,true,false,1080, listOf(laboratorio1),softwareDepartment,0)
+    val ipLaboratory12 = SubjectDegree("37","Laboratorio Introducción a la programación","IP","12",false,true,false,1080, listOf(laboratorio1),softwareDepartment,0)
+
+    val tcLaboratory1 = SubjectDegree("38","Laboratorio Tecnología de computadores","TC","1",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory2 = SubjectDegree("39","Laboratorio Tecnología de computadores","TC","2",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory3 = SubjectDegree("40","Laboratorio Tecnología de computadores","TC","3",false,true,false,1080, listOf(labC3b),computerDepartment,1)
+    val tcLaboratory4 = SubjectDegree("41","Laboratorio Tecnología de computadores","TC","4",false,true,false,1080, listOf(labC3b),computerDepartment,1)
+    val tcLaboratory5 = SubjectDegree("42","Laboratorio Tecnología de computadores","TC","5",false,true,false,1080, listOf(labC3b),computerDepartment,1)
+    val tcLaboratory6 = SubjectDegree("43","Laboratorio Tecnología de computadores","TC","6",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory7 = SubjectDegree("44","Laboratorio Tecnología de computadores","TC","7",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory8 = SubjectDegree("45","Laboratorio Tecnología de computadores","TC","8",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory9 = SubjectDegree("46","Laboratorio Tecnología de computadores","TC","9",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory10 = SubjectDegree("47","Laboratorio Tecnología de computadores","TC","10",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory11 = SubjectDegree("48","Laboratorio Tecnología de computadores","TC","11",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory12 = SubjectDegree("49","Laboratorio Tecnología de computadores","TC","12",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory13 = SubjectDegree("59","Laboratorio Tecnología de computadores","TC","13",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+    val tcLaboratory14 = SubjectDegree("51","Laboratorio Tecnología de computadores","TC","14",false,true,false,1080, listOf(labDigSis),computerDepartment,1)
+
+    val algebra1 = SubjectDegree("52","Algebra","AL","A",false,false,false,60, listOf(c1),mathematicsDepartment,2)
+    val algebra2 = SubjectDegree("53","Algebra","AL","B",false,false,false,60, listOf(c2),mathematicsDepartment,2)
+    val algebraEnglish = SubjectDegree("54","Algebra","AL","",false,false,true,60, listOf(c6),mathematicsDepartment,2)
+    val algebraEnglishSeminary = SubjectDegree("55","Algebra","AL","",true,false,true,60, listOf(c4),mathematicsDepartment,2)
+
+    val calculus1 = SubjectDegree("56","Cálculo","CAL","A",false,false,false,60, listOf(c1),mathematicsDepartment,3)
+    val calculus2 = SubjectDegree("57","Cálculo","CAL","B",false,false,false,60, listOf(c2),mathematicsDepartment,3)
+
+    val physics1 = SubjectDegree("58","Física","FIS","A",false,false,false,1200, listOf(c1),physicsDepartment,4)
+    val physics2 = SubjectDegree("59","Física","FIS","B",false,false,false,1200, listOf(c2),physicsDepartment,4)
+
+    val ip1 = SubjectDegree("60","Introducción a la programación","IP","A",false,false,false,1080, listOf(c1),softwareDepartment,0)
+    val ip2 = SubjectDegree("61","Introducción a la programación","IP","B",false,false,false,1080, listOf(c2),softwareDepartment,0)
+
+    val tc1 = SubjectDegree("sic4l","Tecnología de computadores","TC","A",false,false,false,1080, listOf(c1),computerDepartment,1)
+    val tc2 = SubjectDegree("sic4l","Tecnología de computadores","TC","B",false,false,false,1080, listOf(c2),computerDepartment,1)
+
+    val schedule = ScheduleDegree(degree, "2021-2022", SemesterDegree(num = 0,
+            subjectsInSemester = listOf(
                     listOf(
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null, null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,ipLaboratory,null,null,tcLaboratory),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,ipLaboratory,null,null,tcLaboratory),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,ipLaboratory,null,null,tcLaboratory),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,tcLaboratory),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,tcLaboratory),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,tcLaboratory),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,tcLaboratory),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,tcLaboratory),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,tcLaboratory),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,ipLaboratory,ipLaboratory,null,null,tcLaboratory,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,ipLaboratory,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,ipLaboratory,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,ipLaboratory,null,null,null,null,null),
-                            listOf(),
-                            listOf(),
-                            listOf(),
+                            /*8:30*/listOf(null,null,null,null,null,null,physicsLaboratory1,null,null, null,null,null,null,null,null),
+                            /*9:00*/listOf(null,null,null,null,null,null,physicsLaboratory1,null,null,ipLaboratory1,ipLaboratory4,ipLaboratory7,null,null,tcLaboratory3),
+                            /*9:30*/listOf(algebraSeminary1,null,null,calculusSeminary1,null,null,physicsLaboratory1,null,null,ipLaboratory1,ipLaboratory4,ipLaboratory7,null,null,tcLaboratory3),
+                            /*10:00*/listOf(algebraSeminary1,null,null,calculusSeminary1,null,null,physicsLaboratory1,null,null,ipLaboratory1,ipLaboratory4,ipLaboratory7,null,null,tcLaboratory3),
+                            /*10:30*/listOf(algebraSeminary2,null,null,calculusSeminary2,null,null,physicsLaboratory2,null,null,ipLaboratory2,ipLaboratory5,null,null,tcLaboratory1,tcLaboratory4),
+                            /*11:00*/listOf(algebraSeminary2,null,null,calculusSeminary2,null,null,physicsLaboratory2,null,null,ipLaboratory2,ipLaboratory5,null,null,tcLaboratory1,tcLaboratory4),
+                            /*11:30*/listOf(algebraSeminary3,null,null,calculusSeminary3,null,null,physicsLaboratory2,null,null,ipLaboratory2,ipLaboratory5,null,null,tcLaboratory1,tcLaboratory4),
+                            /*12:00*/listOf(algebraSeminary3,null,null,calculusSeminary3,null,null,physicsLaboratory2,null,null,ipLaboratory3,ipLaboratory6,null,null,tcLaboratory2,tcLaboratory5),
+                            /*12:30*/listOf(algebraSeminary4,null,null,calculusSeminary4,null,null,physicsLaboratory3,null,null,ipLaboratory3,ipLaboratory6,null,null,tcLaboratory2,tcLaboratory5),
+                            /*13:00*/listOf(algebraSeminary4,null,null,calculusSeminary4,null,null,physicsLaboratory3,null,null,ipLaboratory3,ipLaboratory6,null,null,tcLaboratory2,tcLaboratory5),
+                            /*13:30*/listOf(null,null,null,null,null,null,physicsLaboratory3,null,null,null,null,null,null,null,null),
+                            /*14:00*/listOf(null,null,null,null,null,null,physicsLaboratory3,null,null,null,null,null,null,null,null),
+                            /*15:30*/listOf(null,null,null,null,null,null,physicsLaboratory4,null,null,ipLaboratory8,ipLaboratory11,null,null,tcLaboratory6,null),
+                            /*16:00*/listOf(null,null,null,null,null,null,physicsLaboratory4,null,null,ipLaboratory8,ipLaboratory11,null,null,tcLaboratory6,null),
+                            /*16:30*/listOf(null,null,null,null,null,null,physicsLaboratory4,null,null,ipLaboratory8,ipLaboratory11,null,null,tcLaboratory6,null),
+                            /*17:00*/listOf(null,null,null,null,null,null,physicsLaboratory4,null,null,ipLaboratory9,ipLaboratory12,null,null,tcLaboratory7,null),
+                            /*17:30*/listOf(null,null,null,null,null,null,physicsLaboratory5,null,null,ipLaboratory9,ipLaboratory12,null,null,tcLaboratory7,null),
+                            /*18:00*/listOf(null,null,null,null,null,null,physicsLaboratory5,null,null,ipLaboratory9,ipLaboratory12,null,null,tcLaboratory7,null),
+                            /*18:30*/listOf(null,null,null,null,null,null,physicsLaboratory5,null,null,ipLaboratory10,null,null,null,null,null),
+                            /*19:00*/listOf(null,null,null,null,null,null,physicsLaboratory5,null,null,ipLaboratory10,null,null,null,null,null),
+                            /*19:30*/listOf(null,null,null,null,null,null,null,null,null,ipLaboratory10,null,null,null,null,null),
+                            /*20:00*/listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            /*20:30*/listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            /*21:00*/listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
                             ),
                     listOf(
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
+                            listOf(null,null,null,null,null,null,physics1,null,null,ip2,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics1,null,null,ip2,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics2,null,null,ip1,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics2,null,null,ip1,null,null,null,null,null),
+                            listOf(algebra2,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc1,null,null),
+                            listOf(algebra2,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc1,null,null),
+                            listOf(algebra1,null,null,calculus2,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(algebra1,null,null,calculus2,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,calculus1,null,null,null,null,null,null,null,null,tc2,null,null),
+                            listOf(null,null,null,calculus1,null,null,null,null,null,null,null,null,tc2,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory6,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory6,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory6,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory6,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory7,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory7,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory7,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory7,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
                             ),
                     listOf(
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
+                            listOf(null,null,null,null,null,null,physics1,null,null,ip2,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics1,null,null,ip2,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics2,null,null,ip1,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics2,null,null,ip1,null,null,null,null,null),
+                            listOf(algebra2,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc1,null,null),
+                            listOf(algebra2,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc1,null,null),
+                            listOf(algebra1,null,null,calculus2,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(algebra1,null,null,calculus2,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,calculus1,null,null,null,null,null,null,null,null,tc2,null,null),
+                            listOf(null,null,null,calculus1,null,null,null,null,null,null,null,null,tc2,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-                    ),
-                    listOf(
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physics,null,null,ip,null,null,null,null,null),
-                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(algebra,null,null,calculus,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(null,null,null,calculus,null,null,null,null,null,null,null,null,tc,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory8,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory8,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory8,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory9,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory9,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory9,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-                    ),
+                            ),
                     listOf(
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,algebraEnglish,null,null,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,algebraEnglish,null,null,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(algebraSeminary,null,null,calculusSeminary,null,null,physicsLaboratory,null,null,null,null,null,tcLaboratory,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
-                            listOf(null,null,null,null,null,null,physicsLaboratory,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics1,null,null,ip2,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics1,null,null,ip2,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics2,null,null,ip1,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physics2,null,null,ip1,null,null,null,null,null),
+                            listOf(algebra2,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc1,null,null),
+                            listOf(algebra2,algebraEnglish,null,null,null,null,null,null,null,null,null,null,tc1,null,null),
+                            listOf(algebra1,null,null,calculus2,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(algebra1,null,null,calculus2,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,calculus1,null,null,null,null,null,null,null,null,tc2,null,null),
+                            listOf(null,null,null,calculus1,null,null,null,null,null,null,null,null,tc2,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory10,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory10,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory10,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory11,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory11,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,tcLaboratory11,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+                            ),
+                    listOf(
+                            listOf(null,null,null,null,null,null,physicsLaboratory8,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory8,null,null,null,null,null,tcLaboratory12,null,null),
+                            listOf(algebraSeminary5,algebraEnglishSeminary,null,null,null,null,physicsLaboratory8,null,null,null,null,null,tcLaboratory12,null,null),
+                            listOf(algebraSeminary5,algebraEnglishSeminary,null,null,null,null,physicsLaboratory8,null,null,null,null,null,tcLaboratory12,null,null),
+                            listOf(algebraSeminary6,null,null,calculusSeminary5,null,null,physicsLaboratory9,null,null,null,null,null,tcLaboratory13,null,null),
+                            listOf(algebraSeminary6,null,null,calculusSeminary5,null,null,physicsLaboratory9,null,null,null,null,null,tcLaboratory13,null,null),
+                            listOf(algebraSeminary7,null,null,calculusSeminary6,null,null,physicsLaboratory9,null,null,null,null,null,tcLaboratory13,null,null),
+                            listOf(algebraSeminary7,null,null,calculusSeminary6,null,null,physicsLaboratory9,null,null,null,null,null,tcLaboratory14,null,null),
+                            listOf(algebraSeminary8,null,null,calculusSeminary7,null,null,physicsLaboratory10,null,null,null,null,null,tcLaboratory14,null,null),
+                            listOf(algebraSeminary8,null,null,calculusSeminary7,null,null,physicsLaboratory10,null,null,null,null,null,tcLaboratory14,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory10,null,null,null,null,null,null,null,null),
+                            listOf(null,null,null,null,null,null,physicsLaboratory10,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),
                             listOf(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null),

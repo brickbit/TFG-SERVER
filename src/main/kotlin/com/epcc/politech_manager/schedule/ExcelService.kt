@@ -66,6 +66,13 @@ class ExcelService( ) {
 
             }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
+                val colsToDelete = getEmptyColClassroom()
+                /*colsToDelete[0].map {
+                    sheet.shiftColumns(it,it,1)
+                }*/
+                //sheet.getRow(2).shiftCellsLeft(0, sheet.getRow(0).lastCellNum.toInt(),1)
+                //sheet.lastRowNum
+                //sheet.shiftColumns(2,sheet.lastRowNum,1)
 
             }
         }
@@ -74,7 +81,7 @@ class ExcelService( ) {
     }
 
     private fun determineScheduleType(): ScheduleType {
-        schedule.semester.list.map { day ->
+        schedule.semester.subjectsInSemester.map { day ->
             day.map { hour ->
                 if (hour.size in 2..5) {
                     return ScheduleType.MULTIPLE_SUBJECT
@@ -176,7 +183,6 @@ class ExcelService( ) {
                 for (i in 1..numSubjects * numClassesPerSubject * 5) {
                     val cell: Cell = row.createCell(i)
                     var module = i % (numSubjects * numClassesPerSubject)
-                    print(module)
                     if (module == 0) {
                         module = numSubjects * numClassesPerSubject
                     }
@@ -219,7 +225,7 @@ class ExcelService( ) {
     }
 
     private fun fillData(sheet: Sheet, workbook: Workbook) {
-        schedule.semester.list.mapIndexed { index, day ->
+        schedule.semester.subjectsInSemester.mapIndexed { index, day ->
             day.mapIndexed{ i, hour ->
                 val row: Row = sheet.getRow(i + 2)
                 hour.mapIndexed { j, subject ->
@@ -271,12 +277,11 @@ class ExcelService( ) {
             mergeList.add(mutableListOf())
         }
         listSubject.mapIndexed { k, subject ->
-            schedule.semester.list.mapIndexed { index, day ->
+            schedule.semester.subjectsInSemester.mapIndexed { index, day ->
                 day.mapIndexed { i, hour ->
                     hour.mapIndexed { j, value ->
                         value?.let {
                             if (subject.id == it.id) {
-                                println("${i + 2} ${index + 1}")
                                 mergeList[k].add(Pair(i+2,index+1))
                             }
                         }
@@ -284,7 +289,6 @@ class ExcelService( ) {
                 }
             }
         }
-        println(mergeList)
         val pairs: MutableList<Map<Int, List<Pair<Int, Int>>>> = mutableListOf()
         mergeList.map { pairList ->
             pairs.add(pairList.groupBy { it.second })
@@ -297,12 +301,11 @@ class ExcelService( ) {
                 sheet.addMergedRegion(CellRangeAddress(firstRow, lastRow, col, col))
             }
         }
-        println(pairs)
     }
 
     private fun getListOfSubjects(): List<SubjectDegree> {
         val listSubject = mutableListOf<SubjectDegree>()
-        schedule.semester.list.map { day ->
+        schedule.semester.subjectsInSemester.map { day ->
             day.map { hour ->
                 hour.map {
                     it?.let { subject ->
@@ -318,7 +321,7 @@ class ExcelService( ) {
 
     private fun isEmptyAfternoon(): Boolean {
         var nulls = 0
-        schedule.semester.list.map { day ->
+        schedule.semester.subjectsInSemester.map { day ->
             day.mapIndexed { i, _ ->
                 if (i < 12) {
                     if(day[i+12].contains(null)) {
@@ -336,7 +339,7 @@ class ExcelService( ) {
 
     private fun isEmptyMorning(): Boolean {
         var nulls = 0
-        schedule.semester.list.map { day ->
+        schedule.semester.subjectsInSemester.map { day ->
             day.mapIndexed { i, _ ->
                 if (i < 12) {
                     if (day[i].contains(null)) {
@@ -350,6 +353,36 @@ class ExcelService( ) {
             ScheduleType.MULTIPLE_SUBJECT -> nulls == 275
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> nulls == 825
         }
+    }
+
+    private fun getEmptyColClassroom(): MutableList<MutableList<Int>> {
+        val removeCols: MutableList<MutableList<Int>> = mutableListOf()
+        schedule.semester.subjectsInSemester.mapIndexed { i, day ->
+            val transpose = calculateTranspose(day)
+            val deleteList: MutableList<Int> = mutableListOf()
+            transpose.mapIndexed { index, value ->
+                val nulls = value.count { subject -> subject == null }
+                if(nulls == 23) {
+                    deleteList.add(index)
+                }
+            }
+            removeCols.add(deleteList)
+        }
+        return removeCols
+    }
+
+    private fun calculateTranspose(matrix: List<List<SubjectDegree?>>): List<List<SubjectDegree?>> {
+        val row = matrix.size
+        val column = matrix[0].size
+
+        // Transpose the matrix
+        val transpose: MutableList<MutableList<SubjectDegree?>> = MutableList(column) { MutableList(row) { null } }
+        for (i in 0 until row) {
+            for (j in 0 until column) {
+                transpose[j][i] = matrix[i][j]
+            }
+        }
+        return transpose
     }
 }
 
