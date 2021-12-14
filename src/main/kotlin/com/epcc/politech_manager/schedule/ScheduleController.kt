@@ -15,8 +15,6 @@ import java.nio.file.Paths
 @RestController
 class ScheduleController(val service: ScheduleService) {
 
-    val buildSchedule = CreateScheduleFileService()
-
     @GetMapping("/schedule")
     fun index(): List<SchedulesBO> {
         return service.getAllSchedules()
@@ -43,7 +41,11 @@ class ScheduleController(val service: ScheduleService) {
     }
 
     @GetMapping("/schedule/build")
-    fun buildSchedule() {
+    fun buildSchedule(@RequestBody requestData: CreateScheduleFileBO) {
+        //service.getSchedule(requestData.id)
+        val scheduleType = requestData.scheduleType.toScheduleType()
+        val fileType = requestData.fileType.toFileType()
+        val buildSchedule = CreateScheduleFileService(scheduleData = createBuildingSchedule(),fileType = fileType, scheduleType = scheduleType)
         buildSchedule.createFile()
     }
 

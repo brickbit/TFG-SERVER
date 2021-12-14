@@ -9,13 +9,13 @@ import java.io.FileOutputStream
 import kotlin.math.ceil
 
 @Service
-class CreateScheduleFileService {
-    val scheduleData = createBuildingSchedule()
-    val type = FileType.SUBJECT
-    val subjectType = ScheduleType.ONE_SUBJECT
+class CreateScheduleFileService(
+        val scheduleData: ScheduleDegree? = null,
+        val fileType: FileType = FileType.SUBJECT,
+        val scheduleType:ScheduleType = ScheduleType.ONE_SUBJECT) {
 
     fun parseScheduleData():ScheduleFileData {
-        val matrix = flatMatrix(scheduleData.semester.subjectsInSemester)
+        val matrix = flatMatrix(scheduleData!!.semester.subjectsInSemester)
         val matrixWithNoEmptyColumns = deleteEmptyCols(matrix)
         val deletedCols = getDeletedCols(matrix)
         val subjectsForWeek = obtainSubjects(matrixWithNoEmptyColumns)
@@ -23,7 +23,7 @@ class CreateScheduleFileService {
         val emptyRows = checkTurnEmpty(matrix)
         val emptyMorning = emptyMorning(emptyRows,matrixWithNoEmptyColumns)
         val emptyAfternoon = emptyAfternoon(emptyRows,matrixWithNoEmptyColumns)
-        return ScheduleFileData(scheduleData.degrees.name,scheduleData.semester.num,emptyAfternoon.first,subjectsForWeek,sizeOfDays,emptyMorning.second,emptyAfternoon.second, scheduleData.year)
+        return ScheduleFileData(scheduleData!!.degrees.name,scheduleData!!.semester.num,emptyAfternoon.first,subjectsForWeek,sizeOfDays,emptyMorning.second,emptyAfternoon.second, scheduleData!!.year)
     }
 
     fun createFile() {
@@ -33,7 +33,7 @@ class CreateScheduleFileService {
         val sheet: Sheet = workbook.createSheet(scheduleData.degree)
 
         paint(scheduleData, sheet, workbook)
-        when(type) {
+        when(fileType) {
             FileType.SUBJECT -> {closeFile(workbook, "schedule-subject.xlsx")}
             FileType.DEPARTMENT -> {closeFile(workbook, "schedule-department.xlsx")}
             FileType.CLASSROOM -> {closeFile(workbook, "schedule-classroom.xlsx")}
@@ -41,12 +41,12 @@ class CreateScheduleFileService {
     }
 
     private fun paint(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
-        when (subjectType) {
+        when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> { createRows(scheduleFileData,sheet, 5500) }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> { createRows(scheduleFileData,sheet, 1500) }
         }
         createTitle(scheduleFileData,sheet,workbook)
-        when (subjectType) {
+        when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
                 createHeaderOneSubject(scheduleFileData, sheet.getRow(headerOffset), workbook)
             }
@@ -157,7 +157,7 @@ class CreateScheduleFileService {
         val subjectsOfWeek = scheduleFileData.subjectsName
         for (i in 1..subjectsOfWeek.size) {
             val cell = row.createCell(i)
-            when (subjectType) {
+            when (scheduleType) {
                 ScheduleType.ONE_SUBJECT -> {
                     cell.setCellValue("Asignatura")
                     cell.cellStyle = setStyle(workbook,10,CellColor.WHITE, true)
@@ -178,14 +178,14 @@ class CreateScheduleFileService {
                 val cell = row.createCell(j)
                 val subject = matrix[i-(headerSize+ headerOffset)][j-1]
 
-                when(type) {
+                when(fileType) {
                     FileType.SUBJECT -> {
                         val seminary: String = if (subject?.seminary == true) { "sem\n" } else { "" }
                         val laboratory: String = if (subject?.laboratory == true) { "lab\n" } else { "" }
                         val english = if(subject?.english == true) { "ing"} else{ "" }
                         val groupName = subject?.group ?: ""
                         val group: String = if (subject?.laboratory != true && subject?.seminary != true && subject?.english != true && subject!= null) { "gg " } else { "" }
-                        when (subjectType) {
+                        when (scheduleType) {
                             ScheduleType.ONE_SUBJECT -> {
                                 cell.setCellValue( seminary + laboratory + english + (subject?.name?: "") + " " + groupName)
                             }
@@ -264,7 +264,7 @@ class CreateScheduleFileService {
         val positions: MutableList<Int> = mutableListOf()
         matrix.mapIndexed { i, value ->
             val nulls = value.count { subject -> subject == null }
-            when (subjectType) {
+            when (scheduleType) {
                 ScheduleType.ONE_SUBJECT -> {
                     if (nulls == numColumnsOneSubjectPerDay) {
                         positions.add(i)

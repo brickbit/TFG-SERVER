@@ -10,3 +10,18 @@ fun Int.toCellColor(): CellColor {
         else -> CellColor.WHITE
     }
 }
+
+fun Int.toScheduleType(): ScheduleType {
+    return when (this) {
+        0 -> ScheduleType.ONE_SUBJECT
+        else -> ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM
+    }
+}
+
+fun Int.toFileType(): FileType {
+    return when (this) {
+        0 -> FileType.SUBJECT
+        1 -> FileType.DEPARTMENT
+        else -> FileType.CLASSROOM
+    }
+}
