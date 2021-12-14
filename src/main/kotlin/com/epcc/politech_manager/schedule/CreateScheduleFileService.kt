@@ -9,16 +9,17 @@ import java.io.FileOutputStream
 import kotlin.math.ceil
 
 @Service
-class MultipleSubjectScheduleService {
-    val scheduleData = createComputerScienceDegree()
+class CreateScheduleFileService {
+    val scheduleData = createBuildingSchedule()
     val type = FileType.SUBJECT
+    val subjectType = ScheduleType.ONE_SUBJECT
 
     fun parseScheduleData():ScheduleFileData {
-        val matrix = flatMatrix(scheduleData.semester.subjectsInSemester)//multiple
-        val matrixWithNoEmptyColumns = deleteEmptyCols(matrix)//multiple
-        val deletedCols = getDeletedCols(matrix)//multiple
-        val subjectsForWeek = obtainSubjects(matrixWithNoEmptyColumns)//multiple
-        val sizeOfDays = getSizeOfEachDay(deletedCols)//multiple
+        val matrix = flatMatrix(scheduleData.semester.subjectsInSemester)
+        val matrixWithNoEmptyColumns = deleteEmptyCols(matrix)
+        val deletedCols = getDeletedCols(matrix)
+        val subjectsForWeek = obtainSubjects(matrixWithNoEmptyColumns)
+        val sizeOfDays = getSizeOfEachDay(deletedCols)
         val emptyRows = checkTurnEmpty(matrix)
         val emptyMorning = emptyMorning(emptyRows,matrixWithNoEmptyColumns)
         val emptyAfternoon = emptyAfternoon(emptyRows,matrixWithNoEmptyColumns)
@@ -40,19 +41,29 @@ class MultipleSubjectScheduleService {
     }
 
     private fun paint(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
-        createRows(scheduleFileData,sheet)
+        when (subjectType) {
+            ScheduleType.ONE_SUBJECT -> { createRows(scheduleFileData,sheet, 5500) }
+            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> { createRows(scheduleFileData,sheet, 1500) }
+        }
         createTitle(scheduleFileData,sheet,workbook)
-        createHeader(scheduleFileData,sheet.getRow(headerOffset),workbook,sheet)
+        when (subjectType) {
+            ScheduleType.ONE_SUBJECT -> {
+                createHeaderOneSubject(scheduleFileData, sheet.getRow(headerOffset), workbook)
+            }
+            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
+                createHeaderMultipleSubject(scheduleFileData, sheet.getRow(headerOffset), workbook, sheet)
+            }
+        }
         createHoursRow(scheduleFileData,sheet,workbook)
         createSubjectHeader(scheduleFileData,sheet.getRow(headerOffset + 1), workbook)
         fillData(scheduleFileData,sheet,workbook)
     }
 
-    private fun createRows(scheduleFileData: ScheduleFileData, sheet: Sheet) {
+    private fun createRows(scheduleFileData: ScheduleFileData, sheet: Sheet, cellWidth: Int) {
         val numRows = scheduleFileData.subjects.size + headerOffset + headerSize
         for (i in 0..numRows) {
             sheet.createRow(i)
-            sheet.setColumnWidth(0, 1500)
+            sheet.setColumnWidth(i, cellWidth)
         }
     }
 
@@ -68,19 +79,18 @@ class MultipleSubjectScheduleService {
         cell = row.createCell(middle)
         cell.setCellValue(scheduleFileData.degree.toUpperCase())
         cell.cellStyle = setStyle(workbook,11,CellColor.WHITE,true)
-        cell = row.createCell(scheduleFileData.subjects[0].size-1)
+        cell = row.createCell(scheduleFileData.subjects[0].size)
         cell.setCellValue(scheduleFileData.year)
         cell.cellStyle = setStyle(workbook,11,CellColor.WHITE,true)
     }
 
-    private fun createHeader(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook, sheet: Sheet){
+    private fun createHeaderMultipleSubject(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook, sheet: Sheet){
         val numDays = scheduleFileData.subjects[0].size
         val days = listOf("Lunes","Martes","Miércoles","Jueves","Viernes")
 
         val daysOfWeek = fillDaysOfWeek(scheduleFileData,numDays,days)
         daysOfWeek.add(0,"")
         daysOfWeek.mapIndexed {  index, value ->
-            sheet.setColumnWidth(index, 1500)
             for (i in 1..daysOfWeek.size) {
                 val headerCell: Cell = row.createCell(index)
                 headerCell.setCellValue(value)
@@ -95,6 +105,21 @@ class MultipleSubjectScheduleService {
             sheet.addMergedRegion(CellRangeAddress(row.rowNum, row.rowNum, previousValue +1, list[i] + previousValue))
             previousValue += list[i]
         }
+    }
+
+    private fun createHeaderOneSubject(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook){
+        val days = mutableListOf("Lunes","Martes","Miércoles","Jueves","Viernes")
+
+        days.add(0,"")
+        days.mapIndexed {  index, value ->
+            for (i in 1..days.size) {
+                val headerCell: Cell = row.createCell(index)
+                headerCell.setCellValue(value)
+                headerCell.cellStyle = setStyle(workbook,10,CellColor.WHITE, true)
+            }
+        }
+        val list = scheduleFileData.sizeOfDays.toMutableList()
+        list.add(0,0)
     }
 
     private fun fillDaysOfWeek(scheduleFileData: ScheduleFileData, numDays: Int, days: List<String>): MutableList<String> {
@@ -132,14 +157,22 @@ class MultipleSubjectScheduleService {
         val subjectsOfWeek = scheduleFileData.subjectsName
         for (i in 1..subjectsOfWeek.size) {
             val cell = row.createCell(i)
-            cell.setCellValue(subjectsOfWeek[i-1].acronym)
-            cell.cellStyle = setStyle(workbook,10,subjectsOfWeek[i-1].color.toCellColor(), true)
+            when (subjectType) {
+                ScheduleType.ONE_SUBJECT -> {
+                    cell.setCellValue("Asignatura")
+                    cell.cellStyle = setStyle(workbook,10,CellColor.WHITE, true)
+                }
+                ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
+                    cell.setCellValue(subjectsOfWeek[i-1].acronym)
+                    cell.cellStyle = setStyle(workbook,10,subjectsOfWeek[i-1].color.toCellColor(), true)
+                }
+            }
         }
     }
 
     private fun fillData(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
         val matrix = scheduleFileData.subjects
-        for (i in (headerSize + headerOffset) until matrix.size + headerSize + headerOffset) {
+        for (i in (headerSize+ headerOffset) until matrix.size + headerSize+ headerOffset) {
             val row = sheet.getRow(i)
             for(j in 1..matrix[0].size) {
                 val cell = row.createCell(j)
@@ -150,9 +183,16 @@ class MultipleSubjectScheduleService {
                         val seminary: String = if (subject?.seminary == true) { "sem\n" } else { "" }
                         val laboratory: String = if (subject?.laboratory == true) { "lab\n" } else { "" }
                         val english = if(subject?.english == true) { "ing"} else{ "" }
-                        val group: String = if (subject?.laboratory != true && subject?.seminary != true && subject?.english != true && subject!= null) { "gg " } else { "" }
                         val groupName = subject?.group ?: ""
-                        cell.setCellValue(seminary + laboratory + group + english + groupName)
+                        val group: String = if (subject?.laboratory != true && subject?.seminary != true && subject?.english != true && subject!= null) { "gg " } else { "" }
+                        when (subjectType) {
+                            ScheduleType.ONE_SUBJECT -> {
+                                cell.setCellValue( seminary + laboratory + english + (subject?.name?: "") + " " + groupName)
+                            }
+                            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
+                                cell.setCellValue(seminary + laboratory + group + english + groupName)
+                            }
+                        }
                     }
                     FileType.DEPARTMENT -> {
                         cell.setCellValue(subject?.department?.acronym ?: "")
@@ -207,15 +247,6 @@ class MultipleSubjectScheduleService {
         workbook.close()
     }
 
-    private fun printMatrix(subjects: List<List<SubjectDegree?>>){
-        subjects.map { day ->
-            day.map { hour ->
-                System.out.format("%5s", hour?.acronym ?: "null")
-            }
-            println()
-        }
-    }
-
     private fun makeTranspose(matrix: MutableList<MutableList<SubjectDegree?>>): MutableList<MutableList<SubjectDegree?>> {
         val row = matrix.size
         val column = matrix[0].size
@@ -233,8 +264,17 @@ class MultipleSubjectScheduleService {
         val positions: MutableList<Int> = mutableListOf()
         matrix.mapIndexed { i, value ->
             val nulls = value.count { subject -> subject == null }
-            if (nulls == numColumnsMultipleSubjectPerDay) {
-                positions.add(i)
+            when (subjectType) {
+                ScheduleType.ONE_SUBJECT -> {
+                    if (nulls == numColumnsOneSubjectPerDay) {
+                        positions.add(i)
+                    }
+                }
+                ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
+                    if (nulls == numColumnsMultipleSubjectPerDay) {
+                        positions.add(i)
+                    }
+                }
             }
         }
         return positions
@@ -326,6 +366,7 @@ class MultipleSubjectScheduleService {
         const val numHourCells = 24
         const val subjectPerDay = 15
         const val numColumnsMultipleSubjectPerDay = 75
+        const val numColumnsOneSubjectPerDay = 5
         const val headerOffset = 2
         const val headerSize = 2
     }
