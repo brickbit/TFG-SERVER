@@ -16,7 +16,7 @@ import java.nio.file.Paths
 class ScheduleController(val service: ScheduleService) {
 
     val excelService = ExcelService()
-    val buildSchedule = MultipleSubjectSchedule()
+    val buildSchedule = OneSubjectScheduleService()
 
     @GetMapping("/schedule")
     fun index(): List<SchedulesBO> {

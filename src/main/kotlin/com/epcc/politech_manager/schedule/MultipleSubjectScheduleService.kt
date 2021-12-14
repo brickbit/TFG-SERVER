@@ -9,7 +9,7 @@ import java.io.FileOutputStream
 import kotlin.math.ceil
 
 @Service
-class ScheduleFileService {
+class MultipleSubjectScheduleService {
     val scheduleData = createComputerScienceDegree()
     val type = FileType.SUBJECT
 
@@ -139,7 +139,7 @@ class ScheduleFileService {
 
     private fun fillData(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
         val matrix = scheduleFileData.subjects
-        for (i in (headerSize+ headerOffset)..matrix.size) {
+        for (i in (headerSize + headerOffset) until matrix.size + headerSize + headerOffset) {
             val row = sheet.getRow(i)
             for(j in 1..matrix[0].size) {
                 val cell = row.createCell(j)
@@ -241,24 +241,24 @@ class ScheduleFileService {
     }
 
     private fun emptyMorning(positions: List<Int>, matrix: MutableList<MutableList<SubjectDegree?>>): Pair<MutableList<MutableList<SubjectDegree?>>,Boolean> {
-        val morning = listOf(0,1,2,3,4,5,6,7,8,9,10,11)
+        val morning = listOf(11,10,9,8,7,6,5,4,3,2,1,0)
         var isEmpty = false
         if(positions.containsAll(morning)) {
             isEmpty = true
-            matrix.mapIndexed { i, _ ->
-                matrix.removeAt(i)
+            morning.mapIndexed { i, _ ->
+                matrix.removeAt(morning[i])
             }
         }
         return Pair(matrix,isEmpty)
     }
 
     private fun emptyAfternoon(positions: List<Int>, matrix: MutableList<MutableList<SubjectDegree?>>): Pair<MutableList<MutableList<SubjectDegree?>>,Boolean> {
-        val afternoon = listOf(12,13,14,15,16,17,18,19,20,21,22,23)
+        val afternoon = listOf(23,22,21,20,19,18,17,16,15,14,13,12)
         var isEmpty = false
         if(positions.containsAll(afternoon)) {
             isEmpty = true
-            matrix.mapIndexed { i, _ ->
-                matrix.removeAt(i)
+            afternoon.mapIndexed { i, _ ->
+                matrix.removeAt(afternoon[i])
             }
         }
         return Pair(matrix,isEmpty)
