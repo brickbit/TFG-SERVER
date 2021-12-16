@@ -45,7 +45,7 @@ class ScheduleController(val service: ScheduleService) {
         //service.getSchedule(requestData.id)
         val scheduleType = requestData.scheduleType.toScheduleType()
         val fileType = requestData.fileType.toFileType()
-        val buildSchedule = CreateScheduleFileService(scheduleData = createBuildingSchedule(),fileType = fileType, scheduleType = scheduleType)
+        val buildSchedule = CreateScheduleFileService(scheduleData = createComputerScienceDegree(),fileType = fileType, scheduleType = scheduleType)
         buildSchedule.createFile()
     }
 
