@@ -70,7 +70,6 @@ class CreateScheduleFileService(
     }
 
     private fun createTitle(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
-        val middle = scheduleFileData.subjects[0].size/2
         val row = sheet.createRow(0)
         var cell = row.createCell(0)
         cell.setCellValue("Curso")
@@ -78,7 +77,7 @@ class CreateScheduleFileService(
         cell = row.createCell(1)
         cell.setCellValue(ceil((scheduleFileData.semester+1)/2.0).toInt().toString())
         cell.cellStyle = setStyle(workbook,11,CellColor.WHITE,true)
-        cell = row.createCell(middle)
+        cell = row.createCell(2)
         cell.setCellValue(scheduleFileData.degree.toUpperCase())
         cell.cellStyle = setStyle(workbook,11,CellColor.WHITE,true)
         cell = row.createCell(scheduleFileData.subjects[0].size)
@@ -174,8 +173,7 @@ class CreateScheduleFileService(
                     subjectOfDay.add(it)
                 }
                 val allSubjects = MutableList(5) { subjectOfDay }.flatten().toMutableList()
-                println(allSubjects.size)
-                println(scheduleFileData.deletedCols)
+
                 scheduleFileData.deletedCols.reversed().map {
                     allSubjects.removeAt(it)
                 }
@@ -247,7 +245,6 @@ class CreateScheduleFileService(
         subjectsByColumns.flatten()
         subjectsByColumns.map { collection ->
             collection.map {
-                //println("(${it.minOf { cord -> cord.y } + (headerOffset + headerSize)}, ${it.maxOf { cord -> cord.y } + (headerOffset + headerSize)}, ${it[0].x+1}, ${it[0].x+1}))")
                 list.add(CellPositionBO(it.minOf { cord -> cord.y } + (headerOffset + headerSize), it.maxOf { cord -> cord.y } + (headerOffset + headerSize), it[0].x+1, it[0].x+1))
             }
         }
@@ -424,14 +421,6 @@ class CreateScheduleFileService(
                 listSubjects = listSubjects.toSet().toMutableList()
             }
         }
-
-        listSubjects.map {
-            print(it.acronym)
-            print(" ")
-        }
-        println()
-        println()
-        println()
         return listSubjects
     }
 
