@@ -5,21 +5,21 @@ import org.springframework.stereotype.Service
 @Service
 class ClassroomService(val db: ClassroomRepository) {
 
-    fun getAllClassrooms(): List<Classrooms> = db.getAllClassrooms()
+    fun getAllClassrooms(): List<Classroom> = db.findAll().toList()
 
-    fun post(classrooms: Classrooms) {
+    fun post(classrooms: Classroom) {
         db.save(classrooms)
     }
 
-    fun getClassroom(id: String): Classrooms {
-        return db.getClassrooms(id)
+    fun getClassroom(id: Long): Classroom? {
+        return db.findById(id).orElse(null)
     }
 
-    fun deleteClassroom(id: String) {
-        db.deleteClassroom(id)
+    fun deleteClassroom(id: Long) {
+        db.deleteById(id)
     }
 
-    fun updateClassroom(classrooms: Classrooms, id: String) {
-        db.updateClassrooms(classrooms.name, classrooms.pavilion, classrooms.capacity, id)
+    fun updateClassroom(classrooms: Classroom) {
+        db.save(classrooms)
     }
 }

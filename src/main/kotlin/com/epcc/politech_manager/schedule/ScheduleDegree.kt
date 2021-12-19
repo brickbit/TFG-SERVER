@@ -1,20 +1,20 @@
 package com.epcc.politech_manager.schedule
 
+import com.epcc.politech_manager.classroom.Classroom
 import com.epcc.politech_manager.degree.Degrees
 
 data class ScheduleDegree(val degrees: Degrees, val year: String, val semester: SemesterDegree)
 data class SemesterDegree(val num: Int, val subjectsInSemester: List<List<List<SubjectDegree?>>>)
-data class SubjectDegree(val id: String,val name: String, val acronym: String, val group: String, val seminary: Boolean,val laboratory: Boolean, val english: Boolean, val time: Int, val classrooms: List<ClassroomDegree>, val department: DepartmentDegree, val color: Int)
-data class ClassroomDegree(val id: String, val name: String, val pavilion: Pavilion,val acronym: String)
+data class SubjectDegree(val id: String, val name: String, val acronym: String, val group: String, val seminary: Boolean, val laboratory: Boolean, val english: Boolean, val time: Int, val classrooms: List<Classroom>, val department: DepartmentDegree, val color: Int)
 data class DepartmentDegree(val id: String, val name: String, val acronym: String)
 enum class Pavilion {
     TELECOMMUNICATION, COMPUTING, ARCHITECTURE, CIVIL_WORK, CENTRAL
 }
 
 fun createBuildingSchedule(): ScheduleDegree {
-    val mathematicsClassroom = ClassroomDegree("1","C-1B",Pavilion.CIVIL_WORK, "C-1B")
-    val buildingClassroom = ClassroomDegree("2","A-1",Pavilion.ARCHITECTURE, "A-1")
-    val designClassroom = ClassroomDegree("3","A-6",Pavilion.ARCHITECTURE, "A-6")
+    val mathematicsClassroom = Classroom("C-1B",Pavilion.CIVIL_WORK, "C-1B",1)
+    val buildingClassroom = Classroom("A-1",Pavilion.ARCHITECTURE, "A-1",2)
+    val designClassroom = Classroom("A-6",Pavilion.ARCHITECTURE, "A-6",3)
 
     val mathematicsDepartment = DepartmentDegree("1","Matemáticas","MAT")
     val buildingDepartment = DepartmentDegree("2","Construcción","CONS")
@@ -171,19 +171,19 @@ fun createBuildingSchedule(): ScheduleDegree {
 fun createComputerScienceDegree(): ScheduleDegree {
     val degree = Degrees("d1", "Grado en Ingeniería informática en ingeniería de computadores", 8)
 
-    val c3 = ClassroomDegree("1","C-3",Pavilion.CENTRAL, "C-3")
-    val c1b = ClassroomDegree("2","C-1B",Pavilion.CIVIL_WORK, "C-1B")
-    val c6 = ClassroomDegree("3","C-6",Pavilion.CENTRAL, "C-6")
-    val c4 = ClassroomDegree("4","C-4",Pavilion.CENTRAL, "C-4")
-    val o5 = ClassroomDegree("5","O-5",Pavilion.CIVIL_WORK, "O-5")
-    val c1 = ClassroomDegree("6","C-1",Pavilion.CENTRAL, "C-1")
-    val c2 = ClassroomDegree("7","C-2",Pavilion.CENTRAL, "C-2")
-    val lFis = ClassroomDegree("8","Laboratorio de física",Pavilion.COMPUTING, "LFIS")
-    val sala1 = ClassroomDegree("9","Sala 1",Pavilion.COMPUTING, "SALA1")
-    val laboratorio1 = ClassroomDegree("9","Laboratorio 1",Pavilion.COMPUTING, "LAB1")
-    val novell = ClassroomDegree("10","Novell",Pavilion.COMPUTING, "NOV")
-    val labDigSis = ClassroomDegree("11","Lab-Sistemas Digitales",Pavilion.COMPUTING, "LSD")
-    val labC3b = ClassroomDegree("12","Lab-C-3B",Pavilion.COMPUTING, "LC3B")
+    val c3 = Classroom("C-3",Pavilion.CENTRAL, "C-3",1)
+    val c1b = Classroom("C-1B",Pavilion.CIVIL_WORK, "C-1B",2)
+    val c6 = Classroom("C-6",Pavilion.CENTRAL, "C-6",3)
+    val c4 = Classroom("C-4",Pavilion.CENTRAL, "C-4",4)
+    val o5 = Classroom("O-5",Pavilion.CIVIL_WORK, "O-5",5)
+    val c1 = Classroom("C-1",Pavilion.CENTRAL, "C-1",6)
+    val c2 = Classroom("C-2",Pavilion.CENTRAL, "C-2",7)
+    val lFis = Classroom("Laboratorio de física",Pavilion.COMPUTING, "LFIS",8)
+    val sala1 = Classroom("Sala 1",Pavilion.COMPUTING, "SALA1",9)
+    val laboratorio1 = Classroom("Laboratorio 1",Pavilion.COMPUTING, "LAB1",10)
+    val novell = Classroom("Novell",Pavilion.COMPUTING, "NOV",11)
+    val labDigSis = Classroom("Lab-Sistemas Digitales",Pavilion.COMPUTING, "LSD",12)
+    val labC3b = Classroom("Lab-C-3B",Pavilion.COMPUTING, "LC3B",13)
 
 
     val physicsDepartment = DepartmentDegree("0","Física aplicada","FIS")
