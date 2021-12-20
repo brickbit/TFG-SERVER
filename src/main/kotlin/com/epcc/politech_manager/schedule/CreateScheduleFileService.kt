@@ -1,21 +1,24 @@
 package com.epcc.politech_manager.schedule
 
+import com.epcc.politech_manager.subject.Subject
+import com.epcc.politech_manager.utils.*
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileOutputStream
+import java.util.*
 import kotlin.math.ceil
 
 @Service
 class CreateScheduleFileService(
         val scheduleData: ScheduleDegree? = null,
         val fileType: FileType = FileType.SUBJECT,
-        val scheduleType:ScheduleType = ScheduleType.ONE_SUBJECT) {
+        val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
 
     fun parseScheduleData():ScheduleFileData {
-        val matrix = flatMatrix(scheduleData!!.semester.subjectsInSemester)
+        val matrix = flatMatrix(scheduleData!!.semester!!.subjectsInSemester)
         val matrixWithNoEmptyColumns = deleteEmptyCols(matrix)
         val deletedCols = getDeletedCols(matrix)
         val subjectsForWeek = obtainSubjects(matrixWithNoEmptyColumns)
@@ -24,7 +27,7 @@ class CreateScheduleFileService(
         val emptyMorning = emptyMorning(emptyRows,matrixWithNoEmptyColumns)
         val emptyAfternoon = emptyAfternoon(emptyRows,matrixWithNoEmptyColumns)
         val indexDeletedCols = getEmptyCols(matrix)
-        return ScheduleFileData(scheduleData!!.degrees.name,scheduleData!!.semester.num,emptyAfternoon.first,subjectsForWeek,sizeOfDays,emptyMorning.second,emptyAfternoon.second, scheduleData!!.year, indexDeletedCols)
+        return ScheduleFileData(scheduleData!!.degree!!.name,scheduleData!!.semester!!.num,emptyAfternoon.first,subjectsForWeek,sizeOfDays,emptyMorning.second,emptyAfternoon.second, scheduleData!!.year, indexDeletedCols)
     }
 
     fun createFile() {
@@ -73,16 +76,16 @@ class CreateScheduleFileService(
         val row = sheet.createRow(0)
         var cell = row.createCell(0)
         cell.setCellValue("Curso")
-        cell.cellStyle = setStyle(workbook,11,CellColor.WHITE,true)
+        cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         cell = row.createCell(1)
         cell.setCellValue(ceil((scheduleFileData.semester+1)/2.0).toInt().toString())
-        cell.cellStyle = setStyle(workbook,11,CellColor.WHITE,true)
+        cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         cell = row.createCell(2)
-        cell.setCellValue(scheduleFileData.degree.toUpperCase())
-        cell.cellStyle = setStyle(workbook,11,CellColor.WHITE,true)
+        cell.setCellValue(scheduleFileData.degree.uppercase(Locale.getDefault()))
+        cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         cell = row.createCell(scheduleFileData.subjects[0].size)
         cell.setCellValue(scheduleFileData.year)
-        cell.cellStyle = setStyle(workbook,11,CellColor.WHITE,true)
+        cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
     }
 
     private fun createHeaderMultipleSubject(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook, sheet: Sheet){
@@ -95,7 +98,7 @@ class CreateScheduleFileService(
             for (i in 1..daysOfWeek.size) {
                 val headerCell: Cell = row.createCell(index)
                 headerCell.setCellValue(value)
-                headerCell.cellStyle = setStyle(workbook,10,CellColor.WHITE, true)
+                headerCell.cellStyle = setStyle(workbook,10, CellColor.WHITE, true)
             }
         }
         val list = scheduleFileData.sizeOfDays.toMutableList()
@@ -116,7 +119,7 @@ class CreateScheduleFileService(
             for (i in 1..days.size) {
                 val headerCell: Cell = row.createCell(index)
                 headerCell.setCellValue(value)
-                headerCell.cellStyle = setStyle(workbook,10,CellColor.WHITE, true)
+                headerCell.cellStyle = setStyle(workbook,10, CellColor.WHITE, true)
             }
         }
         val list = scheduleFileData.sizeOfDays.toMutableList()
@@ -140,7 +143,7 @@ class CreateScheduleFileService(
     }
 
     private fun createHoursRow(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
-        val style = setStyle(workbook,8,CellColor.WHITE,false)
+        val style = setStyle(workbook,8, CellColor.WHITE,false)
 
         val hours = listOf("","HORA","8:30\n","9:00\n","9:30\n","10:00\n","10:30\n","11:00\n","11:30\n","12:00\n","12:30\n","13:00\n","13:30\n","14:00\n","15:30\n","16:00\n","16:30\n","17:00\n","17:30\n","18:00\n","18:30\n","19:00\n","19:30\n","20:00\n","20:30\n","21:00\n")
         val size = scheduleFileData.subjects.size
@@ -166,7 +169,7 @@ class CreateScheduleFileService(
             }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
                 val subjectsOfWeek = scheduleFileData.subjectsName.filter { !it.laboratory && !it.seminary && !it.english }.distinctBy { it.acronym }
-                val subjectOfDay = mutableListOf<SubjectDegree>()
+                val subjectOfDay = mutableListOf<Subject>()
                 subjectsOfWeek.map {
                     subjectOfDay.add(it)
                     subjectOfDay.add(it)
@@ -215,7 +218,7 @@ class CreateScheduleFileService(
                         cell.setCellValue(subject?.department?.acronym ?: "")
                     }
                     FileType.CLASSROOM -> {
-                        cell.setCellValue(subject?.classrooms?.get(0)?.acronym ?: "")
+                        cell.setCellValue(subject?.classrooms?.acronym ?: "")
                     }
                 }
                 cell.cellStyle = setStyle(workbook,9,subject?.color?.toCellColor() ?: CellColor.WHITE, false)
@@ -225,27 +228,27 @@ class CreateScheduleFileService(
 
     private fun mergeCells(scheduleFileData: ScheduleFileData, sheet: Sheet) {
         val matrix = makeTranspose(scheduleFileData.subjects.map { it.toMutableList() }.toMutableList())
-        val mergeList: MutableList<CoordinateBO> = mutableListOf()
+        val mergeList: MutableList<Coordinate> = mutableListOf()
         scheduleFileData.subjectsName.mapIndexed { k, subject ->
             matrix.mapIndexed { i, list ->
                 list.mapIndexed { j, value ->
                     if (subject.id == value?.id) {
-                        mergeList.add(CoordinateBO(k,i,j))
+                        mergeList.add(Coordinate(k,i,j))
                     }
                 }
             }
         }
-        val subjectsByColumns: MutableList<Collection<List<CoordinateBO>>> = mutableListOf()
+        val subjectsByColumns: MutableList<Collection<List<Coordinate>>> = mutableListOf()
         val coordinates = mergeList.groupBy { it.subject }.values
 
         coordinates.map { listSubjects ->
             subjectsByColumns.add(listSubjects.groupBy { it.x }.values)
         }
-        val list: MutableList<CellPositionBO> = mutableListOf()
+        val list: MutableList<CellPosition> = mutableListOf()
         subjectsByColumns.flatten()
         subjectsByColumns.map { collection ->
             collection.map {
-                list.add(CellPositionBO(it.minOf { cord -> cord.y } + (headerOffset + headerSize), it.maxOf { cord -> cord.y } + (headerOffset + headerSize), it[0].x+1, it[0].x+1))
+                list.add(CellPosition(it.minOf { cord -> cord.y } + (headerOffset + headerSize), it.maxOf { cord -> cord.y } + (headerOffset + headerSize), it[0].x+1, it[0].x+1))
             }
         }
         val repeatedElements = list.groupingBy { it }.eachCount().filter { it.value > 1 }
@@ -258,7 +261,7 @@ class CreateScheduleFileService(
         }
     }
 
-    private fun setStyle(workbook: Workbook,fontSize: Int, color: CellColor, bold: Boolean): CellStyle {
+    private fun setStyle(workbook: Workbook, fontSize: Int, color: CellColor, bold: Boolean): CellStyle {
         val style = workbook.createCellStyle()
         when (color) {
             CellColor.BLUE -> style.fillForegroundColor = IndexedColors.LIGHT_TURQUOISE.getIndex()
@@ -299,11 +302,11 @@ class CreateScheduleFileService(
         workbook.close()
     }
 
-    private fun makeTranspose(matrix: MutableList<MutableList<SubjectDegree?>>): MutableList<MutableList<SubjectDegree?>> {
+    private fun makeTranspose(matrix: MutableList<MutableList<Subject?>>): MutableList<MutableList<Subject?>> {
         val row = matrix.size
         val column = matrix[0].size
 
-        val transpose: MutableList<MutableList<SubjectDegree?>> = MutableList(column) { MutableList(row) { null } }
+        val transpose: MutableList<MutableList<Subject?>> = MutableList(column) { MutableList(row) { null } }
         for (i in 0 until row) {
             for (j in 0 until column) {
                 transpose[j][i] = matrix[i][j]
@@ -312,7 +315,7 @@ class CreateScheduleFileService(
         return transpose
     }
 
-    private fun checkTurnEmpty(matrix: MutableList<MutableList<SubjectDegree?>>): List<Int> {
+    private fun checkTurnEmpty(matrix: MutableList<MutableList<Subject?>>): List<Int> {
         val positions: MutableList<Int> = mutableListOf()
         matrix.mapIndexed { i, value ->
             val nulls = value.count { subject -> subject == null }
@@ -332,7 +335,7 @@ class CreateScheduleFileService(
         return positions
     }
 
-    private fun emptyMorning(positions: List<Int>, matrix: MutableList<MutableList<SubjectDegree?>>): Pair<MutableList<MutableList<SubjectDegree?>>,Boolean> {
+    private fun emptyMorning(positions: List<Int>, matrix: MutableList<MutableList<Subject?>>): Pair<MutableList<MutableList<Subject?>>,Boolean> {
         val morning = listOf(11,10,9,8,7,6,5,4,3,2,1,0)
         var isEmpty = false
         if(positions.containsAll(morning)) {
@@ -344,7 +347,7 @@ class CreateScheduleFileService(
         return Pair(matrix,isEmpty)
     }
 
-    private fun emptyAfternoon(positions: List<Int>, matrix: MutableList<MutableList<SubjectDegree?>>): Pair<MutableList<MutableList<SubjectDegree?>>,Boolean> {
+    private fun emptyAfternoon(positions: List<Int>, matrix: MutableList<MutableList<Subject?>>): Pair<MutableList<MutableList<Subject?>>,Boolean> {
         val afternoon = listOf(23,22,21,20,19,18,17,16,15,14,13,12)
         var isEmpty = false
         if(positions.containsAll(afternoon)) {
@@ -358,8 +361,8 @@ class CreateScheduleFileService(
 
 
 
-    private fun flatMatrix(subjects: List<List<List<SubjectDegree?>>>): MutableList<MutableList<SubjectDegree?>>{
-        val matrix: MutableList<MutableList<SubjectDegree?>> = mutableListOf()
+    private fun flatMatrix(subjects: List<List<List<Subject?>>>): MutableList<MutableList<Subject?>>{
+        val matrix: MutableList<MutableList<Subject?>> = mutableListOf()
         subjects.map { day ->
             day.mapIndexed { i, hour ->
                 matrix.add(mutableListOf())
@@ -373,7 +376,7 @@ class CreateScheduleFileService(
     }
 
 
-    private fun deleteEmptyCols(matrix: MutableList<MutableList<SubjectDegree?>>): MutableList<MutableList<SubjectDegree?>> {
+    private fun deleteEmptyCols(matrix: MutableList<MutableList<Subject?>>): MutableList<MutableList<Subject?>> {
         val transpose = makeTranspose(matrix)
         transpose.removeIf { subjects ->
                 val nulls = subjects.count { subject -> subject == null }
@@ -382,7 +385,7 @@ class CreateScheduleFileService(
         return makeTranspose(transpose)
     }
 
-    private fun getEmptyCols(matrix: MutableList<MutableList<SubjectDegree?>>): MutableList<Int> {
+    private fun getEmptyCols(matrix: MutableList<MutableList<Subject?>>): MutableList<Int> {
         val transpose = makeTranspose(matrix)
         val listIndex = mutableListOf<Int>()
         transpose.mapIndexed { index, subjects ->
@@ -396,9 +399,9 @@ class CreateScheduleFileService(
 
 
 
-    private fun obtainSubjects(matrix: MutableList<MutableList<SubjectDegree?>>): List<SubjectDegree> {
+    private fun obtainSubjects(matrix: MutableList<MutableList<Subject?>>): List<Subject> {
         val transpose = makeTranspose(matrix)
-        var listSubjects = mutableListOf<SubjectDegree>()
+        var listSubjects = mutableListOf<Subject>()
         when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
                 transpose.map { subjects ->
@@ -424,7 +427,7 @@ class CreateScheduleFileService(
         return listSubjects
     }
 
-    private fun getDeletedCols(matrix: MutableList<MutableList<SubjectDegree?>>): List<Int> {
+    private fun getDeletedCols(matrix: MutableList<MutableList<Subject?>>): List<Int> {
         val transpose = makeTranspose(matrix)
         val positions: MutableList<Int> = mutableListOf()
         transpose.mapIndexed { i, subjects ->
@@ -454,6 +457,3 @@ class CreateScheduleFileService(
         const val headerSize = 2
     }
 }
-
-data class CoordinateBO(val subject: Int, val x: Int, val y: Int)
-data class CellPositionBO(val x1: Int, val x2:Int, val y1:Int, val y2:Int)
