@@ -22,7 +22,7 @@ class ClassroomController(val service: ClassroomService) {
         service.deleteClassroom(id)
     }
 
-    @PostMapping("/classroom/update/{id}")
+    @PostMapping("/classroom/update")
     fun updateClassroom(@RequestBody classroom: Classroom) {
         service.updateClassroom(classroom)
     }

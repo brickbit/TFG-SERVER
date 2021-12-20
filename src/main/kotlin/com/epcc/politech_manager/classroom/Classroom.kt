@@ -1,6 +1,5 @@
 package com.epcc.politech_manager.classroom
 
-import com.epcc.politech_manager.schedule.Pavilion
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
