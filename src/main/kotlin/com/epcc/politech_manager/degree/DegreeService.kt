@@ -1,18 +1,19 @@
 package com.epcc.politech_manager.degree
 
+import com.epcc.politech_manager.classroom.toEntity
 import org.springframework.stereotype.Service
 
 @Service
 class DegreeService(val db: DegreeRepository) {
 
-    fun getAllDegrees(): List<Degree> = db.findAll().toList()
+    fun getAllDegrees(): List<Degree> = db.findAll().map { it.toBO() }.toList()
 
     fun post(degree: Degree) {
-        db.save(degree)
+        db.save(degree.toEntity())
     }
 
     fun getDegree(id: Long): Degree? {
-        return db.findById(id).orElse(null)
+        return db.findById(id).orElse(null).toBO()
     }
 
     fun deleteDegree(id: Long) {
@@ -20,6 +21,8 @@ class DegreeService(val db: DegreeRepository) {
     }
 
     fun updateDegree(degree: Degree) {
-        db.save(degree)
+        if(db.existsById(degree.id)) {
+            db.save(degree.toEntity())
+        }
     }
 }
