@@ -1,5 +1,6 @@
 package com.epcc.politech_manager.schedule
 
+import com.epcc.politech_manager.utils.CreateScheduleFileBO
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.http.HttpHeaders
@@ -16,28 +17,28 @@ import java.nio.file.Paths
 class ScheduleController(val service: ScheduleService) {
 
     @GetMapping("/schedule")
-    fun index(): List<SchedulesBO> {
+    fun index(): List<ScheduleDegree> {
         return service.getAllSchedules()
     }
 
     @PostMapping("/schedule")
-    fun post(@RequestBody schedules: Schedules) {
-        service.post(schedules)
+    fun post(@RequestBody schedule: ScheduleDegree) {
+        service.post(schedule)
     }
 
     @GetMapping("/schedule/{id}")
-    fun getSchedule(@PathVariable id: String): SchedulesBO {
+    fun getSchedule(@PathVariable id: Long): ScheduleDegree? {
         return service.getSchedule(id)
     }
 
     @PostMapping("/schedule/delete/{id}")
-    fun deleteSchedule(@PathVariable id: String) {
+    fun deleteSchedule(@PathVariable id: Long) {
         service.deleteSchedule(id)
     }
 
-    @PostMapping("/schedule/update/{id}")
-    fun updateSchedule(@RequestBody schedule: SchedulesBO, @PathVariable id: String) {
-        service.updateSchedule(schedule, id)
+    @PostMapping("/schedule/update")
+    fun updateSchedule(@RequestBody schedule: ScheduleDegree) {
+        service.updateSchedule(schedule)
     }
 
     @GetMapping("/schedule/build")

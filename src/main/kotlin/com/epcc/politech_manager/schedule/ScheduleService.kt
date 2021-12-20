@@ -5,25 +5,21 @@ import org.springframework.stereotype.Service
 @Service
 class ScheduleService(val db: ScheduleRepository) {
 
-    fun getAllSchedules(): List<SchedulesBO> = db.getAllSchedules()
+    fun getAllSchedules(): List<ScheduleDegree> = db.findAll().toList()
 
-    fun post(schedule: Schedules) {
+    fun post(schedule: ScheduleDegree) {
         db.save(schedule)
     }
 
-    fun getSchedule(id: String): SchedulesBO {
-        return db.getSchedule(id)
+    fun getSchedule(id: Long): ScheduleDegree? {
+        return db.findById(id).orElse(null)
     }
 
-    fun deleteSchedule(id: String) {
-        db.deleteSchedule(id)
+    fun deleteSchedule(id: Long) {
+        db.deleteById(id)
     }
 
-    fun updateSchedule(subject: SchedulesBO, id: String) {
-        db.updateSchedules(
-                subject.start_hour,
-                subject.end_hour,
-                subject.id_subject,
-                id)
+    fun updateSchedule(subject: ScheduleDegree) {
+        db.save(subject)
     }
 }
