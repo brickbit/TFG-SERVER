@@ -13,7 +13,7 @@ data class DepartmentEntity(
         @Column
         val acronym: String,
         @Column
-        @OneToMany(cascade = [CascadeType.PERSIST],mappedBy = "department")
+        @OneToMany(cascade = [CascadeType.ALL],mappedBy = "department")
         val subjects: List<SubjectEntity>,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "department_id")

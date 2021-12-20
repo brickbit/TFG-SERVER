@@ -15,7 +15,7 @@ data class ClassroomEntity(
         @Column
         val acronym: String,
         @Column
-        @OneToMany(cascade = [CascadeType.PERSIST],mappedBy = "classroom")
+        @OneToMany(cascade = [CascadeType.ALL],mappedBy = "classroom")
         val subjects: List<SubjectEntity>,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="classroom_id")
