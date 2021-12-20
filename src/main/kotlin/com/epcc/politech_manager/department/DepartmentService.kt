@@ -5,21 +5,21 @@ import org.springframework.stereotype.Service
 @Service
 class DepartmentService(val db: DepartmentRepository) {
 
-    fun findDepartments(): List<Departments> = db.getAllDepartments()
+    fun findDepartments(): List<Department> = db.findAll().toList()
 
-    fun post(department: Departments) {
+    fun post(department: Department) {
         db.save(department)
     }
 
-    fun  getDepartment(id: String): Departments {
-        return db.getDepartment(id)
+    fun  getDepartment(id: Long): Department {
+        return db.findById(id).orElse(null)
     }
 
-    fun  deleteDepartment(id: String) {
-        db.deleteDepartment(id)
+    fun  deleteDepartment(id: Long) {
+        db.deleteById(id)
     }
 
-    fun updateDepartment(name: String, id: String) {
-        db.updateDepartment(name, id)
+    fun updateDepartment(department: Department) {
+        db.save(department)
     }
 }
