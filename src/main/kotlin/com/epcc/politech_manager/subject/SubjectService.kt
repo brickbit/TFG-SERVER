@@ -5,30 +5,21 @@ import org.springframework.stereotype.Service
 @Service
 class SubjectService(val db: SubjectRepository) {
 
-    fun getAllSubject(): List<SubjectsBO> = db.getAllSubjects()
+    fun getAllSubject(): List<Subject> = db.findAll().toList()
 
-    fun post(subject: Subjects) {
+    fun post(subject: Subject) {
         db.save(subject)
     }
 
-    fun getSubject(id: String): SubjectsBO {
-        return db.getSubject(id)
+    fun getSubject(id: Long): Subject? {
+        return db.findById(id).orElse(null)
     }
 
-    fun deleteSubject(id: String) {
-        db.deleteSubject(id)
+    fun deleteSubject(id: Long) {
+        db.deleteById(id)
     }
 
-    fun updateSubject(subject: SubjectsBO, id: String) {
-        db.updateSubject(
-                subject.name,
-                subject.semester,
-                subject.laboratory,
-                subject.conference,
-                subject.time_subject,
-                subject.id_classroom,
-                subject.id_department,
-                subject.id_degree,
-                id)
+    fun updateSubject(subject: Subject) {
+        db.save(subject)
     }
 }

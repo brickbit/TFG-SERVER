@@ -6,25 +6,25 @@ import org.springframework.web.bind.annotation.*
 class SubjectController(val service: SubjectService) {
 
     @GetMapping("/subject")
-    fun index(): List<SubjectsBO> = service.getAllSubject()
+    fun index(): List<Subject> = service.getAllSubject()
 
     @PostMapping("/subject")
-    fun post(@RequestBody subject: Subjects) {
+    fun post(@RequestBody subject: Subject) {
         service.post(subject)
     }
 
     @GetMapping("/subject/{id}")
-    fun getSubject(@PathVariable id: String): SubjectsBO {
+    fun getSubject(@PathVariable id: Long): Subject? {
         return service.getSubject(id)
     }
 
     @PostMapping("/subject/delete/{id}")
-    fun deleteSubject(@PathVariable id: String) {
+    fun deleteSubject(@PathVariable id: Long) {
         service.deleteSubject(id)
     }
 
-    @PostMapping("/subject/update/{id}")
-    fun updateSubject(@RequestBody subject: SubjectsBO, @PathVariable id: String) {
-        service.updateSubject(subject, id)
+    @PostMapping("/subject/update")
+    fun updateSubject(@RequestBody subject: Subject) {
+        service.updateSubject(subject)
     }
 }
