@@ -1,25 +1,28 @@
 package com.epcc.politech_manager.classroom
 
+
 import org.springframework.stereotype.Service
 
 @Service
 class ClassroomService(val db: ClassroomRepository) {
 
-    fun getAllClassrooms(): List<Classroom> = db.findAll().toList()
+    fun getAllClassrooms(): List<Classroom> = db.findAll().map { it.toBO() }.toList()
 
     fun post(classrooms: Classroom) {
-        db.save(classrooms)
+        db.save(classrooms.toEntity())
     }
 
     fun getClassroom(id: Long): Classroom? {
-        return db.findById(id).orElse(null)
+        return db.findById(id).orElse(null).toBO()
     }
 
     fun deleteClassroom(id: Long) {
         db.deleteById(id)
     }
 
-    fun updateClassroom(classrooms: Classroom) {
-        db.save(classrooms)
+    fun updateClassroom(classroom: Classroom) {
+        if(db.existsById(classroom.id)) {
+            db.save(classroom.toEntity())
+        }
     }
 }
