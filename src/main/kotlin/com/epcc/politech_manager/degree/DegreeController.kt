@@ -5,26 +5,27 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 class DegreeController(val service: DegreeService) {
+
     @GetMapping("/degree")
-    fun index(): List<Degrees> = service.getAllDegrees()
+    fun index(): List<Degree> = service.getAllDegrees()
 
     @PostMapping("/degree")
-    fun post(@RequestBody degree: Degrees) {
+    fun post(@RequestBody degree: Degree) {
         service.post(degree)
     }
 
     @GetMapping("/degree/{id}")
-    fun getDegree(@PathVariable id: String): Degrees {
+    fun getDegree(@PathVariable id: Long): Degree? {
         return service.getDegree(id)
     }
 
     @PostMapping("/degree/delete/{id}")
-    fun deleteDegree(@PathVariable id: String) {
+    fun deleteDegree(@PathVariable id: Long) {
         service.deleteDegree(id)
     }
 
-    @PostMapping("/degree/update/{id}")
-    fun updateDegree(@RequestBody degree: Degrees, @PathVariable id: String) {
-        service.updateDegree(degree, id)
+    @PostMapping("/degree/update")
+    fun updateDegree(@RequestBody degree: Degree) {
+        service.updateDegree(degree)
     }
 }
