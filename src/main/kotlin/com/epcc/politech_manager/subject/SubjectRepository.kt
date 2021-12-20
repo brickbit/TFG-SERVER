@@ -1,5 +1,5 @@
 package com.epcc.politech_manager.subject
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface SubjectRepository : CrudRepository<Subject, Long>
+interface SubjectRepository : JpaRepository<SubjectEntity, Long>

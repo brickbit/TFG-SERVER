@@ -2,13 +2,9 @@ package com.epcc.politech_manager.subject
 
 import com.epcc.politech_manager.classroom.Classroom
 import com.epcc.politech_manager.department.Department
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
 
-@Entity
-class Subject(
+data class Subject(
         val name: String,
         val acronym: String,
         val group: String,
@@ -16,10 +12,7 @@ class Subject(
         val laboratory: Boolean,
         val english: Boolean,
         val time: Int,
-        val classrooms: Classroom?,
-        val department: Department?,
+        val classroom: Classroom,
+        val department: Department,
         val color: Int,
-        @Id @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long = -1) {
-    private constructor() : this("","","",false,false,false,0, null,null,0)
-}
+        val id: Long = -1)
