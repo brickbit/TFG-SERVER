@@ -9,7 +9,7 @@ class ClassroomService(val db: ClassroomRepository) {
     fun getAllClassrooms(): List<Classroom> = db.findAll().map { it.toBO() }.toList()
 
     fun post(classrooms: Classroom) {
-        db.save(classrooms.toEntity())
+        db.save(classrooms.toEntity(emptyList()))
     }
 
     fun getClassroom(id: Long): Classroom? {
@@ -22,7 +22,7 @@ class ClassroomService(val db: ClassroomRepository) {
 
     fun updateClassroom(classroom: Classroom) {
         if(db.existsById(classroom.id)) {
-            db.save(classroom.toEntity())
+            db.save(classroom.toEntity(db.getById(classroom.id).subjects))
         }
     }
 }

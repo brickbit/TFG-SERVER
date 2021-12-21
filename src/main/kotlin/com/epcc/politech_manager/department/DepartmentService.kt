@@ -9,7 +9,7 @@ class DepartmentService(val db: DepartmentRepository) {
     fun findDepartments(): List<Department> = db.findAll().map { it.toBO() }.toList()
 
     fun post(department: Department) {
-        db.save(department.toEntity())
+        db.save(department.toEntity(emptyList()))
     }
 
     fun  getDepartment(id: Long): Department {
@@ -22,7 +22,7 @@ class DepartmentService(val db: DepartmentRepository) {
 
     fun updateDepartment(department: Department) {
         if(db.existsById(department.id)) {
-            db.save(department.toEntity())
+            db.save(department.toEntity(db.getById(department.id).subjects))
         }
     }
 }
