@@ -218,7 +218,7 @@ class CreateScheduleFileService(
                         cell.setCellValue(subject?.department?.acronym ?: "")
                     }
                     FileType.CLASSROOM -> {
-                        cell.setCellValue(subject?.classrooms?.acronym ?: "")
+                        cell.setCellValue(subject?.classroom?.acronym ?: "")
                     }
                 }
                 cell.cellStyle = setStyle(workbook,9,subject?.color?.toCellColor() ?: CellColor.WHITE, false)
