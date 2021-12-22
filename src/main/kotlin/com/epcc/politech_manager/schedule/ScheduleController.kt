@@ -1,5 +1,6 @@
 package com.epcc.politech_manager.schedule
 
+import com.epcc.politech_manager.subject.SubjectService
 import com.epcc.politech_manager.utils.CreateScheduleFileBO
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
@@ -12,34 +13,11 @@ import java.net.MalformedURLException
 import java.nio.file.Path
 import java.nio.file.Paths
 
-/*
+
 @RestController
-class ScheduleController(val service: ScheduleService) {
+class ScheduleController(val service: SubjectService) {
 
-    @GetMapping("/schedule")
-    fun index(): List<ScheduleDegree> {
-        return service.getAllSchedules()
-    }
-
-    @PostMapping("/schedule")
-    fun post(@RequestBody schedule: ScheduleDegree) {
-        service.post(schedule)
-    }
-
-    @GetMapping("/schedule/{id}")
-    fun getSchedule(@PathVariable id: Long): ScheduleDegree? {
-        return service.getSchedule(id)
-    }
-
-    @PostMapping("/schedule/delete/{id}")
-    fun deleteSchedule(@PathVariable id: Long) {
-        service.deleteSchedule(id)
-    }
-
-    @PostMapping("/schedule/update")
-    fun updateSchedule(@RequestBody schedule: ScheduleDegree) {
-        service.updateSchedule(schedule)
-    }
+    var path: String = ""
 
     @GetMapping("/schedule/build")
     fun buildSchedule(@RequestBody requestData: CreateScheduleFileBO) {
@@ -47,14 +25,14 @@ class ScheduleController(val service: ScheduleService) {
         val scheduleType = requestData.scheduleType.toScheduleType()
         val fileType = requestData.fileType.toFileType()
         val buildSchedule = CreateScheduleFileService(scheduleData = createComputerScienceDegree(),fileType = fileType, scheduleType = scheduleType)
-        buildSchedule.createFile()
+        path = buildSchedule.createFile()
     }
 
     @GetMapping("/schedule/download")
     fun downloadFileFromLocal(): ResponseEntity<*>? {
-        val currDir = File(".")
+        val currDir = File(path)
 
-        val path: Path = Paths.get(currDir.absolutePath.substring(0, currDir.absolutePath.length - 1) + "schedule.xlsx")
+        val path: Path = Paths.get(currDir.absolutePath.substring(0, currDir.absolutePath.length - 1))
         var resource: Resource? = null
         try {
             resource = UrlResource(path.toUri())
@@ -68,5 +46,3 @@ class ScheduleController(val service: ScheduleService) {
     }
 
 }
-
- */

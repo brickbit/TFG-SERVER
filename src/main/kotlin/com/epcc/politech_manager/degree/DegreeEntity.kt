@@ -11,6 +11,8 @@ data class DegreeEntity(
         val name: String,
         @Column
         val num_semesters:Int,
+        @Column
+        val year: String,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "degree_id")
         val id: Long = -1)

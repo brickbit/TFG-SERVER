@@ -30,14 +30,14 @@ class CreateScheduleFileService(
         return ScheduleFileData(scheduleData!!.degree!!.name,scheduleData!!.semester!!.num,emptyAfternoon.first,subjectsForWeek,sizeOfDays,emptyMorning.second,emptyAfternoon.second, scheduleData!!.year, indexDeletedCols)
     }
 
-    fun createFile() {
+    fun createFile(): String {
         val scheduleData = parseScheduleData()
 
         val workbook: Workbook = XSSFWorkbook()
         val sheet: Sheet = workbook.createSheet(scheduleData.degree)
 
         paint(scheduleData, sheet, workbook)
-        when(fileType) {
+        return when(fileType) {
             FileType.SUBJECT -> {closeFile(workbook, "schedule-subject.xlsx")}
             FileType.DEPARTMENT -> {closeFile(workbook, "schedule-department.xlsx")}
             FileType.CLASSROOM -> {closeFile(workbook, "schedule-classroom.xlsx")}
@@ -292,7 +292,7 @@ class CreateScheduleFileService(
         return style
     }
 
-    private fun closeFile(workbook: Workbook, name: String) {
+    private fun closeFile(workbook: Workbook, name: String): String {
         val currDir = File(".")
         val path: String = currDir.absolutePath
         val fileLocation = path.substring(0, path.length - 1) + name
@@ -300,6 +300,7 @@ class CreateScheduleFileService(
         val outputStream = FileOutputStream(fileLocation)
         workbook.write(outputStream)
         workbook.close()
+        return fileLocation
     }
 
     private fun makeTranspose(matrix: MutableList<MutableList<Subject?>>): MutableList<MutableList<Subject?>> {
