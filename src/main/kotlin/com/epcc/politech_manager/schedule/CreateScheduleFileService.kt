@@ -305,7 +305,7 @@ class CreateScheduleFileService(
     }
 
     private fun closeFile(workbook: Workbook, name: String) {
-        val currDir = File("./src/main/resources/")
+        val currDir = File("./scheduleFile/")
         val path: String = currDir.absolutePath
         val fileLocation = path.substring(0, path.length) + "/" + name
 
