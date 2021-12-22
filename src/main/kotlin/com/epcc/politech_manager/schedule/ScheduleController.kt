@@ -12,7 +12,7 @@ import java.net.MalformedURLException
 import java.nio.file.Path
 import java.nio.file.Paths
 
-
+/*
 @RestController
 class ScheduleController(val service: ScheduleService) {
 
@@ -68,3 +68,5 @@ class ScheduleController(val service: ScheduleService) {
     }
 
 }
+
+ */

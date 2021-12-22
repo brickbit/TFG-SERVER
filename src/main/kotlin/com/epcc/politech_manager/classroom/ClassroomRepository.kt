@@ -1,5 +1,5 @@
 package com.epcc.politech_manager.classroom
 
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 
-interface ClassroomRepository: JpaRepository<ClassroomEntity, Long>
+interface ClassroomRepository: CrudRepository<ClassroomEntity, Long>

@@ -1,21 +1,20 @@
 package com.epcc.politech_manager.degree
 
-
 import org.springframework.web.bind.annotation.*
 
 @RestController
 class DegreeController(val service: DegreeService) {
 
     @GetMapping("/degree")
-    fun index(): List<Degree> = service.getAllDegrees()
+    fun index(): List<DegreeEntity> = service.getAllDegrees()
 
     @PostMapping("/degree")
-    fun post(@RequestBody degree: Degree) {
+    fun post(@RequestBody degree: DegreeEntity) {
         service.post(degree)
     }
 
     @GetMapping("/degree/{id}")
-    fun getDegree(@PathVariable id: Long): Degree? {
+    fun getDegree(@PathVariable id: Long): DegreeEntity? {
         return service.getDegree(id)
     }
 
@@ -25,7 +24,7 @@ class DegreeController(val service: DegreeService) {
     }
 
     @PostMapping("/degree/update")
-    fun updateDegree(@RequestBody degree: Degree) {
+    fun updateDegree(@RequestBody degree: DegreeEntity) {
         service.updateDegree(degree)
     }
 }

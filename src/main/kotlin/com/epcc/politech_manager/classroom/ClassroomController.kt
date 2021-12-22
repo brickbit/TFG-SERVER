@@ -5,15 +5,15 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class ClassroomController(val service: ClassroomService) {
     @GetMapping("/classroom")
-    fun index(): List<Classroom> = service.getAllClassrooms()
+    fun index(): List<ClassroomEntity> = service.getAllClassrooms()
 
     @PostMapping("/classroom")
-    fun post(@RequestBody classroom: Classroom) {
+    fun post(@RequestBody classroom: ClassroomEntity) {
         service.post(classroom)
     }
 
     @GetMapping("/classroom/{id}")
-    fun getClassroom(@PathVariable id: Long): Classroom? {
+    fun getClassroom(@PathVariable id: Long): ClassroomEntity? {
         return service.getClassroom(id)
     }
 
@@ -23,7 +23,7 @@ class ClassroomController(val service: ClassroomService) {
     }
 
     @PostMapping("/classroom/update")
-    fun updateClassroom(@RequestBody classroom: Classroom) {
+    fun updateClassroom(@RequestBody classroom: ClassroomEntity) {
         service.updateClassroom(classroom)
     }
 }

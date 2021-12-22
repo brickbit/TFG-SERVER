@@ -14,9 +14,6 @@ data class ClassroomEntity(
         val pavilion: Pavilion,
         @Column
         val acronym: String,
-        @Column
-        @OneToMany(cascade = [CascadeType.ALL],mappedBy = "classroom")
-        val subjects: List<SubjectEntity>,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="classroom_id")
         val id: Long = -1)

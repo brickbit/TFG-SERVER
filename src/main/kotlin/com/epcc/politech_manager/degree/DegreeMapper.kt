@@ -1,6 +1,6 @@
 package com.epcc.politech_manager.degree
 
-fun DegreeEntity.toBO() = Degree(
+/*fun DegreeEntity.toBO() = Degree(
         name = this.name,
         num_semesters = this.num_semesters,
         id = this.id)
@@ -8,4 +8,4 @@ fun DegreeEntity.toBO() = Degree(
 fun Degree.toEntity() = DegreeEntity(
         name = this.name,
         num_semesters = this.num_semesters,
-        id = this.id)
+        id = this.id)*/

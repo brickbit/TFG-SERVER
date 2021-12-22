@@ -1,7 +1,7 @@
 package com.epcc.politech_manager.schedule
 
 import org.springframework.stereotype.Service
-
+/*
 @Service
 class ScheduleService(val db: ScheduleRepository) {
 
@@ -22,4 +22,4 @@ class ScheduleService(val db: ScheduleRepository) {
     fun updateSchedule(subject: ScheduleDegree) {
         db.save(subject)
     }
-}
+}*/

@@ -1,8 +1,11 @@
 package com.epcc.politech_manager.subject
 
 import com.epcc.politech_manager.classroom.ClassroomEntity
+import com.epcc.politech_manager.degree.DegreeEntity
 import com.epcc.politech_manager.department.DepartmentEntity
 import org.hibernate.annotations.DynamicUpdate
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -23,10 +26,20 @@ data class SubjectEntity(
         val english: Boolean,
         @Column
         val time: Int,
-        @ManyToOne
+        @Column
+        val semester: Int,
+        @OnDelete(action = OnDeleteAction.CASCADE)
+        @JoinColumn(name = "classroom_id")
+        @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])
         val classroom: ClassroomEntity,
-        @ManyToOne
+        @OnDelete(action = OnDeleteAction.CASCADE)
+        @JoinColumn(name = "department_id")
+        @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])
         val department: DepartmentEntity,
+        @OnDelete(action = OnDeleteAction.CASCADE)
+        @JoinColumn(name = "degree_id")
+        @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])
+        val degree: DegreeEntity,
         @Column
         val color: Int,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

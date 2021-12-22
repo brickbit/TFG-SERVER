@@ -5,15 +5,15 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class DepartmentController(val service: DepartmentService) {
     @GetMapping("/department")
-    fun index(): List<Department> = service.findDepartments()
+    fun index(): List<DepartmentEntity> = service.findDepartments()
 
     @PostMapping("/department")
-    fun post(@RequestBody department: Department) {
+    fun post(@RequestBody department: DepartmentEntity) {
         service.post(department)
     }
 
     @GetMapping("/department/{id}")
-    fun getDepartment(@PathVariable id: Long): Department? {
+    fun getDepartment(@PathVariable id: Long): DepartmentEntity? {
        return service.getDepartment(id)
     }
 
@@ -23,7 +23,7 @@ class DepartmentController(val service: DepartmentService) {
     }
 
     @PostMapping("/department/update")
-    fun updateDepartment(@RequestBody department: Department) {
+    fun updateDepartment(@RequestBody department: DepartmentEntity) {
         service.updateDepartment(department)
     }
 }

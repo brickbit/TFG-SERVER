@@ -1,6 +1,6 @@
 package com.epcc.politech_manager.department
 
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 
-interface DepartmentRepository: JpaRepository<DepartmentEntity, Long> {
+interface DepartmentRepository: CrudRepository<DepartmentEntity, Long> {
 }

@@ -4,7 +4,7 @@ import com.epcc.politech_manager.classroom.Classroom
 import com.epcc.politech_manager.classroom.Pavilion
 import com.epcc.politech_manager.degree.Degree
 import com.epcc.politech_manager.department.Department
-import com.epcc.politech_manager.semester.SemesterDegree
+import com.epcc.politech_manager.utils.SemesterDegree
 import com.epcc.politech_manager.subject.Subject
 
 fun createBuildingSchedule(): ScheduleDegree {
