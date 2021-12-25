@@ -13,12 +13,12 @@ import kotlin.math.ceil
 
 @Service
 class CreateScheduleFileService(
-        val scheduleData: ScheduleDegree? = null,
+        val scheduleData: List<List<List<Subject?>>> = emptyList(),
         val fileType: FileType = FileType.SUBJECT,
         val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
 
     fun parseScheduleData():ScheduleFileData {
-        val matrix = flatMatrix(scheduleData!!.semester!!.subjectsInSemester)
+        val matrix = flatMatrix(scheduleData)
         val matrixWithNoEmptyColumns = deleteEmptyCols(matrix)
         val deletedCols = getDeletedCols(matrix)
         val subjectsForWeek = obtainSubjects(matrixWithNoEmptyColumns)
@@ -27,7 +27,8 @@ class CreateScheduleFileService(
         val emptyMorning = emptyMorning(emptyRows,matrixWithNoEmptyColumns)
         val emptyAfternoon = emptyAfternoon(emptyRows,matrixWithNoEmptyColumns)
         val indexDeletedCols = getEmptyCols(matrix)
-        return ScheduleFileData(scheduleData!!.degree!!.name,scheduleData!!.semester!!.num,emptyAfternoon.first,subjectsForWeek,sizeOfDays,emptyMorning.second,emptyAfternoon.second, scheduleData!!.year, indexDeletedCols)
+        return ScheduleFileData(degree = "Grado en Ingeniería informática en ingenier", semester = 0, subjects = emptyAfternoon.first, subjectsName = subjectsForWeek,sizeOfDays = sizeOfDays,emptyMorning = emptyMorning.second, emptyAfternoon = emptyAfternoon.second, year = "2021-2022", deletedCols = indexDeletedCols)
+
     }
 
     fun createFile(): String {
