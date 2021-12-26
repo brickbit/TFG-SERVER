@@ -30,9 +30,6 @@ class ScheduleController(val service: SubjectService) {
 
     @GetMapping("/schedule/download")
     fun downloadFileFromLocal(@RequestBody requestData: CreateScheduleFileBO): ResponseEntity<*>? {
-        //val list = parse3DMatrixSubjectToListEntity(createComputerScienceDegree())
-        //val matrix = parseListSubjectEntityTo3DMatrix(list,requestData.scheduleType.toScheduleType())
-        //printMatrix(matrix)
         createDirectory()
         val scheduleType = requestData.scheduleType.toScheduleType()
         val fileType = requestData.fileType.toFileType()

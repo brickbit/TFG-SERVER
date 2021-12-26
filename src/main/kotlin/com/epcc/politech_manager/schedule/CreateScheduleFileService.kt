@@ -101,6 +101,8 @@ class CreateScheduleFileService(
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         if(scheduleType == ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM) {
             sheet.addMergedRegion(CellRangeAddress(0, 0, 2, 29))
+        } else {
+            sheet.addMergedRegion(CellRangeAddress(0, 0, 2, 4))
         }
         cell = row.createCell(scheduleFileData.subjects[0].size)
         cell.setCellValue(scheduleFileData.year)
