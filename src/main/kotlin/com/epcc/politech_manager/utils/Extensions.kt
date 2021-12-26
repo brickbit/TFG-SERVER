@@ -1,9 +1,5 @@
 package com.epcc.politech_manager.utils
 
-import com.epcc.politech_manager.utils.CellColor
-import com.epcc.politech_manager.utils.FileType
-import com.epcc.politech_manager.utils.ScheduleType
-
 fun Int.toCellColor(): CellColor {
     return when(this) {
         0 -> CellColor.BLUE

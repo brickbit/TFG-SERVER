@@ -1,6 +1,5 @@
 package com.epcc.politech_manager.classroom
 
-import com.epcc.politech_manager.subject.SubjectEntity
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
