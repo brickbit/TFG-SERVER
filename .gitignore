@@ -45,3 +45,5 @@ out/
 *.xlsx
 
 build/libs/
+
+src/main/kotlin/com/epcc/politech_manager/.DS_Store

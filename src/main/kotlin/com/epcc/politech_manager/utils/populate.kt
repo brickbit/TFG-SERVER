@@ -178,10 +178,10 @@ fun createComputerScienceDegree(): List<List<List<Subject?>>> {
     val labC3b = Classroom("Lab-C-3B",Pavilion.COMPUTING, "LC3B",13)
 
 
-    val physicsDepartment = Department("FIS","Física aplicada",0)
-    val mathematicsDepartment = Department("MAT","Matemáticas",1)
-    val softwareDepartment = Department("2","Ingeniería de sistemas informáticos y telemáticos",2)
-    val computerDepartment = Department("2","Tecnología de los computares y de las comunicaciones",3)
+    val physicsDepartment = Department("Fisica aplicada","FIS",0)
+    val mathematicsDepartment = Department("Matemáticas","MAT",1)
+    val softwareDepartment = Department("Ingeniería de sistemas informáticos y telemáticos","ISIT",2)
+    val computerDepartment = Department("Tecnología de los computares y de las comunicaciones","TCC",3)
 
     val algebraSeminary1 = Subject("Seminario Algebra","SAL1","1", seminary = true, laboratory = false, english = false, time = 60, classroom = c3, department = mathematicsDepartment, color = 2, id = 1, semester = 0,degree = degree)
     val algebraSeminary2 = Subject("Seminario Algebra","SAL2","2", seminary = true, laboratory = false, english = false, time = 60, classroom = c3, department = mathematicsDepartment, color = 2, id = 2, semester = 0,degree = degree)

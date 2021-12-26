@@ -18,4 +18,21 @@ data class Subject(
         val department: Department,
         val degree: Degree,
         val color: Int,
-        val id: Long = -1)
+        val id: Long = -1) {
+    override fun toString() = """{
+            "name": "$name", 
+            "acronym": "$acronym",
+            "group": "$group",
+            "seminary": $seminary,
+            "laboratory": $laboratory,
+            "english": $english,
+            "time": $time,
+            "color": $color,
+            "id": $id,
+            "semester": $semester,
+            "degree": $degree,
+            "classroom": $classroom,
+            "department": $department,
+        }""".trimMargin()
+
+}

@@ -28,25 +28,15 @@ class ScheduleController(val service: SubjectService) {
 
     private val root: Path = Paths.get("scheduleFile")
 
-    @GetMapping("/schedule/build")
-    fun buildSchedule(@RequestBody requestData: CreateScheduleFileBO) {
-        //service.getSchedule(requestData.id)
-        val scheduleType = requestData.scheduleType.toScheduleType()
-        val fileType = requestData.fileType.toFileType()
-        val buildSchedule = CreateScheduleFileService(scheduleData = createComputerScienceDegree(),fileType = fileType, scheduleType = scheduleType)
-        buildSchedule.createFile()
-
-    }
-
     @GetMapping("/schedule/download")
     fun downloadFileFromLocal(@RequestBody requestData: CreateScheduleFileBO): ResponseEntity<*>? {
-        //service.getSchedule(requestData.id)
-        val list = parse3DMatrixSubjectToListEntity(createComputerScienceDegree())
-        val matrix = parseListSubjectEntityTo3DMatrix(list,requestData.scheduleType.toScheduleType())
+        //val list = parse3DMatrixSubjectToListEntity(createComputerScienceDegree())
+        //val matrix = parseListSubjectEntityTo3DMatrix(list,requestData.scheduleType.toScheduleType())
+        //printMatrix(matrix)
         createDirectory()
         val scheduleType = requestData.scheduleType.toScheduleType()
         val fileType = requestData.fileType.toFileType()
-        val buildSchedule = CreateScheduleFileService(scheduleData = requestData.subjects,fileType = fileType, scheduleType = scheduleType)
+        val buildSchedule = CreateScheduleFileService(scheduleData = requestData.subjects,fileType = fileType, scheduleType = scheduleType, degree = requestData.degree, year = requestData.year)
         val fileName = buildSchedule.createFile()
 
         val resource = loadFile(fileName)
@@ -134,6 +124,7 @@ class ScheduleController(val service: SubjectService) {
     }
 
     private fun parseListSubjectEntityTo3DMatrix(subjects: List<SubjectEntity>, scheduleType: ScheduleType): List<List<List<Subject?>>>{
+        val list: MutableList<SubjectEntity> = mutableListOf()
         val matrix: MutableList<MutableList<MutableList<Subject?>>> = when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
                 MutableList(5){ MutableList(24) { MutableList(1){ null } } }
@@ -143,33 +134,40 @@ class ScheduleController(val service: SubjectService) {
             }
         }
         subjects.map { subject ->
-            println(subject)
             val daysArray = subject.days.split(",")
             (daysArray as ArrayList).removeAt(daysArray.size - 1)
-            val days = daysArray.map { it.toInt() }
             val hoursArray = subject.hours.split(",")
             (hoursArray as ArrayList).removeAt(hoursArray.size - 1)
-            val hours = hoursArray.map { it.toInt() }
-            val turnsArray = subject.days.split(",")
+            val turnsArray = subject.turns.split(",")
             (turnsArray as ArrayList).removeAt(turnsArray.size - 1)
-            val turns = turnsArray.map { it.toInt() }
             daysArray.mapIndexed { i, _ ->
-                matrix[days[i]][hours[i]][turns[i]] = Subject(
-                        subject.name,
-                        subject.acronym,
-                        subject.classGroup,
-                        subject.seminary,
-                        subject.laboratory,
-                        subject.english,
-                        subject.time,
-                        subject.semester,
-                        subject.classroom.toBO(),
-                        subject.department.toBO(),
-                        subject.degree.toBO(),
-                        subject.color,
-                        subject.id)
+                val subjectAux = subject.copy(days = daysArray[i],hours = hoursArray[i],turns = turnsArray[i])
+                list.add(subjectAux)
             }
         }
+        list.map {
+            val day = it.days.toInt()
+            val hour = it.hours.toInt()
+            val turn = it.turns.toInt()
+            matrix[day][hour][turn] = Subject(
+                    it.name,
+                    it.acronym,
+                    it.classGroup,
+                    it.seminary,
+                    it.laboratory,
+                    it.english,
+                    it.time,
+                    it.semester,
+                    it.classroom.toBO(),
+                    it.department.toBO(),
+                    it.degree.toBO(),
+                    it.color,
+                    it.id)
+        }
         return matrix
+    }
+
+    private fun printMatrix(matrix: List<List<List<Subject?>>>) {
+        println(matrix)
     }
 }
