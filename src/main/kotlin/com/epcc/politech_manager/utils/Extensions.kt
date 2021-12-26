@@ -1,4 +1,4 @@
-package com.epcc.politech_manager.schedule
+package com.epcc.politech_manager.utils
 
 import com.epcc.politech_manager.utils.CellColor
 import com.epcc.politech_manager.utils.FileType

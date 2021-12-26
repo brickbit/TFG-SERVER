@@ -13,12 +13,15 @@ import kotlin.math.ceil
 
 @Service
 class CreateScheduleFileService(
-        val scheduleData: ScheduleDegree? = null,
+        val scheduleData: List<List<List<Subject?>>> = emptyList(),
         val fileType: FileType = FileType.SUBJECT,
-        val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT) {
+        val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT,
+        val degree: String = "Grado en Ingeniería informática en ingeniería de computadores",
+        val year: String = ""
+) {
 
     fun parseScheduleData():ScheduleFileData {
-        val matrix = flatMatrix(scheduleData!!.semester!!.subjectsInSemester)
+        val matrix = flatMatrix(scheduleData)
         val matrixWithNoEmptyColumns = deleteEmptyCols(matrix)
         val deletedCols = getDeletedCols(matrix)
         val subjectsForWeek = obtainSubjects(matrixWithNoEmptyColumns)
@@ -27,7 +30,8 @@ class CreateScheduleFileService(
         val emptyMorning = emptyMorning(emptyRows,matrixWithNoEmptyColumns)
         val emptyAfternoon = emptyAfternoon(emptyRows,matrixWithNoEmptyColumns)
         val indexDeletedCols = getEmptyCols(matrix)
-        return ScheduleFileData(scheduleData!!.degree!!.name,scheduleData!!.semester!!.num,emptyAfternoon.first,subjectsForWeek,sizeOfDays,emptyMorning.second,emptyAfternoon.second, scheduleData!!.year, indexDeletedCols)
+        return ScheduleFileData(degree = degree, semester = 0, subjects = emptyAfternoon.first, subjectsName = subjectsForWeek,sizeOfDays = sizeOfDays,emptyMorning = emptyMorning.second, emptyAfternoon = emptyAfternoon.second, year = year, deletedCols = indexDeletedCols)
+
     }
 
     fun createFile(): String {
@@ -49,7 +53,7 @@ class CreateScheduleFileService(
                 return name
             }
             FileType.CLASSROOM -> {
-                val name = "schedule-department.xlsx"
+                val name = "schedule-classrooms.xlsx"
                 closeFile(workbook, name)
                 return name
             }
@@ -95,9 +99,17 @@ class CreateScheduleFileService(
         cell = row.createCell(2)
         cell.setCellValue(scheduleFileData.degree.uppercase(Locale.getDefault()))
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
+        if(scheduleType == ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM) {
+            sheet.addMergedRegion(CellRangeAddress(0, 0, 2, 29))
+        } else {
+            sheet.addMergedRegion(CellRangeAddress(0, 0, 2, 4))
+        }
         cell = row.createCell(scheduleFileData.subjects[0].size)
         cell.setCellValue(scheduleFileData.year)
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
+        if(scheduleType == ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM) {
+            sheet.addMergedRegion(CellRangeAddress(0, 0, scheduleFileData.subjects[0].size-1, scheduleFileData.subjects[0].size))
+        }
     }
 
     private fun createHeaderMultipleSubject(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook, sheet: Sheet){
