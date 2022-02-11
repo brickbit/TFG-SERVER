@@ -22,7 +22,7 @@ data class Subject(
     override fun toString() = """{
             "name": "$name", 
             "acronym": "$acronym",
-            "group": "$group",
+            "classGroup": "$group",
             "seminary": $seminary,
             "laboratory": $laboratory,
             "english": $english,
