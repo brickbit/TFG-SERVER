@@ -227,7 +227,7 @@ class CreateScheduleFileService(
                         val seminary: String = if (subject?.seminary == true) { "sem\n" } else { "" }
                         val laboratory: String = if (subject?.laboratory == true) { "lab\n" } else { "" }
                         val english = if(subject?.english == true) { "ing"} else{ "" }
-                        val groupName = subject?.group ?: ""
+                        val groupName = subject?.classGroup ?: ""
                         val group: String = if (subject?.laboratory != true && subject?.seminary != true && subject?.english != true && subject!= null) { "gg " } else { "" }
                         when (scheduleType) {
                             ScheduleType.ONE_SUBJECT -> {

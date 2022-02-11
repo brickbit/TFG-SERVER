@@ -3,12 +3,11 @@ package com.epcc.politech_manager.subject
 import com.epcc.politech_manager.classroom.Classroom
 import com.epcc.politech_manager.degree.Degree
 import com.epcc.politech_manager.department.Department
-import javax.persistence.*
 
 data class Subject(
         val name: String,
         val acronym: String,
-        val group: String,
+        val classGroup: String,
         val seminary: Boolean,
         val laboratory: Boolean,
         val english: Boolean,
@@ -22,7 +21,7 @@ data class Subject(
     override fun toString() = """{
             "name": "$name", 
             "acronym": "$acronym",
-            "classGroup": "$group",
+            "classGroup": "$classGroup",
             "seminary": $seminary,
             "laboratory": $laboratory,
             "english": $english,
