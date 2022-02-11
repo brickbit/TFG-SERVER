@@ -281,7 +281,7 @@ class CreateScheduleFileService(
         }
 
         list.map {
-            sheet.addMergedRegion(CellRangeAddress(it.x1,it.x2,it.y1,it.y2))
+            //sheet.addMergedRegion(CellRangeAddress(it.x1,it.x2,it.y1,it.y2))
         }
     }
 
