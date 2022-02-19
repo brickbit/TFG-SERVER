@@ -77,7 +77,7 @@ class CreateScheduleFileService(
         createHoursRow(scheduleFileData,sheet,workbook)
         createSubjectHeader(scheduleFileData,sheet.getRow(headerOffset + 1), workbook)
         fillData(scheduleFileData,sheet,workbook)
-        mergeCells(scheduleFileData,sheet)
+        //mergeCells(scheduleFileData,sheet)
     }
 
     private fun createRows(scheduleFileData: ScheduleFileData, sheet: Sheet, cellWidth: Int) {
