@@ -107,9 +107,9 @@ class CreateScheduleFileService(
         cell = row.createCell(scheduleFileData.subjects[0].size)
         cell.setCellValue(scheduleFileData.year)
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
-        if(scheduleType == ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM) {
+        /*if(scheduleType == ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM) {
             sheet.addMergedRegion(CellRangeAddress(0, 0, scheduleFileData.subjects[0].size-1, scheduleFileData.subjects[0].size))
-        }
+        }*/
     }
 
     private fun createHeaderMultipleSubject(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook, sheet: Sheet){
