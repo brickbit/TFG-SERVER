@@ -1,6 +1,7 @@
 package com.epcc.politech_manager.schedule
 
 import com.epcc.politech_manager.subject.Subject
+import com.epcc.politech_manager.subject.SubjectEntity
 import com.epcc.politech_manager.utils.*
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
@@ -9,16 +10,52 @@ import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import javax.transaction.Transactional
 import kotlin.math.ceil
 
 @Service
 class CreateScheduleFileService(
-        val scheduleData: List<List<List<Subject?>>> = emptyList(),
-        val fileType: FileType = FileType.SUBJECT,
-        val scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT,
-        val degree: String = "Grado en Ingeniería informática en ingeniería de computadores",
-        val year: String = ""
+
+        val db: ScheduleRepository
 ) {
+    var scheduleData: List<List<List<Subject?>>> = emptyList()
+    var fileType: FileType = FileType.SUBJECT
+    var scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT
+    var degree: String = ""
+    var year: String = ""
+
+    fun post(schedule: ScheduleEntity?) {
+        db.save(schedule)
+    }
+
+    fun getAllSchedules(): List<ScheduleEntity> = db.findAll().toList()
+
+    fun getSchedule(id: Long): ScheduleEntity? {
+        return db.findById(id).orElse(null)
+    }
+
+    @Transactional
+    fun deleteSchedule(id: Long) {
+        db.deleteById(id)
+    }
+
+    fun updateSchedule(schedule: ScheduleEntity) {
+        if(db.existsById(schedule.id)) {
+            db.save(schedule)
+        }
+    }
+
+    fun initData(scheduleData: List<List<List<Subject?>>>,
+                 fileType: FileType,
+                 scheduleType: ScheduleType,
+                 degree: String,
+                 year: String) {
+        this.scheduleData = scheduleData
+        this.fileType = fileType
+        this.scheduleType = scheduleType
+        this.degree = degree
+        this.year = year
+    }
 
     fun parseScheduleData():ScheduleFileData {
         val matrix = flatMatrix(scheduleData)
