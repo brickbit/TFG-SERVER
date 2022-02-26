@@ -1,6 +1,5 @@
 package com.epcc.politech_manager.schedule
 
-import com.epcc.politech_manager.subject.SubjectEntity
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
@@ -8,7 +7,7 @@ import javax.persistence.*
 @Table(name = "schedule")
 @DynamicUpdate
 data class ScheduleEntity(
-        @Column(columnDefinition="Text")
+        @Column
         val subjects: String,
         @Column
         val scheduleType: Int,
