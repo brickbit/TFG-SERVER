@@ -7,7 +7,7 @@ import javax.persistence.*
 @Table(name = "schedule")
 @DynamicUpdate
 data class ScheduleEntity(
-        @Column
+        @Column(columnDefinition="Text")
         val subjects: String,
         @Column
         val scheduleType: Int,
