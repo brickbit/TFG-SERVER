@@ -50,4 +50,5 @@ data class SubjectEntity(
         val color: Int,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="subject_id")
-        val id: Long = -1)
+        val id: Long = -1
+)

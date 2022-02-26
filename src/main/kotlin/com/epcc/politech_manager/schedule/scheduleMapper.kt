@@ -7,9 +7,20 @@ import com.epcc.politech_manager.subject.toEntity
 import com.epcc.politech_manager.utils.CreateScheduleFileBO
 import com.epcc.politech_manager.utils.ScheduleType
 import com.epcc.politech_manager.utils.toScheduleType
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 fun ScheduleEntity.toScheduleFileBO(): CreateScheduleFileBO {
-    return CreateScheduleFileBO(expandMatrix(this.subjects, this.scheduleType.toScheduleType()),this.scheduleType,this.fileType,this.degree,this.year)
+    val listType = object : TypeToken<ArrayList<SubjectEntity>>() {}.type
+
+    val list: List<SubjectEntity> = Gson().fromJson(this.subjects, listType)
+    return CreateScheduleFileBO(
+            id = this.id,
+            subjects = expandMatrix(list, this.scheduleType.toScheduleType()),
+            scheduleType = this.scheduleType,
+            fileType = this.fileType,
+            degree = this.degree,
+            year = this.year)
 }
 
 fun expandMatrix(subjects: List<SubjectEntity>, scheduletype: ScheduleType): List<List<List<Subject?>>> {
@@ -18,7 +29,7 @@ fun expandMatrix(subjects: List<SubjectEntity>, scheduletype: ScheduleType): Lis
             Array(5){ Array(24) {Array(1) {null} } }
         }
         ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
-            Array(5){ Array(24) {Array(15) {null} } }
+            Array(15){ Array(24) {Array(1) {null} } }
         }
     }
     val groupedList = subjects.groupBy { it.id }

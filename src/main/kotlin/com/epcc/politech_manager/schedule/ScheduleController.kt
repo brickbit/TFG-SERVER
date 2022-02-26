@@ -1,6 +1,7 @@
 package com.epcc.politech_manager.schedule
 
 import com.epcc.politech_manager.utils.*
+import com.google.gson.Gson
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.http.HttpHeaders
@@ -38,7 +39,7 @@ class ScheduleController(val service: CreateScheduleFileService) {
     @PostMapping("/schedule")
     fun post(@RequestBody requestData: CreateScheduleFileBO) {
         val list = flatMatrix(requestData.subjects)
-        service.post(ScheduleEntity(list,requestData.scheduleType,requestData.fileType,requestData.degree,requestData.year))
+        service.post(ScheduleEntity(Gson().toJson(list),requestData.scheduleType,requestData.fileType,requestData.degree,requestData.year))
     }
 
     @GetMapping("/schedule")
