@@ -17,20 +17,12 @@ import java.util.stream.Collectors.*
 @ControllerAdvice
 class ControllerAdvisor: ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(LoginException::class)
+    @ExceptionHandler(UserException::class)
     fun handleIncorrectDataException(
-            ex: LoginException?, request: WebRequest?): ResponseEntity<Any>? {
+            ex: UserException?, request: WebRequest?): ResponseEntity<Any>? {
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
-        body["code"] = ex!!.message!!
-        body["message"] = when (ex.message) {
-            "100" -> "User not found"
-            "200" -> "Passwords do not match"
-            "300" -> "The password must contain at least one uppercase letter, one lowercase letter, a number and one of the special characters \"! @ # & ( )\", it must have a length greater than 8 and less than 20"
-            "400" -> "The new password must be different from the old one"
-            else -> "Unknown error"
-        }
-
+        body["message"] = ex!!.message!!
         return ResponseEntity(body, HttpStatus.NOT_FOUND)
     }
 

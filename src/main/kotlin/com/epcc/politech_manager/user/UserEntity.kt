@@ -1,6 +1,7 @@
 package com.epcc.politech_manager.user
 
 import org.hibernate.annotations.DynamicUpdate
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -8,9 +9,14 @@ import javax.persistence.*
 @DynamicUpdate
 data class UserEntity(
         @Column
-        val username: String,
+        val name: String,
+        @Column(unique = true)
+        val email: String,
         @Column
-        val password: String,
+        var password: String,
+        var token: String?,
+        @Column(columnDefinition = "TIMESTAMP")
+        var tokenCreationDate: LocalDateTime?,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="user_id")
         val id: Long = -1
