@@ -1,6 +1,7 @@
 package com.epcc.politech_manager.user
 
 import com.epcc.politech_manager.degree.DegreeEntityDAO
+import com.epcc.politech_manager.department.DepartmentEntityDAO
 import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -26,5 +27,7 @@ data class UserEntityDAO(
         @Column(name="user_id")
         val id: Long = -1,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-        var degrees: MutableList<DegreeEntityDAO>
+        var degrees: MutableList<DegreeEntityDAO>,
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        var department: MutableList<DepartmentEntityDAO>
 )

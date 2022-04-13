@@ -1,6 +1,7 @@
 package com.epcc.politech_manager.user
 
 import com.epcc.politech_manager.degree.DegreeService
+import com.epcc.politech_manager.department.DepartmentService
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.utils.ResponseOk
@@ -18,7 +19,10 @@ import java.util.stream.Collectors
 
 
 @RestController
-class UserController(val service: UserService, val degreeService: DegreeService) {
+class UserController(
+        val service: UserService,
+        val degreeService: DegreeService,
+        val departmentService: DepartmentService) {
 
     @PostMapping("/user/register")
     fun signIn(@RequestParam("user") name: String,
@@ -32,7 +36,19 @@ class UserController(val service: UserService, val degreeService: DegreeService)
         val correctPassword = regex.containsMatchIn(pwd)
 
         if (validUser && samePwd && correctPassword) {
-            service.post(UserEntityDTO(name, email, pwd, null, null, null).toDAO(degreeService.getAllDegrees().toMutableList()))
+            service.post(
+                    UserEntityDTO(
+                            name,
+                            email,
+                            pwd,
+                            null,
+                            null,
+                            null)
+                            .toDAO(
+                                    degreeService.getAllDegrees().toMutableList(),
+                                    departmentService.getAllDepartments().toMutableList(),
+                            )
+            )
             return ResponseOk(200,"Registration completed successfully")
         } else if (!validUser) {
             throw UserException(ExceptionUserModel.WRONG_USER)

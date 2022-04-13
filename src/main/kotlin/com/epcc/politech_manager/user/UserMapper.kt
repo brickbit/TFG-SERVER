@@ -1,8 +1,11 @@
 package com.epcc.politech_manager.user
 
 import com.epcc.politech_manager.degree.DegreeEntityDAO
+import com.epcc.politech_manager.department.DepartmentEntityDAO
 
-fun UserEntityDTO.toDAO(degrees: MutableList<DegreeEntityDAO>) = UserEntityDAO(
+fun UserEntityDTO.toDAO(
+        degrees: MutableList<DegreeEntityDAO>,
+        departments: MutableList<DepartmentEntityDAO>) = UserEntityDAO(
         name = name,
         email = email,
         password = password,
@@ -10,7 +13,8 @@ fun UserEntityDTO.toDAO(degrees: MutableList<DegreeEntityDAO>) = UserEntityDAO(
         tokenForgotPassword = tokenForgotPassword,
         tokenForgotPasswordCreationDate = tokenForgotPasswordCreationDate,
         id = id,
-        degrees = degrees
+        degrees = degrees,
+        department = departments
 )
 
 fun UserEntityDAO.toDTO() = UserEntityDTO(

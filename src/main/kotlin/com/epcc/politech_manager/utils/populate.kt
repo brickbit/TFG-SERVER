@@ -3,7 +3,7 @@ package com.epcc.politech_manager.utils
 import com.epcc.politech_manager.classroom.Classroom
 import com.epcc.politech_manager.classroom.Pavilion
 import com.epcc.politech_manager.degree.DegreeBO
-import com.epcc.politech_manager.department.Department
+import com.epcc.politech_manager.department.DepartmentBO
 import com.epcc.politech_manager.subject.Subject
 
 fun createBuildingSchedule(): List<List<List<Subject?>>> {
@@ -11,10 +11,10 @@ fun createBuildingSchedule(): List<List<List<Subject?>>> {
     val buildingClassroom = Classroom("A-1", Pavilion.ARCHITECTURE, "A-1", 2)
     val designClassroom = Classroom("A-6", Pavilion.ARCHITECTURE, "A-6", 3)
 
-    val mathematicsDepartment = Department("Matemáticas", "MAT", 1)
-    val buildingDepartment = Department("Construcción", "CONS", 2)
-    val graphicalExpressionDepartment = Department("Expresión gráfica", "EX.GR", 3)
-    val economicsDepartment = Department("Economía", "EC", 4)
+    val mathematicsDepartment = DepartmentBO("Matemáticas", "MAT", 1)
+    val buildingDepartment = DepartmentBO("Construcción", "CONS", 2)
+    val graphicalExpressionDepartment = DepartmentBO("Expresión gráfica", "EX.GR", 3)
+    val economicsDepartment = DepartmentBO("Economía", "EC", 4)
 
     val degree = DegreeBO("Grado en Edificación", 8,"2021-2022")
 
@@ -178,10 +178,10 @@ fun createComputerScienceDegree(): List<List<List<Subject?>>> {
     val labC3b = Classroom("Lab-C-3B",Pavilion.COMPUTING, "LC3B",13)
 
 
-    val physicsDepartment = Department("Fisica aplicada","FIS",0)
-    val mathematicsDepartment = Department("Matemáticas","MAT",1)
-    val softwareDepartment = Department("Ingeniería de sistemas informáticos y telemáticos","ISIT",2)
-    val computerDepartment = Department("Tecnología de los computares y de las comunicaciones","TCC",3)
+    val physicsDepartment = DepartmentBO("Fisica aplicada","FIS",0)
+    val mathematicsDepartment = DepartmentBO("Matemáticas","MAT",1)
+    val softwareDepartment = DepartmentBO("Ingeniería de sistemas informáticos y telemáticos","ISIT",2)
+    val computerDepartment = DepartmentBO("Tecnología de los computares y de las comunicaciones","TCC",3)
 
     val algebraSeminary1 = Subject("Seminario Algebra","SAL1","1", seminary = true, laboratory = false, english = false, time = 60, classroom = c3, department = mathematicsDepartment, color = 2, id = 1, semester = 0,degree = degree)
     val algebraSeminary2 = Subject("Seminario Algebra","SAL2","2", seminary = true, laboratory = false, english = false, time = 60, classroom = c3, department = mathematicsDepartment, color = 2, id = 2, semester = 0,degree = degree)

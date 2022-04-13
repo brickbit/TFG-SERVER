@@ -1,29 +1,78 @@
 package com.epcc.politech_manager.department
 
+import com.epcc.politech_manager.error.ExceptionUserModel
+import com.epcc.politech_manager.error.UserException
+import com.epcc.politech_manager.user.UserEntityDAO
+import com.epcc.politech_manager.user.UserService
+import com.epcc.politech_manager.utils.ResponseOk
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class DepartmentController(val service: DepartmentService) {
+class DepartmentController(val service: DepartmentService, val userService: UserService) {
+
     @GetMapping("/department")
-    fun index(): List<DepartmentEntity> = service.findDepartments()
+    fun index(@RequestHeader("Authorization") auth: String): List<DepartmentEntityDTO> {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            return service.getAllDepartments().filter { it.user == user }.map { it.toDTO() }
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
+    }
 
     @PostMapping("/department")
-    fun post(@RequestBody department: DepartmentEntity) {
-        service.post(department)
+    fun post(@RequestHeader("Authorization") auth: String,
+             @RequestBody department: DepartmentEntityDTO)
+    : ResponseOk {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            service.post(department.toDAO(user))
+            return ResponseOk(200, "Department successfully created")
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     @GetMapping("/department/{id}")
-    fun getDepartment(@PathVariable id: Long): DepartmentEntity? {
-       return service.getDepartment(id)
+    fun getDepartment(@RequestHeader("Authorization") auth: String,
+                      @PathVariable id: Long)
+    : DepartmentEntityDTO? {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            val department = service.getDepartment(id)
+            if (department.user == user) {
+                return department.toDTO()
+            } else {
+                throw UserException(ExceptionUserModel.WRONG_USER)
+            }
+        } else{
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     @PostMapping("/department/delete/{id}")
-    fun deleteDepartment(@PathVariable id: Long) {
-        service.deleteDepartment(id)
+    fun deleteDepartment(@RequestHeader("Authorization") auth: String,
+                         @PathVariable id: Long)
+    : ResponseOk {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            service.deleteDepartment(id)
+            return ResponseOk(200,"Department successfully deleted")
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     @PostMapping("/department/update")
-    fun updateDepartment(@RequestBody department: DepartmentEntity) {
-        service.updateDepartment(department)
+    fun updateDepartment(@RequestHeader("Authorization") auth: String,
+                         @RequestBody department: DepartmentEntityDTO)
+    : ResponseOk {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            service.updateDepartment(department.toDAO(user))
+            return ResponseOk(200,"Department successfully updated")
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 }

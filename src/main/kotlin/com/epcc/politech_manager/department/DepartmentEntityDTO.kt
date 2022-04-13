@@ -6,7 +6,7 @@ import javax.persistence.*
 @Entity
 @Table(name = "department")
 @DynamicUpdate
-data class DepartmentEntity(
+data class DepartmentEntityDTO(
         @Column
         val name: String,
         @Column

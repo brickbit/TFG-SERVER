@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service
 @Service
 class DepartmentService(val db: DepartmentRepository) {
 
-    fun findDepartments(): List<DepartmentEntity> = db.findAll().toList()
+    fun getAllDepartments(): List<DepartmentEntityDAO> = db.findAll().toList()
 
-    fun post(department: DepartmentEntity) {
+    fun post(department: DepartmentEntityDAO) {
         db.save(department)
     }
 
-    fun  getDepartment(id: Long): DepartmentEntity {
+    fun  getDepartment(id: Long): DepartmentEntityDAO {
         return db.findById(id).orElse(null)
     }
 
@@ -19,7 +19,7 @@ class DepartmentService(val db: DepartmentRepository) {
         db.deleteById(id)
     }
 
-    fun updateDepartment(department: DepartmentEntity) {
+    fun updateDepartment(department: DepartmentEntityDAO) {
         if(db.existsById(department.id)) {
             db.save(department)
         }

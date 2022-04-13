@@ -1,6 +1,6 @@
 package com.epcc.politech_manager.department
 
-data class Department(
+data class DepartmentBO(
         val name: String,
         val acronym: String,
         val id: Long = -1) {

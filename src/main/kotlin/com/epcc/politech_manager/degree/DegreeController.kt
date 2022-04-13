@@ -3,7 +3,6 @@ package com.epcc.politech_manager.degree
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
-import com.epcc.politech_manager.user.UserEntityDTO
 import com.epcc.politech_manager.user.UserService
 import com.epcc.politech_manager.utils.ResponseOk
 import org.springframework.web.bind.annotation.*

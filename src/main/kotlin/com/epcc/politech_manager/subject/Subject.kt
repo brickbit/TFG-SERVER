@@ -2,7 +2,7 @@ package com.epcc.politech_manager.subject
 
 import com.epcc.politech_manager.classroom.Classroom
 import com.epcc.politech_manager.degree.DegreeBO
-import com.epcc.politech_manager.department.Department
+import com.epcc.politech_manager.department.DepartmentBO
 
 data class Subject(
         val name: String,
@@ -14,7 +14,7 @@ data class Subject(
         val time: Int,
         val semester: Int,
         val classroom: Classroom,
-        val department: Department,
+        val department: DepartmentBO,
         val degree: DegreeBO,
         val color: Int,
         val id: Long = -1) {
