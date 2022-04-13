@@ -1,15 +1,15 @@
 package com.epcc.politech_manager.utils
 
-import com.epcc.politech_manager.classroom.Classroom
+import com.epcc.politech_manager.classroom.ClassroomBO
 import com.epcc.politech_manager.classroom.Pavilion
 import com.epcc.politech_manager.degree.DegreeBO
 import com.epcc.politech_manager.department.DepartmentBO
 import com.epcc.politech_manager.subject.Subject
 
 fun createBuildingSchedule(): List<List<List<Subject?>>> {
-    val mathematicsClassroom = Classroom("C-1B", Pavilion.CIVIL_WORK, "C-1B", 1)
-    val buildingClassroom = Classroom("A-1", Pavilion.ARCHITECTURE, "A-1", 2)
-    val designClassroom = Classroom("A-6", Pavilion.ARCHITECTURE, "A-6", 3)
+    val mathematicsClassroom = ClassroomBO("C-1B", Pavilion.CIVIL_WORK, "C-1B", 1)
+    val buildingClassroom = ClassroomBO("A-1", Pavilion.ARCHITECTURE, "A-1", 2)
+    val designClassroom = ClassroomBO("A-6", Pavilion.ARCHITECTURE, "A-6", 3)
 
     val mathematicsDepartment = DepartmentBO("Matemáticas", "MAT", 1)
     val buildingDepartment = DepartmentBO("Construcción", "CONS", 2)
@@ -163,19 +163,19 @@ fun createBuildingSchedule(): List<List<List<Subject?>>> {
 fun createComputerScienceDegree(): List<List<List<Subject?>>> {
     val degree = DegreeBO( "Grado en Ingeniería informática en ingeniería de computadores", 8,"2021-2022",1)
 
-    val c3 = Classroom("C-3",Pavilion.CENTRAL, "C-3",1)
+    val c3 = ClassroomBO("C-3",Pavilion.CENTRAL, "C-3",1)
     //val c1b = Classroom("C-1B",Pavilion.CIVIL_WORK, "C-1B",2)
-    val c6 = Classroom("C-6",Pavilion.CENTRAL, "C-6",3)
-    val c4 = Classroom("C-4",Pavilion.CENTRAL, "C-4",4)
+    val c6 = ClassroomBO("C-6",Pavilion.CENTRAL, "C-6",3)
+    val c4 = ClassroomBO("C-4",Pavilion.CENTRAL, "C-4",4)
     //val o5 = Classroom("O-5",Pavilion.CIVIL_WORK, "O-5",5)
-    val c1 = Classroom("C-1",Pavilion.CENTRAL, "C-1",6)
-    val c2 = Classroom("C-2",Pavilion.CENTRAL, "C-2",7)
-    val lFis = Classroom("Laboratorio de física",Pavilion.COMPUTING, "LFIS",8)
-    val sala1 = Classroom("Sala 1",Pavilion.COMPUTING, "SALA1",9)
-    val laboratorio1 = Classroom("Laboratorio 1",Pavilion.COMPUTING, "LAB1",10)
-    val novell = Classroom("Novell",Pavilion.COMPUTING, "NOV",11)
-    val labDigSis = Classroom("Lab-Sistemas Digitales",Pavilion.COMPUTING, "LSD",12)
-    val labC3b = Classroom("Lab-C-3B",Pavilion.COMPUTING, "LC3B",13)
+    val c1 = ClassroomBO("C-1",Pavilion.CENTRAL, "C-1",6)
+    val c2 = ClassroomBO("C-2",Pavilion.CENTRAL, "C-2",7)
+    val lFis = ClassroomBO("Laboratorio de física",Pavilion.COMPUTING, "LFIS",8)
+    val sala1 = ClassroomBO("Sala 1",Pavilion.COMPUTING, "SALA1",9)
+    val laboratorio1 = ClassroomBO("Laboratorio 1",Pavilion.COMPUTING, "LAB1",10)
+    val novell = ClassroomBO("Novell",Pavilion.COMPUTING, "NOV",11)
+    val labDigSis = ClassroomBO("Lab-Sistemas Digitales",Pavilion.COMPUTING, "LSD",12)
+    val labC3b = ClassroomBO("Lab-C-3B",Pavilion.COMPUTING, "LC3B",13)
 
 
     val physicsDepartment = DepartmentBO("Fisica aplicada","FIS",0)

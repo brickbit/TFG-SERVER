@@ -1,6 +1,6 @@
 package com.epcc.politech_manager.subject
 
-import com.epcc.politech_manager.classroom.ClassroomEntity
+import com.epcc.politech_manager.classroom.ClassroomEntityDTO
 import com.epcc.politech_manager.degree.DegreeEntityDTO
 import com.epcc.politech_manager.department.DepartmentEntityDTO
 import org.hibernate.annotations.DynamicUpdate
@@ -37,7 +37,7 @@ data class SubjectEntity(
         @OnDelete(action = OnDeleteAction.CASCADE)
         @JoinColumn(name = "classroom_id")
         @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])
-        val classroom: ClassroomEntity,
+        val classroom: ClassroomEntityDTO,
         @OnDelete(action = OnDeleteAction.CASCADE)
         @JoinColumn(name = "department_id")
         @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])

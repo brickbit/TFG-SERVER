@@ -1,12 +1,13 @@
 package com.epcc.politech_manager.classroom
 
+import com.epcc.politech_manager.user.UserEntityDAO
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
 @Entity
 @Table(name = "classroom")
 @DynamicUpdate
-data class ClassroomEntity(
+data class ClassroomEntityDAO(
         @Column
         val name: String,
         @Column
@@ -15,4 +16,8 @@ data class ClassroomEntity(
         val acronym: String,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="classroom_id")
-        val id: Long = -1)
+        val id: Long = -1,
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        val user: UserEntityDAO
+)

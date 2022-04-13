@@ -1,6 +1,6 @@
 package com.epcc.politech_manager.subject
 
-import com.epcc.politech_manager.classroom.Classroom
+import com.epcc.politech_manager.classroom.ClassroomBO
 import com.epcc.politech_manager.degree.DegreeBO
 import com.epcc.politech_manager.department.DepartmentBO
 
@@ -13,7 +13,7 @@ data class Subject(
         val english: Boolean,
         val time: Int,
         val semester: Int,
-        val classroom: Classroom,
+        val classroom: ClassroomBO,
         val department: DepartmentBO,
         val degree: DegreeBO,
         val color: Int,

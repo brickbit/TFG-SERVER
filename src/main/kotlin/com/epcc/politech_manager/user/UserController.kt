@@ -1,5 +1,6 @@
 package com.epcc.politech_manager.user
 
+import com.epcc.politech_manager.classroom.ClassroomService
 import com.epcc.politech_manager.degree.DegreeService
 import com.epcc.politech_manager.department.DepartmentService
 import com.epcc.politech_manager.error.ExceptionUserModel
@@ -22,7 +23,8 @@ import java.util.stream.Collectors
 class UserController(
         val service: UserService,
         val degreeService: DegreeService,
-        val departmentService: DepartmentService) {
+        val departmentService: DepartmentService,
+        val classroomService: ClassroomService) {
 
     @PostMapping("/user/register")
     fun signIn(@RequestParam("user") name: String,
@@ -47,6 +49,7 @@ class UserController(
                             .toDAO(
                                     degreeService.getAllDegrees().toMutableList(),
                                     departmentService.getAllDepartments().toMutableList(),
+                                    classroomService.getAllClassrooms().toMutableList(),
                             )
             )
             return ResponseOk(200,"Registration completed successfully")

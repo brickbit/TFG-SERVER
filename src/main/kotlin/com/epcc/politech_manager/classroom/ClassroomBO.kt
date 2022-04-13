@@ -1,6 +1,6 @@
 package com.epcc.politech_manager.classroom
 
-data class Classroom(
+data class ClassroomBO(
         val name: String,
         val pavilion: Pavilion,
         val acronym: String,
