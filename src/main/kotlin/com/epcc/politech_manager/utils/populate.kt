@@ -2,7 +2,7 @@ package com.epcc.politech_manager.utils
 
 import com.epcc.politech_manager.classroom.Classroom
 import com.epcc.politech_manager.classroom.Pavilion
-import com.epcc.politech_manager.degree.Degree
+import com.epcc.politech_manager.degree.DegreeBO
 import com.epcc.politech_manager.department.Department
 import com.epcc.politech_manager.subject.Subject
 
@@ -16,7 +16,7 @@ fun createBuildingSchedule(): List<List<List<Subject?>>> {
     val graphicalExpressionDepartment = Department("Expresión gráfica", "EX.GR", 3)
     val economicsDepartment = Department("Economía", "EC", 4)
 
-    val degree = Degree("Grado en Edificación", 8,"2021-2022")
+    val degree = DegreeBO("Grado en Edificación", 8,"2021-2022")
 
     val calculusSeminary = Subject("CÁLCULO", "SCAL", "A", seminary = true, laboratory = false, english = false, time = 60, classroom = mathematicsClassroom, department = mathematicsDepartment, color = 2, id = 111, semester = 0,degree = degree)
     val calculus = Subject("CÁLCULO", "CAL", "A", seminary = false, laboratory = false, english = false, time = 180, classroom = buildingClassroom, department = mathematicsDepartment, color = 2, id =112, semester = 0,degree = degree)
@@ -161,7 +161,7 @@ fun createBuildingSchedule(): List<List<List<Subject?>>> {
 }
 
 fun createComputerScienceDegree(): List<List<List<Subject?>>> {
-    val degree = Degree( "Grado en Ingeniería informática en ingeniería de computadores", 8,"2021-2022",1)
+    val degree = DegreeBO( "Grado en Ingeniería informática en ingeniería de computadores", 8,"2021-2022",1)
 
     val c3 = Classroom("C-3",Pavilion.CENTRAL, "C-3",1)
     //val c1b = Classroom("C-1B",Pavilion.CIVIL_WORK, "C-1B",2)

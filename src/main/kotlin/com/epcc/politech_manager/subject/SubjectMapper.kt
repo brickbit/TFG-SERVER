@@ -3,7 +3,7 @@ package com.epcc.politech_manager.subject
 import com.epcc.politech_manager.classroom.toBO
 import com.epcc.politech_manager.classroom.toEntity
 import com.epcc.politech_manager.degree.toBO
-import com.epcc.politech_manager.degree.toEntity
+import com.epcc.politech_manager.degree.toDTO
 import com.epcc.politech_manager.department.toBO
 import com.epcc.politech_manager.department.toEntity
 
@@ -37,6 +37,6 @@ fun Subject.toEntity(days:String, hours: String, turns: String) = SubjectEntity(
         turns = turns,
         classroom = this.classroom.toEntity(),
         department = this.department.toEntity(),
-        degree = this.degree.toEntity(),
+        degree = this.degree.toDTO(),
         color = this.color,
         id = this.id)

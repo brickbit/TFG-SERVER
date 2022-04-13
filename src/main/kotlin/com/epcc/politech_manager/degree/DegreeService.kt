@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service
 @Service
 class DegreeService(val db: DegreeRepository) {
 
-    fun getAllDegrees(): List<DegreeEntity> = db.findAll().toList()
+    fun getAllDegrees(): List<DegreeEntityDAO> = db.findAll().toList()
 
-    fun post(degree: DegreeEntity) {
+    fun post(degree: DegreeEntityDAO) {
         db.save(degree)
     }
 
-    fun getDegree(id: Long): DegreeEntity? {
+    fun getDegree(id: Long): DegreeEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
@@ -19,7 +19,7 @@ class DegreeService(val db: DegreeRepository) {
         db.deleteById(id)
     }
 
-    fun updateDegree(degree: DegreeEntity) {
+    fun updateDegree(degree: DegreeEntityDAO) {
         if(db.existsById(degree.id)) {
             db.save(degree)
         }

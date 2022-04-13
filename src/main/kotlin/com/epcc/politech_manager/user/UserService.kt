@@ -9,18 +9,20 @@ import javax.transaction.Transactional
 @Service
 class UserService(val db: UserRepository) {
 
-    fun post(user: UserEntity?) {
+    fun post(user: UserEntityDAO?) {
         if(getUser(user!!.name) == null) {
             db.save(user)
         }
     }
 
-    fun getUser(id: Long): UserEntity? {
-        return db.findById(id).orElse(null)
+    fun getUser(email: String): UserEntityDAO? {
+        return db.findAll().firstOrNull{ it.email == email }
     }
 
-    fun getUser(email: String): UserEntity? {
-        return db.findAll().firstOrNull{ it.email == email }
+    fun getUserWithToken(token: String): UserEntityDAO? {
+        return db.findAll().firstOrNull {
+            it.token == token
+        }
     }
 
     @Transactional
@@ -28,24 +30,29 @@ class UserService(val db: UserRepository) {
         db.deleteById(id)
     }
 
+    fun assignToken(user: UserEntityDAO, token: String?) {
+        user.token = token
+        db.save(user)
+    }
+
     fun forgotPassword(email: String?): String? {
-        var user: UserEntity? = db.findByEmail(email) ?: return "Invalid email id."
-        user!!.token = generateToken()
-        user.tokenCreationDate = LocalDateTime.now()
+        var user: UserEntityDAO? = db.findByEmail(email) ?: return "Invalid email id."
+        user!!.tokenForgotPassword = generateToken()
+        user.tokenForgotPasswordCreationDate = LocalDateTime.now()
         user = db.save(user)
-        return user.token
+        return user.tokenForgotPassword
     }
 
     fun resetPassword(token: String?, password: String): String {
-        val user = db.findByToken(token) ?: return "Invalid token."
-        val tokenCreationDate: LocalDateTime = user.tokenCreationDate!!
+        val user = db.findByTokenForgotPassword(token) ?: return "Invalid token."
+        val tokenCreationDate: LocalDateTime = user.tokenForgotPasswordCreationDate!!
         if (isTokenExpired(tokenCreationDate)) {
             return "Token expired."
         }
         db.delete(user)
         user.password = password
-        user.token = null
-        user.tokenCreationDate = null
+        user.tokenForgotPassword = null
+        user.tokenForgotPasswordCreationDate = null
         db.save(user)
         return "Your password successfully updated."
     }
@@ -58,24 +65,12 @@ class UserService(val db: UserRepository) {
         return "Your password successfully updated."
     }
 
-    /**
-     * Generate unique token. You may add multiple parameters to create a strong
-     * token.
-     *
-     * @return unique token
-     */
     private fun generateToken(): String {
         val token = StringBuilder()
         return token.append(UUID.randomUUID().toString())
                 .append(UUID.randomUUID().toString()).toString()
     }
 
-    /**
-     * Check whether the created token expired or not.
-     *
-     * @param tokenCreationDate
-     * @return true or false
-     */
     private fun isTokenExpired(tokenCreationDate: LocalDateTime): Boolean {
         val now: LocalDateTime = LocalDateTime.now()
         val diff: Duration = Duration.between(tokenCreationDate, now)

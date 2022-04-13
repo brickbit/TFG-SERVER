@@ -4,9 +4,9 @@ import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
 @Entity
-@Table(name = "degree")
+@Table(name = "degreeDTO")
 @DynamicUpdate
-data class DegreeEntity(
+data class DegreeEntityDTO(
         @Column
         val name: String,
         @Column
