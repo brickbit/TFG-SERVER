@@ -13,7 +13,7 @@ import javax.transaction.Transactional
 import kotlin.math.ceil
 
 @Service
-class CreateScheduleFileService(
+class ScheduleService(
 
         val db: ScheduleRepository
 ) {
@@ -23,13 +23,13 @@ class CreateScheduleFileService(
     var degree: String = ""
     var year: String = ""
 
-    fun post(schedule: ScheduleEntity?) {
+    fun post(schedule: ScheduleEntityDAO?) {
         db.save(schedule)
     }
 
-    fun getAllSchedules(): List<ScheduleEntity> = db.findAll().toList()
+    fun getAllSchedules(): List<ScheduleEntityDAO> = db.findAll().toList()
 
-    fun getSchedule(id: Long): ScheduleEntity? {
+    fun getSchedule(id: Long): ScheduleEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
@@ -38,7 +38,7 @@ class CreateScheduleFileService(
         db.deleteById(id)
     }
 
-    fun updateSchedule(schedule: ScheduleEntity) {
+    fun updateSchedule(schedule: ScheduleEntityDAO) {
         if(db.existsById(schedule.id)) {
             db.save(schedule)
         }

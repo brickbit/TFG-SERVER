@@ -45,7 +45,7 @@ class DepartmentController(val service: DepartmentService, val userService: User
             } else {
                 throw UserException(ExceptionUserModel.WRONG_USER)
             }
-        } else{
+        } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
     }

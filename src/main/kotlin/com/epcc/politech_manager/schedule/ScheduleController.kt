@@ -1,5 +1,9 @@
 package com.epcc.politech_manager.schedule
 
+import com.epcc.politech_manager.error.ExceptionUserModel
+import com.epcc.politech_manager.error.UserException
+import com.epcc.politech_manager.user.UserEntityDAO
+import com.epcc.politech_manager.user.UserService
 import com.epcc.politech_manager.utils.*
 import com.google.gson.Gson
 import org.springframework.core.io.Resource
@@ -14,52 +18,107 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-
 @RestController
-class ScheduleController(val service: CreateScheduleFileService) {
+class ScheduleController(val service: ScheduleService, val userService: UserService) {
 
     private val root: Path = Paths.get("scheduleFile")
 
     @GetMapping("/schedule/download")
-    fun downloadFileFromLocal(@RequestBody requestData: CreateScheduleFileBO): ResponseEntity<*>? {
-        createDirectory()
-        val scheduleType = requestData.scheduleType.toScheduleType()
-        val fileType = requestData.fileType.toFileType()
-        service.initData(scheduleData = requestData.subjects, fileType = fileType, scheduleType = scheduleType, degree = requestData.degree, year = requestData.year)
-        val fileName = service.createFile()
+    fun downloadFileFromLocal(@RequestHeader("Authorization") auth: String,
+                              @RequestBody requestData: ScheduleBO): ResponseEntity<*>? {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            createDirectory()
+            val scheduleType = requestData.scheduleType.toScheduleType()
+            val fileType = requestData.fileType.toFileType()
+            service.initData(scheduleData = requestData.subjects, fileType = fileType, scheduleType = scheduleType, degree = requestData.degree, year = requestData.year)
+            val fileName = service.createFile()
 
-        val resource = loadFile(fileName)
+            val resource = loadFile(fileName)
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.filename?.toString() + "\"")
-                .body<Any?>(resource)
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.filename?.toString() + "\"")
+                    .body<Any?>(resource)
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     @PostMapping("/schedule")
-    fun post(@RequestBody requestData: CreateScheduleFileBO) {
-        val list = flatMatrix(requestData.subjects)
-        service.post(ScheduleEntity(Gson().toJson(list),requestData.scheduleType,requestData.fileType,requestData.degree,requestData.year))
+    fun post(@RequestHeader("Authorization") auth: String,
+             @RequestBody requestData: ScheduleBO)
+    : ResponseOk {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            val list = flatMatrix(requestData.subjects)
+            service.post(
+                    ScheduleEntityDTO(
+                            Gson().toJson(list),
+                            requestData.scheduleType,
+                            requestData.fileType,
+                            requestData.degree,
+                            requestData.year
+                    ).toDAO(user)
+            )
+            return ResponseOk(200, "Schedule successfully created")
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     @GetMapping("/schedule")
-    fun index(): List<CreateScheduleFileBO> = service.getAllSchedules().map {
-        it.toScheduleFileBO()
+    fun index(@RequestHeader("Authorization") auth: String)
+    : List<ScheduleBO> {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            return service.getAllSchedules().map { it.toBO() }
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     @GetMapping("/schedule/{id}")
-    fun getSchedule(@PathVariable id: Long): ScheduleEntity? {
-        return service.getSchedule(id)
+    fun getSchedule(@RequestHeader("Authorization") auth: String,
+                    @PathVariable id: Long)
+    : ScheduleEntityDTO? {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            val schedule = service.getSchedule(id)
+            if (schedule!!.user == user) {
+                return schedule.toDTO()
+            } else {
+                throw UserException(ExceptionUserModel.WRONG_USER)
+            }
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     @PostMapping("/schedule/delete/{id}")
-    fun deleteSchedule(@PathVariable id: Long) {
-        service.deleteSchedule(id)
+    fun deleteSchedule(@RequestHeader("Authorization") auth: String,
+                       @PathVariable id: Long)
+    : ResponseOk {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            service.deleteSchedule(id)
+            return ResponseOk(200,"Schedule successfully deleted")
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     @PostMapping("/schedule/update")
-    fun updateSchedule(@RequestBody schedule: ScheduleEntity) {
-        service.updateSchedule(schedule)
+    fun updateSchedule(@RequestHeader("Authorization") auth: String,
+                       @RequestBody schedule: ScheduleEntityDTO)
+    : ResponseOk {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            service.updateSchedule(schedule.toDAO(user))
+            return ResponseOk(200,"Schedule successfully updated")
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
     }
 
     private fun createDirectory() {
@@ -85,6 +144,5 @@ class ScheduleController(val service: CreateScheduleFileService) {
             throw RuntimeException("Error: " + e.message)
         }
     }
-
 
 }

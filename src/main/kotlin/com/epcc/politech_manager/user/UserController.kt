@@ -5,6 +5,7 @@ import com.epcc.politech_manager.degree.DegreeService
 import com.epcc.politech_manager.department.DepartmentService
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
+import com.epcc.politech_manager.schedule.ScheduleService
 import com.epcc.politech_manager.subject.SubjectService
 import com.epcc.politech_manager.utils.ResponseOk
 import com.epcc.politech_manager.utils.TokenResponseOk
@@ -26,7 +27,8 @@ class UserController(
         val degreeService: DegreeService,
         val departmentService: DepartmentService,
         val classroomService: ClassroomService,
-        val subjectService: SubjectService) {
+        val subjectService: SubjectService,
+        val scheduleService: ScheduleService) {
 
     @PostMapping("/user/register")
     fun signIn(@RequestParam("user") name: String,
@@ -53,6 +55,7 @@ class UserController(
                                     departmentService.getAllDepartments().toMutableList(),
                                     classroomService.getAllClassrooms().toMutableList(),
                                     subjectService.getAllSubject().toMutableList(),
+                                    scheduleService.getAllSchedules().toMutableList(),
                             )
             )
             return ResponseOk(200,"Registration completed successfully")

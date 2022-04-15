@@ -4,17 +4,17 @@ import com.epcc.politech_manager.subject.SubjectBO
 import com.epcc.politech_manager.subject.SubjectEntityDTO
 import com.epcc.politech_manager.subject.toBO
 import com.epcc.politech_manager.subject.toEntity
-import com.epcc.politech_manager.utils.CreateScheduleFileBO
+import com.epcc.politech_manager.user.UserEntityDAO
 import com.epcc.politech_manager.utils.ScheduleType
 import com.epcc.politech_manager.utils.toScheduleType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-fun ScheduleEntity.toScheduleFileBO(): CreateScheduleFileBO {
+fun ScheduleEntityDAO.toBO(): ScheduleBO {
     val listType = object : TypeToken<ArrayList<SubjectEntityDTO>>() {}.type
 
     val list: List<SubjectEntityDTO> = Gson().fromJson(this.subjects, listType)
-    return CreateScheduleFileBO(
+    return ScheduleBO(
             id = this.id,
             subjects = expandMatrix(list, this.scheduleType.toScheduleType()),
             scheduleType = this.scheduleType,
@@ -22,6 +22,25 @@ fun ScheduleEntity.toScheduleFileBO(): CreateScheduleFileBO {
             degree = this.degree,
             year = this.year)
 }
+
+fun ScheduleEntityDTO.toDAO(user: UserEntityDAO) = ScheduleEntityDAO(
+        subjects = this.subjects,
+        scheduleType = this.scheduleType,
+        fileType = this.fileType,
+        degree = this.degree,
+        year = this.year,
+        id = this.id,
+        user = user
+)
+
+fun ScheduleEntityDAO.toDTO() = ScheduleEntityDTO(
+        subjects = this.subjects,
+        scheduleType = this.scheduleType,
+        fileType = this.fileType,
+        degree = this.degree,
+        year = this.year,
+        id = this.id
+)
 
 fun expandMatrix(subjects: List<SubjectEntityDTO>, scheduletype: ScheduleType): List<List<List<SubjectBO?>>> {
     val matrix: Array<Array<Array<SubjectBO?>>> = when (scheduletype) {

@@ -1,8 +1,8 @@
-package com.epcc.politech_manager.utils
+package com.epcc.politech_manager.schedule
 
 import com.epcc.politech_manager.subject.SubjectBO
 
-data class CreateScheduleFileBO(
+data class ScheduleBO(
         val id: Long,
         val subjects: List<List<List<SubjectBO?>>>,
         val scheduleType: Int,
