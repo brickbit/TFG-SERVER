@@ -1,7 +1,7 @@
 package com.epcc.politech_manager.schedule
 
-import com.epcc.politech_manager.subject.Subject
-import com.epcc.politech_manager.subject.SubjectEntity
+import com.epcc.politech_manager.subject.SubjectBO
+import com.epcc.politech_manager.subject.SubjectEntityDTO
 import com.epcc.politech_manager.subject.toBO
 import com.epcc.politech_manager.subject.toEntity
 import com.epcc.politech_manager.utils.CreateScheduleFileBO
@@ -11,9 +11,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 fun ScheduleEntity.toScheduleFileBO(): CreateScheduleFileBO {
-    val listType = object : TypeToken<ArrayList<SubjectEntity>>() {}.type
+    val listType = object : TypeToken<ArrayList<SubjectEntityDTO>>() {}.type
 
-    val list: List<SubjectEntity> = Gson().fromJson(this.subjects, listType)
+    val list: List<SubjectEntityDTO> = Gson().fromJson(this.subjects, listType)
     return CreateScheduleFileBO(
             id = this.id,
             subjects = expandMatrix(list, this.scheduleType.toScheduleType()),
@@ -23,8 +23,8 @@ fun ScheduleEntity.toScheduleFileBO(): CreateScheduleFileBO {
             year = this.year)
 }
 
-fun expandMatrix(subjects: List<SubjectEntity>, scheduletype: ScheduleType): List<List<List<Subject?>>> {
-    val matrix: Array<Array<Array<Subject?>>> = when (scheduletype) {
+fun expandMatrix(subjects: List<SubjectEntityDTO>, scheduletype: ScheduleType): List<List<List<SubjectBO?>>> {
+    val matrix: Array<Array<Array<SubjectBO?>>> = when (scheduletype) {
         ScheduleType.ONE_SUBJECT -> {
             Array(5){ Array(24) {Array(1) {null} } }
         }
@@ -53,8 +53,8 @@ fun expandMatrix(subjects: List<SubjectEntity>, scheduletype: ScheduleType): Lis
     return matrix.map { hours -> hours.map { it.toList() }.toList() }.toList()
 }
 
-fun flatMatrix(matrix: List<List<List<Subject?>>>): List<SubjectEntity> {
-    val listSubject = mutableListOf<SubjectEntity>()
+fun flatMatrix(matrix: List<List<List<SubjectBO?>>>): List<SubjectEntityDTO> {
+    val listSubject = mutableListOf<SubjectEntityDTO>()
     matrix.mapIndexed { i, hour ->
         hour.mapIndexed { j, turn ->
             turn.mapIndexed { k, subject ->
@@ -67,12 +67,12 @@ fun flatMatrix(matrix: List<List<List<Subject?>>>): List<SubjectEntity> {
     val groupedList = listSubject.groupBy {
         it.id
     }
-    val finalList = mutableListOf<SubjectEntity>()
+    val finalList = mutableListOf<SubjectEntityDTO>()
     groupedList.values.map { groupedSubjects ->
         var days = ""
         var hours = ""
         var turns = ""
-        var subjectToCopy: SubjectEntity? = null
+        var subjectToCopy: SubjectEntityDTO? = null
         groupedSubjects.map {
             days = days + it.days + ","
             hours = hours + it.hours + ","
@@ -80,7 +80,7 @@ fun flatMatrix(matrix: List<List<List<Subject?>>>): List<SubjectEntity> {
             subjectToCopy = it
         }
         subjectToCopy?.let {
-            finalList.add(SubjectEntity(
+            finalList.add(SubjectEntityDTO(
                     it.name,
                     it.acronym,
                     it.classGroup,

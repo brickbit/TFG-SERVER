@@ -4,7 +4,7 @@ import com.epcc.politech_manager.classroom.ClassroomBO
 import com.epcc.politech_manager.degree.DegreeBO
 import com.epcc.politech_manager.department.DepartmentBO
 
-data class Subject(
+data class SubjectBO(
         val name: String,
         val acronym: String,
         val classGroup: String,

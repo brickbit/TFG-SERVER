@@ -6,13 +6,13 @@ import javax.transaction.Transactional
 @Service
 class SubjectService(val db: SubjectRepository) {
 
-    fun getAllSubject(): List<SubjectEntity> = db.findAll().toList()
+    fun getAllSubject(): List<SubjectEntityDAO> = db.findAll().toList()
 
-    fun post(subject: SubjectEntity?) {
+    fun post(subject: SubjectEntityDAO) {
         db.save(subject)
     }
 
-    fun getSubject(id: Long): SubjectEntity? {
+    fun getSubject(id: Long): SubjectEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
@@ -21,7 +21,7 @@ class SubjectService(val db: SubjectRepository) {
         db.deleteById(id)
     }
 
-    fun updateSubject(subject: SubjectEntity) {
+    fun updateSubject(subject: SubjectEntityDAO) {
         if(db.existsById(subject.id)) {
             db.save(subject)
         }

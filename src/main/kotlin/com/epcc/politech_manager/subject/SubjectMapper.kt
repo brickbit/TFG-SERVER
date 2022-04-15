@@ -4,11 +4,14 @@ import com.epcc.politech_manager.classroom.toBO
 import com.epcc.politech_manager.classroom.toEntity
 import com.epcc.politech_manager.degree.toBO
 import com.epcc.politech_manager.degree.toDTO
+import com.epcc.politech_manager.department.DepartmentEntityDAO
+import com.epcc.politech_manager.department.DepartmentEntityDTO
 import com.epcc.politech_manager.department.toBO
 import com.epcc.politech_manager.department.toEntity
+import com.epcc.politech_manager.user.UserEntityDAO
 
 
-fun SubjectEntity.toBO() = Subject(
+fun SubjectEntityDTO.toBO() = SubjectBO(
         name = this.name,
         acronym = this.acronym,
         classGroup = this.classGroup,
@@ -23,7 +26,7 @@ fun SubjectEntity.toBO() = Subject(
         department = this.department.toBO(),
         degree = degree.toBO())
 
-fun Subject.toEntity(days:String, hours: String, turns: String) = SubjectEntity(
+fun SubjectBO.toEntity(days:String, hours: String, turns: String) = SubjectEntityDTO(
         name = this.name,
         acronym = this.acronym,
         classGroup = this.classGroup,
@@ -40,3 +43,42 @@ fun Subject.toEntity(days:String, hours: String, turns: String) = SubjectEntity(
         degree = this.degree.toDTO(),
         color = this.color,
         id = this.id)
+
+fun SubjectEntityDTO.toDAO(user: UserEntityDAO) = SubjectEntityDAO(
+        name = this.name,
+        acronym = this.acronym,
+        classGroup = this.classGroup,
+        seminary = this.seminary,
+        laboratory = this.laboratory,
+        english = this.english,
+        time = this.time,
+        semester = this.semester,
+        days = days,
+        hours = hours,
+        turns = turns,
+        classroom = this.classroom,
+        department = this.department,
+        degree = this.degree,
+        color = this.color,
+        id = this.id,
+        user = user
+)
+
+fun SubjectEntityDAO.toDTO() = SubjectEntityDTO(
+        name = this.name,
+        acronym = this.acronym,
+        classGroup = this.classGroup,
+        seminary = this.seminary,
+        laboratory = this.laboratory,
+        english = this.english,
+        time = this.time,
+        semester = this.semester,
+        days = days,
+        hours = hours,
+        turns = turns,
+        classroom = this.classroom,
+        department = this.department,
+        degree = this.degree,
+        color = this.color,
+        id = this.id
+)

@@ -3,6 +3,7 @@ package com.epcc.politech_manager.subject
 import com.epcc.politech_manager.classroom.ClassroomEntityDTO
 import com.epcc.politech_manager.degree.DegreeEntityDTO
 import com.epcc.politech_manager.department.DepartmentEntityDTO
+import com.epcc.politech_manager.user.UserEntityDAO
 import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -11,7 +12,7 @@ import javax.persistence.*
 @Entity
 @Table(name = "subject")
 @DynamicUpdate
-data class SubjectEntity(
+data class SubjectEntityDAO(
         @Column
         val name: String,
         @Column
@@ -50,5 +51,8 @@ data class SubjectEntity(
         val color: Int,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="subject_id")
-        val id: Long = -1
+        val id: Long = -1,
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        val user: UserEntityDAO
 )

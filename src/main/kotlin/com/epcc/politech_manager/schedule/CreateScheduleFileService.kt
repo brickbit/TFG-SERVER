@@ -1,7 +1,6 @@
 package com.epcc.politech_manager.schedule
 
-import com.epcc.politech_manager.subject.Subject
-import com.epcc.politech_manager.subject.SubjectEntity
+import com.epcc.politech_manager.subject.SubjectBO
 import com.epcc.politech_manager.utils.*
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
@@ -18,7 +17,7 @@ class CreateScheduleFileService(
 
         val db: ScheduleRepository
 ) {
-    var scheduleData: List<List<List<Subject?>>> = emptyList()
+    var scheduleData: List<List<List<SubjectBO?>>> = emptyList()
     var fileType: FileType = FileType.SUBJECT
     var scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT
     var degree: String = ""
@@ -45,7 +44,7 @@ class CreateScheduleFileService(
         }
     }
 
-    fun initData(scheduleData: List<List<List<Subject?>>>,
+    fun initData(scheduleData: List<List<List<SubjectBO?>>>,
                  fileType: FileType,
                  scheduleType: ScheduleType,
                  degree: String,
@@ -230,7 +229,7 @@ class CreateScheduleFileService(
             }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
                 val subjectsOfWeek = scheduleFileData.subjectsName.filter { !it.laboratory && !it.seminary && !it.english }.distinctBy { it.acronym }
-                val subjectOfDay = mutableListOf<Subject>()
+                val subjectOfDay = mutableListOf<SubjectBO>()
                 subjectsOfWeek.map {
                     subjectOfDay.add(it)
                     subjectOfDay.add(it)
@@ -363,11 +362,11 @@ class CreateScheduleFileService(
         workbook.close()
     }
 
-    private fun makeTranspose(matrix: MutableList<MutableList<Subject?>>): MutableList<MutableList<Subject?>> {
+    private fun makeTranspose(matrix: MutableList<MutableList<SubjectBO?>>): MutableList<MutableList<SubjectBO?>> {
         val row = matrix.size
         val column = matrix[0].size
 
-        val transpose: MutableList<MutableList<Subject?>> = MutableList(column) { MutableList(row) { null } }
+        val transpose: MutableList<MutableList<SubjectBO?>> = MutableList(column) { MutableList(row) { null } }
         for (i in 0 until row) {
             for (j in 0 until column) {
                 transpose[j][i] = matrix[i][j]
@@ -376,7 +375,7 @@ class CreateScheduleFileService(
         return transpose
     }
 
-    private fun checkTurnEmpty(matrix: MutableList<MutableList<Subject?>>): List<Int> {
+    private fun checkTurnEmpty(matrix: MutableList<MutableList<SubjectBO?>>): List<Int> {
         val positions: MutableList<Int> = mutableListOf()
         matrix.mapIndexed { i, value ->
             val nulls = value.count { subject -> subject == null }
@@ -396,7 +395,7 @@ class CreateScheduleFileService(
         return positions
     }
 
-    private fun emptyMorning(positions: List<Int>, matrix: MutableList<MutableList<Subject?>>): Pair<MutableList<MutableList<Subject?>>,Boolean> {
+    private fun emptyMorning(positions: List<Int>, matrix: MutableList<MutableList<SubjectBO?>>): Pair<MutableList<MutableList<SubjectBO?>>,Boolean> {
         val morning = listOf(11,10,9,8,7,6,5,4,3,2,1,0)
         var isEmpty = false
         if(positions.containsAll(morning)) {
@@ -408,7 +407,7 @@ class CreateScheduleFileService(
         return Pair(matrix,isEmpty)
     }
 
-    private fun emptyAfternoon(positions: List<Int>, matrix: MutableList<MutableList<Subject?>>): Pair<MutableList<MutableList<Subject?>>,Boolean> {
+    private fun emptyAfternoon(positions: List<Int>, matrix: MutableList<MutableList<SubjectBO?>>): Pair<MutableList<MutableList<SubjectBO?>>,Boolean> {
         val afternoon = listOf(23,22,21,20,19,18,17,16,15,14,13,12)
         var isEmpty = false
         if(positions.containsAll(afternoon)) {
@@ -422,8 +421,8 @@ class CreateScheduleFileService(
 
 
 
-    private fun flatMatrix(subjects: List<List<List<Subject?>>>): MutableList<MutableList<Subject?>>{
-        val matrix: MutableList<MutableList<Subject?>> = mutableListOf()
+    private fun flatMatrix(subjects: List<List<List<SubjectBO?>>>): MutableList<MutableList<SubjectBO?>>{
+        val matrix: MutableList<MutableList<SubjectBO?>> = mutableListOf()
         subjects.map { day ->
             day.mapIndexed { i, hour ->
                 matrix.add(mutableListOf())
@@ -437,7 +436,7 @@ class CreateScheduleFileService(
     }
 
 
-    private fun deleteEmptyCols(matrix: MutableList<MutableList<Subject?>>): MutableList<MutableList<Subject?>> {
+    private fun deleteEmptyCols(matrix: MutableList<MutableList<SubjectBO?>>): MutableList<MutableList<SubjectBO?>> {
         val transpose = makeTranspose(matrix)
         transpose.removeIf { subjects ->
                 val nulls = subjects.count { subject -> subject == null }
@@ -446,7 +445,7 @@ class CreateScheduleFileService(
         return makeTranspose(transpose)
     }
 
-    private fun getEmptyCols(matrix: MutableList<MutableList<Subject?>>): MutableList<Int> {
+    private fun getEmptyCols(matrix: MutableList<MutableList<SubjectBO?>>): MutableList<Int> {
         val transpose = makeTranspose(matrix)
         val listIndex = mutableListOf<Int>()
         transpose.mapIndexed { index, subjects ->
@@ -460,9 +459,9 @@ class CreateScheduleFileService(
 
 
 
-    private fun obtainSubjects(matrix: MutableList<MutableList<Subject?>>): List<Subject> {
+    private fun obtainSubjects(matrix: MutableList<MutableList<SubjectBO?>>): List<SubjectBO> {
         val transpose = makeTranspose(matrix)
-        var listSubjects = mutableListOf<Subject>()
+        var listSubjects = mutableListOf<SubjectBO>()
         when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
                 transpose.map { subjects ->
@@ -488,7 +487,7 @@ class CreateScheduleFileService(
         return listSubjects
     }
 
-    private fun getDeletedCols(matrix: MutableList<MutableList<Subject?>>): List<Int> {
+    private fun getDeletedCols(matrix: MutableList<MutableList<SubjectBO?>>): List<Int> {
         val transpose = makeTranspose(matrix)
         val positions: MutableList<Int> = mutableListOf()
         transpose.mapIndexed { i, subjects ->
