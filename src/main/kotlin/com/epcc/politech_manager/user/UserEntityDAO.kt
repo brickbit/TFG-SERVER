@@ -3,6 +3,7 @@ package com.epcc.politech_manager.user
 import com.epcc.politech_manager.classroom.ClassroomEntityDAO
 import com.epcc.politech_manager.degree.DegreeEntityDAO
 import com.epcc.politech_manager.department.DepartmentEntityDAO
+import com.epcc.politech_manager.exam.ExamEntityDAO
 import com.epcc.politech_manager.schedule.ScheduleEntityDAO
 import com.epcc.politech_manager.subject.SubjectEntityDAO
 import org.hibernate.annotations.DynamicUpdate
@@ -38,5 +39,7 @@ data class UserEntityDAO(
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
         var subject: MutableList<SubjectEntityDAO>,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-        var schedule: MutableList<ScheduleEntityDAO>
+        var schedule: MutableList<ScheduleEntityDAO>,
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        var exam: MutableList<ExamEntityDAO>
 )
