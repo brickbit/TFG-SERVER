@@ -5,7 +5,7 @@ import com.epcc.politech_manager.subject.SubjectBO
 data class ExamBO(
         val subject: SubjectBO,
         val acronym: String,
-        val semester: String,
+        val semester: Int,
         val date: String,
         val call: String,
         val turn: String,

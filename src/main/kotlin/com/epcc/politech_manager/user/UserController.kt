@@ -1,5 +1,6 @@
 package com.epcc.politech_manager.user
 
+import com.epcc.politech_manager.calendar.CalendarService
 import com.epcc.politech_manager.classroom.ClassroomService
 import com.epcc.politech_manager.degree.DegreeService
 import com.epcc.politech_manager.department.DepartmentService
@@ -30,7 +31,8 @@ class UserController(
         val classroomService: ClassroomService,
         val subjectService: SubjectService,
         val scheduleService: ScheduleService,
-        val examService: ExamService) {
+        val examService: ExamService,
+        val calendarService: CalendarService) {
 
     @PostMapping("/user/register")
     fun signIn(@RequestParam("user") name: String,
@@ -56,9 +58,10 @@ class UserController(
                                     degreeService.getAllDegrees().toMutableList(),
                                     departmentService.getAllDepartments().toMutableList(),
                                     classroomService.getAllClassrooms().toMutableList(),
-                                    subjectService.getAllSubject().toMutableList(),
+                                    subjectService.getAllSubjects().toMutableList(),
                                     scheduleService.getAllSchedules().toMutableList(),
-                                    examService.getAllExams().toMutableList()
+                                    examService.getAllExams().toMutableList(),
+                                    calendarService.getAllCalendars().toMutableList()
                             )
             )
             return ResponseOk(200,"Registration completed successfully")

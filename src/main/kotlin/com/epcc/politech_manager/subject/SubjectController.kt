@@ -1,6 +1,5 @@
 package com.epcc.politech_manager.subject
 
-import com.epcc.politech_manager.degree.toDTO
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -15,7 +14,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
     fun index(@RequestHeader("Authorization") auth: String): List<SubjectEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            return service.getAllSubject().filter { it.user == user }.map { it.toDTO() }
+            return service.getAllSubjects().filter { it.user == user }.map { it.toDTO() }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }

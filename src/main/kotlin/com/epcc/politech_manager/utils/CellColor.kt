@@ -6,5 +6,6 @@ enum class CellColor{
     YELLOW,
     GOLD,
     GREEN,
-    WHITE
+    WHITE,
+    BLACK
 }

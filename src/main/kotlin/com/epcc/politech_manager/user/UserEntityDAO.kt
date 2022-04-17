@@ -1,5 +1,6 @@
 package com.epcc.politech_manager.user
 
+import com.epcc.politech_manager.calendar.CalendarEntityDAO
 import com.epcc.politech_manager.classroom.ClassroomEntityDAO
 import com.epcc.politech_manager.degree.DegreeEntityDAO
 import com.epcc.politech_manager.department.DepartmentEntityDAO
@@ -41,5 +42,7 @@ data class UserEntityDAO(
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
         var schedule: MutableList<ScheduleEntityDAO>,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-        var exam: MutableList<ExamEntityDAO>
+        var exam: MutableList<ExamEntityDAO>,
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        var calendar: MutableList<CalendarEntityDAO>
 )

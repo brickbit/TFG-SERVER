@@ -1,5 +1,6 @@
 package com.epcc.politech_manager.user
 
+import com.epcc.politech_manager.calendar.CalendarEntityDAO
 import com.epcc.politech_manager.classroom.ClassroomEntityDAO
 import com.epcc.politech_manager.degree.DegreeEntityDAO
 import com.epcc.politech_manager.department.DepartmentEntityDAO
@@ -13,7 +14,8 @@ fun UserEntityDTO.toDAO(
         classrooms: MutableList<ClassroomEntityDAO>,
         subjects: MutableList<SubjectEntityDAO>,
         schedules: MutableList<ScheduleEntityDAO>,
-        exams: MutableList<ExamEntityDAO>) = UserEntityDAO(
+        exams: MutableList<ExamEntityDAO>,
+        calendars: MutableList<CalendarEntityDAO>) = UserEntityDAO(
         name = name,
         email = email,
         password = password,
@@ -26,7 +28,8 @@ fun UserEntityDTO.toDAO(
         classroom = classrooms,
         subject = subjects,
         schedule = schedules,
-        exam = exams
+        exam = exams,
+        calendar = calendars,
 )
 
 fun UserEntityDAO.toDTO() = UserEntityDTO(

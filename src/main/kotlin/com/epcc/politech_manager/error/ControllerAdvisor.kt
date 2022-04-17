@@ -26,6 +26,15 @@ class ControllerAdvisor: ResponseEntityExceptionHandler() {
         return ResponseEntity(body, HttpStatus.NOT_FOUND)
     }
 
+    @ExceptionHandler(FileException::class)
+    fun handleFileException(
+            ex: UserException?, request: WebRequest?): ResponseEntity<Any>? {
+        val body: MutableMap<String, Any> = LinkedHashMap()
+        body["timestamp"] = LocalDateTime.now()
+        body["message"] = ex!!.message!!
+        return ResponseEntity(body, HttpStatus.NOT_FOUND)
+    }
+
     override fun handleMethodArgumentNotValid(
             ex: MethodArgumentNotValidException, headers: HttpHeaders?,
             status: HttpStatus, request: WebRequest?): ResponseEntity<Any>? {

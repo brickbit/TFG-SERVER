@@ -330,6 +330,7 @@ class ScheduleService(
             CellColor.GOLD -> style.fillForegroundColor = IndexedColors.GOLD.getIndex()
             CellColor.GREEN -> style.fillForegroundColor = IndexedColors.LIGHT_GREEN.getIndex()
             CellColor.WHITE -> style.fillForegroundColor = IndexedColors.WHITE.getIndex()
+            CellColor.BLACK -> style.fillForegroundColor = IndexedColors.BLACK.getIndex()
         }
         style.borderTop = BorderStyle.THIN
         style.topBorderColor = IndexedColors.GREY_40_PERCENT.getIndex()

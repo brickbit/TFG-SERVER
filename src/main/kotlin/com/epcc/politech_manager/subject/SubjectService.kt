@@ -6,7 +6,7 @@ import javax.transaction.Transactional
 @Service
 class SubjectService(val db: SubjectRepository) {
 
-    fun getAllSubject(): List<SubjectEntityDAO> = db.findAll().toList()
+    fun getAllSubjects(): List<SubjectEntityDAO> = db.findAll().toList()
 
     fun post(subject: SubjectEntityDAO) {
         db.save(subject)
