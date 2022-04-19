@@ -16,7 +16,7 @@ fun createBuildingSchedule(): List<List<List<SubjectBO?>>> {
     val graphicalExpressionDepartment = DepartmentBO("Expresión gráfica", "EX.GR", 3)
     val economicsDepartment = DepartmentBO("Economía", "EC", 4)
 
-    val degree = DegreeBO("Grado en Edificación", 8,"2021-2022")
+    val degree = DegreeBO("Grado en Edificación", 8,"2021-2022","123")
 
     val calculusSeminary = SubjectBO("CÁLCULO", "SCAL", "A", seminary = true, laboratory = false, english = false, time = 60, classroom = mathematicsClassroom, department = mathematicsDepartment, color = 2, id = 111, semester = 0,degree = degree)
     val calculus = SubjectBO("CÁLCULO", "CAL", "A", seminary = false, laboratory = false, english = false, time = 180, classroom = buildingClassroom, department = mathematicsDepartment, color = 2, id =112, semester = 0,degree = degree)
@@ -161,7 +161,7 @@ fun createBuildingSchedule(): List<List<List<SubjectBO?>>> {
 }
 
 fun createComputerScienceDegree(): List<List<List<SubjectBO?>>> {
-    val degree = DegreeBO( "Grado en Ingeniería informática en ingeniería de computadores", 8,"2021-2022",1)
+    val degree = DegreeBO( "Grado en Ingeniería informática en ingeniería de computadores", 8,"2021-2022","123")
 
     val c3 = ClassroomBO("C-3",Pavilion.CENTRAL, "C-3",1)
     //val c1b = Classroom("C-1B",Pavilion.CIVIL_WORK, "C-1B",2)

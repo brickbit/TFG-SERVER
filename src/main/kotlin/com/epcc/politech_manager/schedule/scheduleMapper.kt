@@ -72,13 +72,13 @@ fun expandMatrix(subjects: List<SubjectEntityDTO>, scheduletype: ScheduleType): 
     return matrix.map { hours -> hours.map { it.toList() }.toList() }.toList()
 }
 
-fun flatMatrix(matrix: List<List<List<SubjectBO?>>>): List<SubjectEntityDTO> {
+fun flatMatrix(matrix: List<List<List<SubjectBO?>>>, user: UserEntityDAO): List<SubjectEntityDTO> {
     val listSubject = mutableListOf<SubjectEntityDTO>()
     matrix.mapIndexed { i, hour ->
         hour.mapIndexed { j, turn ->
             turn.mapIndexed { k, subject ->
                 subject?.let {
-                    listSubject.add(it.toEntity("$i","$j","$k"))
+                    listSubject.add(it.toEntity("$i","$j","$k",user))
                 }
             }
         }

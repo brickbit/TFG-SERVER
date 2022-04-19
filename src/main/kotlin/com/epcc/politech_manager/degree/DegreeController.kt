@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.degree
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -35,15 +37,19 @@ class DegreeController(val service: DegreeService, val userService: UserService)
 
     @GetMapping("/degree/{id}")
     fun getDegree(@RequestHeader("Authorization") auth: String,
-                  @PathVariable id: Long)
-    : DegreeEntityDTO? {
+                  @PathVariable id: String)
+    : DegreeEntityDTO {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            val degree = service.getDegree(id)
-            if (degree?.user == user) {
-                return degree.toDTO()
+            val degree: DegreeEntityDAO? = service.getDegree(id)
+            if (degree == null) {
+                throw DataException(ExceptionDataModel.DEGREE_NOT_EXIST)
             } else {
-                throw UserException(ExceptionUserModel.WRONG_USER)
+                if (degree.user == user) {
+                    return degree.toDTO()
+                } else {
+                    throw UserException(ExceptionUserModel.WRONG_USER)
+                }
             }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
@@ -52,7 +58,7 @@ class DegreeController(val service: DegreeService, val userService: UserService)
 
     @PostMapping("/degree/delete/{id}")
     fun deleteDegree(@RequestHeader("Authorization") auth: String,
-                     @PathVariable id: Long)
+                     @PathVariable id: String)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

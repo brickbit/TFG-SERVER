@@ -51,7 +51,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            val list = flatMatrix(requestData.subjects)
+            val list = flatMatrix(requestData.subjects, user)
             service.post(
                     ScheduleEntityDTO(
                             Gson().toJson(list),
