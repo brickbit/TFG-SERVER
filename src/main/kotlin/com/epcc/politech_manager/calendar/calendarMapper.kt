@@ -39,8 +39,11 @@ fun CalendarBO.toDTO(): CalendarEntityDTO {
 }
 
 fun CalendarEntityDTO.toBO(): CalendarBO {
-    val exams: List<String> = this.exams.split(";")
-    val examsBO: List<ExamBO> = exams.map { Gson().fromJson(it, ExamBO::class.java) }
+    val exams: MutableList<String> = this.exams.split(";").toMutableList()
+    exams.removeLast()
+    val examsBO: List<ExamBO> = exams.map {
+        Gson().fromJson(it, ExamBO::class.java)
+    }
     return CalendarBO(
             exams = examsBO,
             degree = this.degree,

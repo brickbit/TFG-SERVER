@@ -65,7 +65,9 @@ class CalendarController(val service: CalendarService, val userService: UserServ
             : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            service.post( requestData.toDTO().toDAO(user) )
+            val calendarDTO = requestData.toDTO()
+            val calendarDAO = calendarDTO.toDAO(user)
+            service.post(calendarDAO)
             return ResponseOk(200, "Calendar successfully created")
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)

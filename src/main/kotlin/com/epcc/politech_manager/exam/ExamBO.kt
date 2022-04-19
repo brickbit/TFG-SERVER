@@ -11,10 +11,10 @@ data class ExamBO(
         val turn: String,
         val id: Long = -1) {
     override fun toString(): String = """{
-        "subject": "$subject",
-        "acronym": "$acronym",
+        "subject": $subject,
+        "acronym": $acronym,
         "semester": $semester,
-        "date": $date,
+        "date": "$date",
         "call": $call,
         "turn": $turn,
         "id": $id

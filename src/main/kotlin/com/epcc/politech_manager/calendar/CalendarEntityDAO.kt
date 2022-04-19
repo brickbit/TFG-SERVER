@@ -8,7 +8,7 @@ import javax.persistence.*
 @Table(name = "calendarDAO")
 @DynamicUpdate
 data class CalendarEntityDAO(
-        @Column
+        @Column(columnDefinition="Text")
         val exams: String,
         @Column
         val degree: String,
