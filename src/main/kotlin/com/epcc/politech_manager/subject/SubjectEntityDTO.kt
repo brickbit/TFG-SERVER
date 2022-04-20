@@ -1,15 +1,9 @@
 package com.epcc.politech_manager.subject
 
-import com.epcc.politech_manager.classroom.ClassroomBO
-import com.epcc.politech_manager.classroom.ClassroomEntityDAO
-import com.epcc.politech_manager.degree.DegreeBO
-import com.epcc.politech_manager.degree.DegreeEntityDAO
-import com.epcc.politech_manager.department.DepartmentBO
-import com.epcc.politech_manager.department.DepartmentEntityDAO
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
+import com.epcc.politech_manager.classroom.ClassroomEntityDTO
+import com.epcc.politech_manager.degree.DegreeEntityDTO
+import com.epcc.politech_manager.department.DepartmentEntityDTO
 import java.util.*
-import javax.persistence.*
 
 data class SubjectEntityDTO(
         val name: String,
@@ -23,8 +17,8 @@ data class SubjectEntityDTO(
         val days: String,
         val hours: String,
         val turns: String,
-        val classroom: ClassroomBO,
-        val department: DepartmentBO,
-        val degree: DegreeBO,
+        val classroom: ClassroomEntityDTO,
+        val department: DepartmentEntityDTO,
+        val degree: DegreeEntityDTO,
         val color: Int,
         val id: String = UUID.randomUUID().toString())

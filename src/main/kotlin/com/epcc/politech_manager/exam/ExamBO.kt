@@ -9,7 +9,7 @@ data class ExamBO(
         val date: String,
         val call: String,
         val turn: String,
-        val id: Long = -1) {
+        val id: String) {
     override fun toString(): String = """{
         "subject": $subject,
         "acronym": $acronym,

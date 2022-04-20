@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.exam
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -35,15 +37,19 @@ class ExamController(val service: ExamService, val userService: UserService) {
 
     @GetMapping("/exam/{id}")
     fun getExam(@RequestHeader("Authorization") auth: String,
-                @PathVariable id: Long)
+                @PathVariable id: String)
             : ExamEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
             val exam = service.getExam(id)
-            if (exam.user == user) {
-                return exam.toDTO()
+            if (exam == null) {
+                throw DataException(ExceptionDataModel.EXAM_NOT_EXIST)
             } else {
-                throw UserException(ExceptionUserModel.WRONG_USER)
+                if (exam.user == user) {
+                    return exam.toDTO()
+                } else {
+                    throw UserException(ExceptionUserModel.WRONG_USER)
+                }
             }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
@@ -52,7 +58,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
 
     @PostMapping("/exam/delete/{id}")
     fun deleteExam(@RequestHeader("Authorization") auth: String,
-                   @PathVariable id: Long)
+                   @PathVariable id: String)
             : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

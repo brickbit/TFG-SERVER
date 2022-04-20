@@ -27,7 +27,7 @@ data class ExamEntityDAO(
         val turn: String,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "exam_id")
-        val id: Long = -1,
+        val id: String,
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         val user: UserEntityDAO)

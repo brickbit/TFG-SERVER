@@ -5,4 +5,5 @@ enum class ExceptionDataModel {
     DEPARTMENT_NOT_EXIST,
     CLASSROOM_NOT_EXIST,
     SUBJECT_NOT_EXIST,
+    EXAM_NOT_EXIST,
 }
