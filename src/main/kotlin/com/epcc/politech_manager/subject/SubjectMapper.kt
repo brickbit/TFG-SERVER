@@ -6,7 +6,8 @@ import com.epcc.politech_manager.degree.toBO
 import com.epcc.politech_manager.degree.toDAO
 import com.epcc.politech_manager.degree.toDTO
 import com.epcc.politech_manager.department.toBO
-import com.epcc.politech_manager.department.toEntity
+import com.epcc.politech_manager.department.toDAO
+import com.epcc.politech_manager.department.toDTO
 import com.epcc.politech_manager.user.UserEntityDAO
 
 
@@ -22,7 +23,7 @@ fun SubjectEntityDTO.toBO() = SubjectBO(
         color = this.color,
         id = this.id,
         semester = this.semester,
-        department = this.department.toBO(),
+        department = this.department.toDTO().toBO(),
         degree = degree.toDTO().toBO())
 
 fun SubjectBO.toEntity(days:String, hours: String, turns: String, user: UserEntityDAO) = SubjectEntityDTO(
@@ -38,7 +39,7 @@ fun SubjectBO.toEntity(days:String, hours: String, turns: String, user: UserEnti
         hours = hours,
         turns = turns,
         classroom = this.classroom.toEntity(),
-        department = this.department.toEntity(),
+        department = this.department.toDTO().toDAO(user),
         degree = this.degree.toDTO().toDAO(user),
         color = this.color,
         id = this.id)
@@ -56,7 +57,7 @@ fun SubjectEntityDTO.toDAO(user: UserEntityDAO) = SubjectEntityDAO(
         hours = hours,
         turns = turns,
         classroom = this.classroom,
-        department = this.department,
+        department = this.department.toDTO().toDAO(user),
         degree = this.degree.toDTO().toDAO(user),
         color = this.color,
         id = this.id,

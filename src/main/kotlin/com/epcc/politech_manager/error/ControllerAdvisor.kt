@@ -28,7 +28,7 @@ class ControllerAdvisor: ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(FileException::class)
     fun handleFileException(
-            ex: UserException?, request: WebRequest?): ResponseEntity<Any>? {
+            ex: FileException?, request: WebRequest?): ResponseEntity<Any>? {
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
         body["message"] = ex!!.message!!
@@ -37,7 +37,7 @@ class ControllerAdvisor: ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(DataException::class)
     fun handleDataException(
-            ex: UserException?, request: WebRequest?): ResponseEntity<Any>? {
+            ex: DataException?, request: WebRequest?): ResponseEntity<Any>? {
         val body: MutableMap<String, Any> = LinkedHashMap()
         body["timestamp"] = LocalDateTime.now()
         body["message"] = ex!!.message!!

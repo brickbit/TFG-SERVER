@@ -2,4 +2,4 @@ package com.epcc.politech_manager.department
 
 import org.springframework.data.repository.CrudRepository
 
-interface DepartmentRepository: CrudRepository<DepartmentEntityDAO, Long>
+interface DepartmentRepository: CrudRepository<DepartmentEntityDAO, String>

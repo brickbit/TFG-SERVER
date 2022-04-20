@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.department
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -35,15 +37,19 @@ class DepartmentController(val service: DepartmentService, val userService: User
 
     @GetMapping("/department/{id}")
     fun getDepartment(@RequestHeader("Authorization") auth: String,
-                      @PathVariable id: Long)
+                      @PathVariable id: String)
     : DepartmentEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            val department = service.getDepartment(id)
-            if (department.user == user) {
-                return department.toDTO()
+            val department: DepartmentEntityDAO? = service.getDepartment(id)
+            if (department == null) {
+                throw DataException(ExceptionDataModel.DEPARTMENT_NOT_EXIST)
             } else {
-                throw UserException(ExceptionUserModel.WRONG_USER)
+                if (department.user == user) {
+                    return department.toDTO()
+                } else {
+                    throw UserException(ExceptionUserModel.WRONG_USER)
+                }
             }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
@@ -52,7 +58,7 @@ class DepartmentController(val service: DepartmentService, val userService: User
 
     @PostMapping("/department/delete/{id}")
     fun deleteDepartment(@RequestHeader("Authorization") auth: String,
-                         @PathVariable id: Long)
+                         @PathVariable id: String)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

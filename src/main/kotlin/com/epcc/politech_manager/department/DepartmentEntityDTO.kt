@@ -1,16 +1,8 @@
 package com.epcc.politech_manager.department
 
-import org.hibernate.annotations.DynamicUpdate
-import javax.persistence.*
+import java.util.*
 
-@Entity
-@Table(name = "department")
-@DynamicUpdate
 data class DepartmentEntityDTO(
-        @Column
         val name: String,
-        @Column
         val acronym: String,
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "department_id")
-        val id: Long = -1)
+        val id: String = UUID.randomUUID().toString())
