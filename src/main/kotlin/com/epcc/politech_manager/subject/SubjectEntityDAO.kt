@@ -1,6 +1,6 @@
 package com.epcc.politech_manager.subject
 
-import com.epcc.politech_manager.classroom.ClassroomEntityDTO
+import com.epcc.politech_manager.classroom.ClassroomEntityDAO
 import com.epcc.politech_manager.degree.DegreeEntityDAO
 import com.epcc.politech_manager.department.DepartmentEntityDAO
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -38,7 +38,7 @@ data class SubjectEntityDAO(
         @OnDelete(action = OnDeleteAction.CASCADE)
         @JoinColumn(name = "classroom_id")
         @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])
-        val classroom: ClassroomEntityDTO,
+        val classroom: ClassroomEntityDAO,
         @OnDelete(action = OnDeleteAction.CASCADE)
         @JoinColumn(name = "department_id")
         @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])

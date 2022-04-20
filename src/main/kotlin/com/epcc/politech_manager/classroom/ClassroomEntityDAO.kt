@@ -16,7 +16,7 @@ data class ClassroomEntityDAO(
         val acronym: String,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="classroom_id")
-        val id: Long = -1,
+        val id: String,
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         val user: UserEntityDAO

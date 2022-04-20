@@ -4,7 +4,7 @@ data class ClassroomBO(
         val name: String,
         val pavilion: Pavilion,
         val acronym: String,
-        val id: Long = -1) {
+        val id: String) {
     override fun toString(): String = """{
             "name": "$name",
             "pavilion": "$pavilion",

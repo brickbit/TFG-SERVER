@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.classroom
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 class ClassroomController(val service: ClassroomService, val userService: UserService) {
+
     @GetMapping("/classroom")
     fun index(@RequestHeader("Authorization") auth: String): List<ClassroomEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
@@ -34,15 +37,19 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
 
     @GetMapping("/classroom/{id}")
     fun getClassroom(@RequestHeader("Authorization") auth: String,
-                     @PathVariable id: Long)
+                     @PathVariable id: String)
     : ClassroomEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            val department = service.getClassroom(id)
-            if (department?.user == user) {
-                return department.toDTO()
+            val classroom = service.getClassroom(id)
+            if (classroom == null) {
+                throw DataException(ExceptionDataModel.CLASSROOM_NOT_EXIST)
             } else {
-                throw UserException(ExceptionUserModel.WRONG_USER)
+                if (classroom.user == user) {
+                    return classroom.toDTO()
+                } else {
+                    throw UserException(ExceptionUserModel.WRONG_USER)
+                }
             }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
@@ -51,7 +58,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
 
     @PostMapping("/classroom/delete/{id}")
     fun deleteClassroom(@RequestHeader("Authorization") auth: String,
-                        @PathVariable id: Long)
+                        @PathVariable id: String)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

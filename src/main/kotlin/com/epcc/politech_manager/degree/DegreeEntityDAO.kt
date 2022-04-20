@@ -5,7 +5,7 @@ import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
 @Entity
-@Table(name = "degreeDAO")
+@Table(name = "degree")
 @DynamicUpdate
 data class DegreeEntityDAO(
         @Column
