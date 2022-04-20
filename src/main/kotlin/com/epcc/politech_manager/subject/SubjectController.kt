@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.subject
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -35,15 +37,19 @@ class SubjectController(val service: SubjectService, val userService: UserServic
 
     @GetMapping("/subject/{id}")
     fun getSubject(@RequestHeader("Authorization") auth: String,
-                   @PathVariable id: Long)
+                   @PathVariable id: String)
     : SubjectEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
             val subject = service.getSubject(id)
-            if (subject?.user == user) {
-                return subject.toDTO()
+            if (subject == null) {
+                throw DataException(ExceptionDataModel.SUBJECT_NOT_EXIST)
             } else {
-                throw UserException(ExceptionUserModel.WRONG_USER)
+                if (subject?.user == user) {
+                    return subject.toDTO()
+                } else {
+                    throw UserException(ExceptionUserModel.WRONG_USER)
+                }
             }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
@@ -52,7 +58,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
 
     @PostMapping("/subject/delete/{id}")
     fun deleteSubject(@RequestHeader("Authorization") auth: String,
-                      @PathVariable id: Long)
+                      @PathVariable id: String)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

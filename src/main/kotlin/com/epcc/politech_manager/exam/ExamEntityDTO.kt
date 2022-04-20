@@ -1,6 +1,6 @@
 package com.epcc.politech_manager.exam
 
-import com.epcc.politech_manager.subject.SubjectEntityDTO
+import com.epcc.politech_manager.subject.SubjectEntityDAO
 import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -13,7 +13,7 @@ data class ExamEntityDTO(
         @OnDelete(action = OnDeleteAction.CASCADE)
         @JoinColumn(name = "subject_id")
         @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])
-        val subject: SubjectEntityDTO,
+        val subject: SubjectEntityDAO,
         @Column
         val acronym: String,
         @Column

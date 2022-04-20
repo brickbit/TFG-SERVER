@@ -8,6 +8,12 @@ fun DegreeEntityDTO.toBO() = DegreeBO(
         year = this.year,
         id = this.id)
 
+fun DegreeEntityDAO.toBO() = DegreeBO(
+        name = this.name,
+        num_semesters = this.num_semesters,
+        year = this.year,
+        id = this.id)
+
 fun DegreeBO.toDTO() = DegreeEntityDTO(
         name = this.name,
         num_semesters = this.num_semesters,

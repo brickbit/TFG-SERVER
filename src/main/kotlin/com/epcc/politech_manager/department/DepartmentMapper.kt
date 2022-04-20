@@ -8,6 +8,11 @@ fun DepartmentEntityDTO.toBO() = DepartmentBO(
         acronym = this.acronym,
         id = this.id)
 
+fun DepartmentEntityDAO.toBO() = DepartmentBO(
+        name = this.name,
+        acronym = this.acronym,
+        id = this.id)
+
 fun DepartmentBO.toDTO() = DepartmentEntityDTO(
         name = this.name,
         acronym = this.acronym,

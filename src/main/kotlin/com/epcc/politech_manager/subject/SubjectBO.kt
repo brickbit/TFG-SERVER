@@ -17,7 +17,7 @@ data class SubjectBO(
         val department: DepartmentBO,
         val degree: DegreeBO,
         val color: Int,
-        val id: Long = -1) {
+        val id: String) {
     override fun toString() = """{
             "name": "$name", 
             "acronym": "$acronym",

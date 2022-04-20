@@ -27,7 +27,7 @@ fun SubjectEntityDTO.toBO() = SubjectBO(
         department = this.department.toDTO().toBO(),
         degree = degree.toDTO().toBO())
 
-fun SubjectBO.toEntity(days:String, hours: String, turns: String, user: UserEntityDAO) = SubjectEntityDTO(
+fun SubjectBO.toEntity(days:String, hours: String, turns: String) = SubjectEntityDTO(
         name = this.name,
         acronym = this.acronym,
         classGroup = this.classGroup,
@@ -39,9 +39,9 @@ fun SubjectBO.toEntity(days:String, hours: String, turns: String, user: UserEnti
         days = days,
         hours = hours,
         turns = turns,
-        classroom = this.classroom.toDTO().toDAO(user),
-        department = this.department.toDTO().toDAO(user),
-        degree = this.degree.toDTO().toDAO(user),
+        classroom = this.classroom,
+        department = this.department,
+        degree = this.degree,
         color = this.color,
         id = this.id)
 
@@ -57,9 +57,9 @@ fun SubjectEntityDTO.toDAO(user: UserEntityDAO) = SubjectEntityDAO(
         days = days,
         hours = hours,
         turns = turns,
-        classroom = this.classroom,
-        department = this.department,
-        degree = this.degree,
+        classroom = this.classroom.toDTO().toDAO(user),
+        department = this.department.toDTO().toDAO(user),
+        degree = this.degree.toDTO().toDAO(user),
         color = this.color,
         id = this.id,
         user = user
@@ -77,9 +77,9 @@ fun SubjectEntityDAO.toDTO() = SubjectEntityDTO(
         days = days,
         hours = hours,
         turns = turns,
-        classroom = this.classroom,
-        department = this.department,
-        degree = this.degree,
+        classroom = this.classroom.toBO(),
+        department = this.department.toBO(),
+        degree = this.degree.toBO(),
         color = this.color,
         id = this.id
 )

@@ -9,6 +9,12 @@ fun ClassroomEntityDTO.toBO() = ClassroomBO(
         acronym = this.acronym,
         id = this.id)
 
+fun ClassroomEntityDAO.toBO() = ClassroomBO(
+        name = this.name,
+        pavilion = this.pavilion,
+        acronym = this.acronym,
+        id = this.id)
+
 fun ClassroomBO.toDTO() = ClassroomEntityDTO(
         name = this.name,
         pavilion = this.pavilion,

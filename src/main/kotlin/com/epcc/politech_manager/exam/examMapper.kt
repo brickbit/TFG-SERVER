@@ -5,7 +5,7 @@ import com.epcc.politech_manager.subject.toDTO
 import com.epcc.politech_manager.user.UserEntityDAO
 
 fun ExamEntityDTO.toDAO(user: UserEntityDAO) = ExamEntityDAO(
-        subject = this.subject.toDAO(user),
+        subject = this.subject,
         acronym = this.acronym,
         semester = semester,
         date = date,
@@ -16,7 +16,7 @@ fun ExamEntityDTO.toDAO(user: UserEntityDAO) = ExamEntityDAO(
 )
 
 fun ExamEntityDAO.toDTO() = ExamEntityDTO(
-        subject = this.subject.toDTO(),
+        subject = this.subject,
         acronym = this.acronym,
         semester = semester,
         date = date,
