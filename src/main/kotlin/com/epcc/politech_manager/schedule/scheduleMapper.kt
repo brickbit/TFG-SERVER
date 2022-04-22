@@ -3,7 +3,7 @@ package com.epcc.politech_manager.schedule
 import com.epcc.politech_manager.subject.SubjectBO
 import com.epcc.politech_manager.subject.SubjectEntityDTO
 import com.epcc.politech_manager.subject.toBO
-import com.epcc.politech_manager.subject.toEntity
+import com.epcc.politech_manager.subject.toDTO
 import com.epcc.politech_manager.user.UserEntityDAO
 import com.epcc.politech_manager.utils.ScheduleType
 import com.epcc.politech_manager.utils.toScheduleType
@@ -78,7 +78,7 @@ fun flatMatrix(matrix: List<List<List<SubjectBO?>>>): List<SubjectEntityDTO> {
         hour.mapIndexed { j, turn ->
             turn.mapIndexed { k, subject ->
                 subject?.let {
-                    listSubject.add(it.toEntity("$i","$j","$k"))
+                    listSubject.add(it.toDTO("$i","$j","$k"))
                 }
             }
         }

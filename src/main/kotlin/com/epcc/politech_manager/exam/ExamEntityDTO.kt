@@ -10,4 +10,14 @@ data class ExamEntityDTO(
         val date: String,
         val call: String,
         val turn: String,
-        val id: String = UUID.randomUUID().toString())
+        val id: String = UUID.randomUUID().toString()) {
+    override fun toString(): String = """{
+        "subject": $subject,
+        "acronym": "$acronym",
+        "semester": $semester,
+        "date": "$date",
+        "call": "$call",
+        "turn": "$turn",
+        "id": "$id"
+    }""".trimIndent()
+}

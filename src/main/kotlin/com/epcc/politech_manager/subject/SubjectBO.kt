@@ -31,7 +31,7 @@ data class SubjectBO(
             "semester": $semester,
             "degree": $degree,
             "classroom": $classroom,
-            "department": $department,
+            "department": $department
         }""".trimMargin()
 
 }

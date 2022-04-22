@@ -27,7 +27,7 @@ fun SubjectEntityDTO.toBO() = SubjectBO(
         department = this.department.toBO(),
         degree = degree.toBO())
 
-fun SubjectBO.toEntity(days:String, hours: String, turns: String) = SubjectEntityDTO(
+fun SubjectBO.toDTO(days:String, hours: String, turns: String) = SubjectEntityDTO(
         name = this.name,
         acronym = this.acronym,
         classGroup = this.classGroup,

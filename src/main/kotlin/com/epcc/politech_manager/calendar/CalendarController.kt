@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.calendar
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -24,7 +26,7 @@ class CalendarController(val service: CalendarService, val userService: UserServ
 
     @GetMapping("/calendar/download")
     fun downloadFileFromLocal(@RequestHeader("Authorization") auth: String,
-                              @RequestBody requestData: CalendarBO): ResponseEntity<*>? {
+                              @RequestBody requestData: CalendarEntityDTO): ResponseEntity<*>? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
             createDirectory()
@@ -50,10 +52,11 @@ class CalendarController(val service: CalendarService, val userService: UserServ
     }
 
     @GetMapping("/calendar")
-    fun index(@RequestHeader("Authorization") auth: String): List<CalendarBO> {
+    fun index(@RequestHeader("Authorization") auth: String): List<CalendarEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            return service.getAllCalendars().filter { it.user == user }.map { it.toDTO().toBO() }
+            val calendars = service.getAllCalendars().filter { it.user == user }
+            return calendars.map { it.toDTO() }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
@@ -61,12 +64,11 @@ class CalendarController(val service: CalendarService, val userService: UserServ
 
     @PostMapping("/calendar")
     fun post(@RequestHeader("Authorization") auth: String,
-             @RequestBody requestData: CalendarBO)
+             @RequestBody requestData: CalendarEntityDTO)
             : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            val calendarDTO = requestData.toDTO()
-            val calendarDAO = calendarDTO.toDAO(user)
+            val calendarDAO = requestData.toDAO(user)
             service.post(calendarDAO)
             return ResponseOk(200, "Calendar successfully created")
         } else {
@@ -76,15 +78,19 @@ class CalendarController(val service: CalendarService, val userService: UserServ
 
     @GetMapping("/calendar/{id}")
     fun getCalendar(@RequestHeader("Authorization") auth: String,
-                  @PathVariable id: Long)
-            : CalendarBO? {
+                  @PathVariable id: String)
+            : CalendarEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
             val calendar = service.getCalendar(id)
-            if (calendar?.user == user) {
-                return calendar.toDTO().toBO()
+            if (calendar == null) {
+                throw DataException(ExceptionDataModel.CLASSROOM_NOT_EXIST)
             } else {
-                throw UserException(ExceptionUserModel.WRONG_USER)
+                if (calendar.user == user) {
+                    return calendar.toDTO()
+                } else {
+                    throw UserException(ExceptionUserModel.WRONG_USER)
+                }
             }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
@@ -93,7 +99,7 @@ class CalendarController(val service: CalendarService, val userService: UserServ
 
     @PostMapping("/calendar/delete/{id}")
     fun deleteCalendar(@RequestHeader("Authorization") auth: String,
-                     @PathVariable id: Long)
+                     @PathVariable id: String)
             : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -106,11 +112,11 @@ class CalendarController(val service: CalendarService, val userService: UserServ
 
     @PostMapping("/calendar/update")
     fun updateCalendar(@RequestHeader("Authorization") auth: String,
-                     @RequestBody calendar: CalendarBO)
+                     @RequestBody calendar: CalendarEntityDTO)
             : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            service.updateCalendar(calendar.toDTO().toDAO(user))
+            service.updateCalendar(calendar.toDAO(user))
             return ResponseOk(200,"Calendar successfully updated")
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)

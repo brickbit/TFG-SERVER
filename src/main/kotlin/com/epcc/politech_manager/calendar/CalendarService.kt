@@ -1,6 +1,9 @@
 package com.epcc.politech_manager.calendar
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.exam.ExamBO
+import com.epcc.politech_manager.exam.ExamEntityDTO
 import com.epcc.politech_manager.utils.CellColor
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
@@ -16,7 +19,7 @@ import kotlin.math.abs
 @Service
 class CalendarService(val db: CalendarRepository) {
 
-    var exams = emptyList<ExamBO?>()
+    var exams = emptyList<ExamEntityDTO?>()
 
     var degree: String = ""
 
@@ -34,21 +37,27 @@ class CalendarService(val db: CalendarRepository) {
         db.save(calendar)
     }
 
-    fun getCalendar(id: Long): CalendarEntityDAO? {
+    fun getCalendar(id: String): CalendarEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
-    fun deleteCalendar(id: Long) {
-        db.deleteById(id)
+    fun deleteCalendar(id: String) {
+        try {
+            db.deleteById(id)
+        } catch (e: Exception) {
+            throw DataException(ExceptionDataModel.CALENDAR_NOT_EXIST)
+        }
     }
 
     fun updateCalendar(calendar: CalendarEntityDAO) {
         if(db.existsById(calendar.id)) {
             db.save(calendar)
+        } else {
+            throw DataException(ExceptionDataModel.CALENDAR_NOT_EXIST)
         }
     }
 
-    fun initData(exams: List<ExamBO?>,
+    fun initData(exams: List<ExamEntityDTO?>,
                  degree: String,
                  year: String,
                  call: String,
@@ -148,12 +157,12 @@ class CalendarService(val db: CalendarRepository) {
         }
     }
 
-    private fun createDays(sheet: Sheet, workbook: Workbook,row: Int) {
+    private fun createDays(sheet: Sheet, workbook: Workbook,rowNum: Int) {
         val diffInMillis: Long = abs(endDate.time - startDate.time)
         val diff: Long = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS)
         val numRows: Int = diff.toInt()
 
-        val row = sheet.createRow(row)
+        val row = sheet.createRow(rowNum)
         for (i in 0..numRows) {
             val cell = row.createCell(i)
             val calendar = Calendar.getInstance()

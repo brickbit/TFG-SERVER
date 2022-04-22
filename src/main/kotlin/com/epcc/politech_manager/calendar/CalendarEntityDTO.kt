@@ -1,24 +1,23 @@
 package com.epcc.politech_manager.calendar
 
-import org.hibernate.annotations.DynamicUpdate
-import javax.persistence.*
+import com.epcc.politech_manager.exam.ExamEntityDTO
+import java.util.*
 
-@Entity
-@Table(name = "calendarDTO")
-@DynamicUpdate
 data class CalendarEntityDTO(
-        @Column
-        val exams: String,
-        @Column
+        val exams: List<ExamEntityDTO>,
         val degree: String,
-        @Column
         val year: String,
-        @Column
         val startDate: String,
-        @Column
         val endDate: String,
-        @Column
         val call: String,
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "calendar_id")
-        val id: Long = -1)
+        val id: String = UUID.randomUUID().toString()) {
+    override fun toString(): String = """{
+        "exams": ${exams.map { toString() }},
+        "degree": $degree,
+        "year": $year,
+        "startDate": "$startDate",
+        "endDate": $endDate,
+        "call": $call,
+        "id": "$id"
+    }""".trimIndent()
+}

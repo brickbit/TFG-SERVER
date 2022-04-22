@@ -5,7 +5,7 @@ import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
 @Entity
-@Table(name = "calendarDAO")
+@Table(name = "calendar")
 @DynamicUpdate
 data class CalendarEntityDAO(
         @Column(columnDefinition="Text")
@@ -22,7 +22,7 @@ data class CalendarEntityDAO(
         val call: String,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "calendar_id")
-        val id: Long = -1,
+        val id: String,
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         val user: UserEntityDAO
