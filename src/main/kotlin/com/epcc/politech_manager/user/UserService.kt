@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.user
 
+import com.epcc.politech_manager.error.ExceptionUserModel
+import com.epcc.politech_manager.error.UserException
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.LocalDateTime
@@ -12,6 +14,8 @@ class UserService(val db: UserRepository) {
     fun post(user: UserEntityDAO?) {
         if(getUser(user!!.name) == null) {
             db.save(user)
+        } else {
+            throw UserException(ExceptionUserModel.INCORRECT_USER)
         }
     }
 
@@ -27,7 +31,11 @@ class UserService(val db: UserRepository) {
 
     @Transactional
     fun deleteUser(id: Long) {
-        db.deleteById(id)
+        try {
+            db.deleteById(id)
+        } catch (e: Exception) {
+            throw UserException(ExceptionUserModel.USER_NOT_EXIST)
+        }
     }
 
     fun assignToken(user: UserEntityDAO, token: String?) {
@@ -78,7 +86,7 @@ class UserService(val db: UserRepository) {
     }
 
     companion object {
-        private val EXPIRE_TOKEN_AFTER_MINUTES: Long = 30
+        private const val EXPIRE_TOKEN_AFTER_MINUTES: Long = 30
     }
 
 }

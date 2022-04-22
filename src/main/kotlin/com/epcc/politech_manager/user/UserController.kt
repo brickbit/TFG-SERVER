@@ -125,6 +125,8 @@ class UserController(
         if (!response.startsWith("Invalid")) {
             response = "http://localhost:6000/user/reset-password?token=$response"
             code = 200
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
         }
         return ResponseOk(code,response)
     }
