@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.schedule
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.subject.SubjectBO
 import com.epcc.politech_manager.utils.*
 import org.apache.poi.ss.usermodel.*
@@ -29,18 +31,24 @@ class ScheduleService(
 
     fun getAllSchedules(): List<ScheduleEntityDAO> = db.findAll().toList()
 
-    fun getSchedule(id: Long): ScheduleEntityDAO? {
+    fun getSchedule(id: String): ScheduleEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
     @Transactional
-    fun deleteSchedule(id: Long) {
-        db.deleteById(id)
+    fun deleteSchedule(id: String) {
+        try {
+            db.deleteById(id)
+        } catch (e: Exception) {
+            throw DataException(ExceptionDataModel.SCHEDULE_NOT_EXIST)
+        }
     }
 
     fun updateSchedule(schedule: ScheduleEntityDAO) {
         if(db.existsById(schedule.id)) {
             db.save(schedule)
+        } else {
+            throw DataException(ExceptionDataModel.SCHEDULE_NOT_EXIST)
         }
     }
 

@@ -1,5 +1,7 @@
 package com.epcc.politech_manager.schedule
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
@@ -80,15 +82,19 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
 
     @GetMapping("/schedule/{id}")
     fun getSchedule(@RequestHeader("Authorization") auth: String,
-                    @PathVariable id: Long)
+                    @PathVariable id: String)
     : ScheduleEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
             val schedule = service.getSchedule(id)
-            if (schedule!!.user == user) {
-                return schedule.toDTO()
+            if (schedule == null) {
+                throw DataException(ExceptionDataModel.SCHEDULE_NOT_EXIST)
             } else {
-                throw UserException(ExceptionUserModel.WRONG_USER)
+                if (schedule.user == user) {
+                    return schedule.toDTO()
+                } else {
+                    throw UserException(ExceptionUserModel.WRONG_USER)
+                }
             }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
@@ -97,7 +103,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
 
     @PostMapping("/schedule/delete/{id}")
     fun deleteSchedule(@RequestHeader("Authorization") auth: String,
-                       @PathVariable id: Long)
+                       @PathVariable id: String)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
