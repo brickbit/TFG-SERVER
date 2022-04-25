@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Table(name = "userDAO")
+@Table(name = "user")
 @DynamicUpdate
 data class UserEntityDAO(
         @Column
@@ -30,7 +30,7 @@ data class UserEntityDAO(
         var tokenForgotPasswordCreationDate: LocalDateTime?,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="user_id")
-        val id: Long = -1,
+        val id: String,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
         var degrees: MutableList<DegreeEntityDAO>,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")

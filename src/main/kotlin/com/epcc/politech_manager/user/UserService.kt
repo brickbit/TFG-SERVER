@@ -30,7 +30,7 @@ class UserService(val db: UserRepository) {
     }
 
     @Transactional
-    fun deleteUser(id: Long) {
+    fun deleteUser(id: String) {
         try {
             db.deleteById(id)
         } catch (e: Exception) {

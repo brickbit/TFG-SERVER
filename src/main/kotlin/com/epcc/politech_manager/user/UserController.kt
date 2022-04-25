@@ -123,7 +123,7 @@ class UserController(
         var response: String = service.forgotPassword(email)!!
         var code = 400
         if (!response.startsWith("Invalid")) {
-            response = "http://localhost:6000/user/reset-password?token=$response"
+            response = "https://politech-manager.herokuapp.com/user/reset-password?token=$response"
             code = 200
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
