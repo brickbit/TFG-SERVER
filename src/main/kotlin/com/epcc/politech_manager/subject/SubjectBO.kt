@@ -3,6 +3,7 @@ package com.epcc.politech_manager.subject
 import com.epcc.politech_manager.classroom.ClassroomBO
 import com.epcc.politech_manager.degree.DegreeBO
 import com.epcc.politech_manager.department.DepartmentBO
+import java.util.*
 
 data class SubjectBO(
         val name: String,
@@ -17,7 +18,7 @@ data class SubjectBO(
         val department: DepartmentBO,
         val degree: DegreeBO,
         val color: Int,
-        val id: String) {
+        val id: String = UUID.randomUUID().toString()) {
     override fun toString() = """{
             "name": "$name", 
             "acronym": "$acronym",

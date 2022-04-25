@@ -24,7 +24,8 @@ internal class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 		http.csrf().disable()
 				.addFilterAfter(JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter::class.java)
 				.authorizeRequests()
-				.antMatchers(HttpMethod.POST, "/user").permitAll()
+				.antMatchers(HttpMethod.POST, "/user/**").permitAll()
+				.antMatchers(HttpMethod.PUT, "/user/**").permitAll()
 				.anyRequest().authenticated()
 	}
 }

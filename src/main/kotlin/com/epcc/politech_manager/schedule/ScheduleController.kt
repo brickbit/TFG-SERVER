@@ -116,11 +116,21 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
 
     @PostMapping("/schedule/update")
     fun updateSchedule(@RequestHeader("Authorization") auth: String,
-                       @RequestBody schedule: ScheduleEntityDTO)
+                       @RequestBody schedule: ScheduleBO)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            service.updateSchedule(schedule.toDAO(user))
+            val list = flatMatrix(schedule.subjects)
+            service.updateSchedule(
+                    ScheduleEntityDTO(
+                            Gson().toJson(list),
+                            schedule.scheduleType,
+                            schedule.fileType,
+                            schedule.degree,
+                            schedule.year,
+                            schedule.id
+                    ).toDAO(user)
+            )
             return ResponseOk(200,"Schedule successfully updated")
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)

@@ -109,9 +109,9 @@ class UserController(
     }
 
     @PostMapping("/delete")
-    fun deleteUser(@RequestParam("user") username: String): ResponseOk {
-        if (service.getUser(username) != null) {
-            service.deleteUser(service.getUser(username)!!.id)
+    fun deleteUser(@RequestParam email: String): ResponseOk {
+        if (service.getUser(email) != null) {
+            service.deleteUser(service.getUser(email)!!.id)
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
