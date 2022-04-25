@@ -1,34 +1,37 @@
 package com.epcc.politech_manager.subject
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 @Service
 class SubjectService(val db: SubjectRepository) {
 
-    fun getAllSubject(): List<SubjectsBO> = db.getAllSubjects()
+    fun getAllSubjects(): List<SubjectEntityDAO> = db.findAll().toList()
 
-    fun post(subject: Subjects) {
+    fun post(subject: SubjectEntityDAO) {
         db.save(subject)
     }
 
-    fun getSubject(id: String): SubjectsBO {
-        return db.getSubject(id)
+    fun getSubject(id: String): SubjectEntityDAO? {
+        return db.findById(id).orElse(null)
     }
 
+    @Transactional
     fun deleteSubject(id: String) {
-        db.deleteSubject(id)
+        try {
+            db.deleteById(id)
+        } catch (e: Exception) {
+            throw DataException(ExceptionDataModel.SUBJECT_NOT_EXIST)
+        }
     }
 
-    fun updateSubject(subject: SubjectsBO, id: String) {
-        db.updateSubject(
-                subject.name,
-                subject.semester,
-                subject.laboratory,
-                subject.conference,
-                subject.time_subject,
-                subject.id_classroom,
-                subject.id_department,
-                subject.id_degree,
-                id)
+    fun updateSubject(subject: SubjectEntityDAO) {
+        if(db.existsById(subject.id)) {
+            db.save(subject)
+        } else {
+            throw DataException(ExceptionDataModel.SUBJECT_NOT_EXIST)
+        }
     }
 }

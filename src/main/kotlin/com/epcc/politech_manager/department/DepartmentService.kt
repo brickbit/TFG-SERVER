@@ -1,25 +1,35 @@
 package com.epcc.politech_manager.department
 
+import com.epcc.politech_manager.error.DataException
+import com.epcc.politech_manager.error.ExceptionDataModel
 import org.springframework.stereotype.Service
 
 @Service
 class DepartmentService(val db: DepartmentRepository) {
 
-    fun findDepartments(): List<Departments> = db.getAllDepartments()
+    fun getAllDepartments(): List<DepartmentEntityDAO> = db.findAll().toList()
 
-    fun post(department: Departments) {
+    fun post(department: DepartmentEntityDAO) {
         db.save(department)
     }
 
-    fun  getDepartment(id: String): Departments {
-        return db.getDepartment(id)
+    fun  getDepartment(id: String): DepartmentEntityDAO? {
+        return db.findById(id).orElse(null)
     }
 
     fun  deleteDepartment(id: String) {
-        db.deleteDepartment(id)
+        try {
+            db.deleteById(id)
+        } catch (e: Exception) {
+            throw DataException(ExceptionDataModel.DEPARTMENT_NOT_EXIST)
+        }
     }
 
-    fun updateDepartment(name: String, id: String) {
-        db.updateDepartment(name, id)
+    fun updateDepartment(department: DepartmentEntityDAO) {
+        if(db.existsById(department.id)) {
+            db.save(department)
+        } else {
+            throw DataException(ExceptionDataModel.DEPARTMENT_NOT_EXIST)
+        }
     }
 }

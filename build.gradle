@@ -1,10 +1,17 @@
+buildscript {
+	dependencies {
+		classpath "org.jetbrains.kotlin:kotlin-noarg:1.5.30"
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.6.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
-	id 'org.jetbrains.kotlin.jvm' version '1.4.32'
-	id 'org.jetbrains.kotlin.plugin.spring' version '1.4.32'
+	id 'org.jetbrains.kotlin.jvm' version '1.5.30'
+	id 'org.jetbrains.kotlin.plugin.spring' version '1.5.30'
 }
+apply plugin: "kotlin-jpa"
 
 group = 'com.epcc'
 version = '0.0.1-SNAPSHOT'
@@ -17,11 +24,19 @@ repositories {
 dependencies {
 	implementation'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation'org.springframework.boot:spring-boot-starter-web'
+	implementation'org.springframework.boot:spring-boot-starter-security'
+	implementation'io.jsonwebtoken:jjwt:0.9.0'
 	implementation'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation'org.jetbrains.kotlin:kotlin-reflect'
 	implementation'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+	implementation'org.apache.poi:poi:4.1.2'
+	implementation'org.apache.poi:poi-ooxml:4.1.2'
 	runtimeOnly'com.h2database:h2'
+	implementation'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation'com.google.code.gson:gson'
+	runtimeOnly("org.postgresql:postgresql")
 	testImplementation'org.springframework.boot:spring-boot-starter-test'
+	testImplementation'org.hibernate:hibernate-testing'
 }
 
 test {
