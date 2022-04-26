@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Table(name = "user")
+@Table(name = "userEntity")
 @DynamicUpdate
 data class UserEntityDAO(
         @Column
@@ -29,18 +29,18 @@ data class UserEntityDAO(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="uid")
         val id: String,
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
         var degrees: MutableList<DegreeEntityDAO>,
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
         var department: MutableList<DepartmentEntityDAO>,
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
         var classroom: MutableList<ClassroomEntityDAO>,
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
         var subject: MutableList<SubjectEntityDAO>,
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
         var schedule: MutableList<ScheduleEntityDAO>,
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
         var exam: MutableList<ExamEntityDAO>,
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
         var calendar: MutableList<CalendarEntityDAO>
 )
