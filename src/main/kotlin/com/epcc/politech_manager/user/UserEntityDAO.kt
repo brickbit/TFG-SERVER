@@ -8,8 +8,6 @@ import com.epcc.politech_manager.exam.ExamEntityDAO
 import com.epcc.politech_manager.schedule.ScheduleEntityDAO
 import com.epcc.politech_manager.subject.SubjectEntityDAO
 import org.hibernate.annotations.DynamicUpdate
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -29,7 +27,7 @@ data class UserEntityDAO(
         @Column(columnDefinition = "TIMESTAMP")
         var tokenForgotPasswordCreationDate: LocalDateTime?,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name="user_id")
+        @Column(name="uid")
         val id: String,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
         var degrees: MutableList<DegreeEntityDAO>,

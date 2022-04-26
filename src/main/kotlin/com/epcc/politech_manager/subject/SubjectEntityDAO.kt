@@ -53,6 +53,6 @@ data class SubjectEntityDAO(
         @Column(name="subject_id")
         val id: String,
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id")
+        @JoinColumn(name = "uid")
         val user: UserEntityDAO
 )

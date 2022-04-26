@@ -18,6 +18,6 @@ data class ClassroomEntityDAO(
         @Column(name="classroom_id")
         val id: String,
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id")
+        @JoinColumn(name = "uid")
         val user: UserEntityDAO
 )

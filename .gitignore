@@ -47,3 +47,7 @@ out/
 build/libs/
 
 src/main/kotlin/com/epcc/politech_manager/.DS_Store
+
+src/main/.DS_Store
+
+.DS_Store
