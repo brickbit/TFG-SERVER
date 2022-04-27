@@ -13,11 +13,11 @@ class DepartmentService(val db: DepartmentRepository) {
         db.save(department)
     }
 
-    fun  getDepartment(id: String): DepartmentEntityDAO? {
+    fun  getDepartment(id: Long): DepartmentEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
-    fun  deleteDepartment(id: String) {
+    fun  deleteDepartment(id: Long) {
         try {
             db.deleteById(id)
         } catch (e: Exception) {

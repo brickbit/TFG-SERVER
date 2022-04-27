@@ -37,7 +37,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
 
     @GetMapping("/exam/{id}")
     fun getExam(@RequestHeader("Authorization") auth: String,
-                @PathVariable id: String)
+                @PathVariable id: Long)
             : ExamEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -58,7 +58,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
 
     @PostMapping("/exam/delete/{id}")
     fun deleteExam(@RequestHeader("Authorization") auth: String,
-                   @PathVariable id: String)
+                   @PathVariable id: Long)
             : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

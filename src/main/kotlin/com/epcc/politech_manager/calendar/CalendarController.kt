@@ -78,7 +78,7 @@ class CalendarController(val service: CalendarService, val userService: UserServ
 
     @GetMapping("/calendar/{id}")
     fun getCalendar(@RequestHeader("Authorization") auth: String,
-                  @PathVariable id: String)
+                  @PathVariable id: Long)
             : CalendarEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -99,7 +99,7 @@ class CalendarController(val service: CalendarService, val userService: UserServ
 
     @PostMapping("/calendar/delete/{id}")
     fun deleteCalendar(@RequestHeader("Authorization") auth: String,
-                     @PathVariable id: String)
+                     @PathVariable id: Long)
             : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

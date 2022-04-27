@@ -14,11 +14,11 @@ class ClassroomService(val db: ClassroomRepository) {
         db.save(classrooms)
     }
 
-    fun getClassroom(id: String): ClassroomEntityDAO? {
+    fun getClassroom(id: Long): ClassroomEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
-    fun deleteClassroom(id: String) {
+    fun deleteClassroom(id: Long) {
         try {
             db.deleteById(id)
         } catch (e: Exception) {

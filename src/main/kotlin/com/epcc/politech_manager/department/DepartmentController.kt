@@ -37,7 +37,7 @@ class DepartmentController(val service: DepartmentService, val userService: User
 
     @GetMapping("/department/{id}")
     fun getDepartment(@RequestHeader("Authorization") auth: String,
-                      @PathVariable id: String)
+                      @PathVariable id: Long)
     : DepartmentEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -58,7 +58,7 @@ class DepartmentController(val service: DepartmentService, val userService: User
 
     @PostMapping("/department/delete/{id}")
     fun deleteDepartment(@RequestHeader("Authorization") auth: String,
-                         @PathVariable id: String)
+                         @PathVariable id: Long)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

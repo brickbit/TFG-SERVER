@@ -28,7 +28,7 @@ data class UserEntityDAO(
         var tokenForgotPasswordCreationDate: LocalDateTime?,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="uid")
-        val id: String,
+        val id: Long,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
         var degrees: MutableList<DegreeEntityDAO>,
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")

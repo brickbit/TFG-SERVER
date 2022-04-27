@@ -82,7 +82,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
 
     @GetMapping("/schedule/{id}")
     fun getSchedule(@RequestHeader("Authorization") auth: String,
-                    @PathVariable id: String)
+                    @PathVariable id: Long)
     : ScheduleEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -103,7 +103,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
 
     @PostMapping("/schedule/delete/{id}")
     fun deleteSchedule(@RequestHeader("Authorization") auth: String,
-                       @PathVariable id: String)
+                       @PathVariable id: Long)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

@@ -1,7 +1,6 @@
 package com.epcc.politech_manager.calendar
 
 import com.epcc.politech_manager.exam.ExamEntityDTO
-import java.util.*
 
 data class CalendarEntityDTO(
         val exams: List<ExamEntityDTO>,
@@ -10,7 +9,7 @@ data class CalendarEntityDTO(
         val startDate: String,
         val endDate: String,
         val call: String,
-        val id: String = UUID.randomUUID().toString()) {
+        val id: Long = -1) {
     override fun toString(): String = """{
         "exams": ${exams.map { toString() }},
         "degree": $degree,
@@ -18,6 +17,6 @@ data class CalendarEntityDTO(
         "startDate": "$startDate",
         "endDate": $endDate,
         "call": $call,
-        "id": "$id"
+        "id": $id
     }""".trimIndent()
 }

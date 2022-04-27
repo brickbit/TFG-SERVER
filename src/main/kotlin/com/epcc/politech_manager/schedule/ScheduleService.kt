@@ -31,12 +31,12 @@ class ScheduleService(
 
     fun getAllSchedules(): List<ScheduleEntityDAO> = db.findAll().toList()
 
-    fun getSchedule(id: String): ScheduleEntityDAO? {
+    fun getSchedule(id: Long): ScheduleEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
     @Transactional
-    fun deleteSchedule(id: String) {
+    fun deleteSchedule(id: Long) {
         try {
             db.deleteById(id)
         } catch (e: Exception) {

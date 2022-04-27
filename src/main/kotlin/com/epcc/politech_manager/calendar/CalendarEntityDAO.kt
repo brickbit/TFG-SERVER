@@ -22,7 +22,7 @@ data class CalendarEntityDAO(
         val call: String,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "calendar_id")
-        val id: String,
+        val id: Long,
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "uid")
         val userEntity: UserEntityDAO

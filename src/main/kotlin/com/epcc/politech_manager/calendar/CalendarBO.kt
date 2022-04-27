@@ -9,7 +9,7 @@ data class CalendarBO(
         val startDate: String,
         val endDate: String,
         val call: String,
-        val id: String
+        val id: Long
     ) {
     override fun toString(): String = """{
         "exams": ${exams.map { toString() }},
@@ -18,6 +18,6 @@ data class CalendarBO(
         "startDate": "$startDate",
         "endDate": $endDate,
         "call": $call,
-        "id": "$id"
+        "id": $id
     }""".trimIndent()
 }

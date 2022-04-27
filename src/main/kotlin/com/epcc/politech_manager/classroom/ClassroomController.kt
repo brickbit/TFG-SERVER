@@ -37,7 +37,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
 
     @GetMapping("/classroom/{id}")
     fun getClassroom(@RequestHeader("Authorization") auth: String,
-                     @PathVariable id: String)
+                     @PathVariable id: Long)
     : ClassroomEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -58,7 +58,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
 
     @PostMapping("/classroom/delete/{id}")
     fun deleteClassroom(@RequestHeader("Authorization") auth: String,
-                        @PathVariable id: String)
+                        @PathVariable id: Long)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

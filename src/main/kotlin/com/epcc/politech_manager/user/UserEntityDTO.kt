@@ -1,9 +1,6 @@
 package com.epcc.politech_manager.user
 
-import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDateTime
-import java.util.*
-import javax.persistence.*
 
 data class UserEntityDTO(
         val name: String,
@@ -12,5 +9,5 @@ data class UserEntityDTO(
         var token: String?,
         var tokenForgotPassword: String?,
         var tokenForgotPasswordCreationDate: LocalDateTime?,
-        val id: String = UUID.randomUUID().toString()
+        val id: Long = -1
 )

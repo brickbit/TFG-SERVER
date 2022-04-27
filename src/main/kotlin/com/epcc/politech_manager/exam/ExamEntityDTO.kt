@@ -1,7 +1,6 @@
 package com.epcc.politech_manager.exam
 
 import com.epcc.politech_manager.subject.SubjectEntityDTO
-import java.util.*
 
 data class ExamEntityDTO(
         val subject: SubjectEntityDTO,
@@ -10,7 +9,7 @@ data class ExamEntityDTO(
         val date: String,
         val call: String,
         val turn: String,
-        val id: String = UUID.randomUUID().toString()) {
+        val id: Long = -1) {
     override fun toString(): String = """{
         "subject": $subject,
         "acronym": "$acronym",
@@ -18,6 +17,6 @@ data class ExamEntityDTO(
         "date": "$date",
         "call": "$call",
         "turn": "$turn",
-        "id": "$id"
+        "id": $id
     }""".trimIndent()
 }

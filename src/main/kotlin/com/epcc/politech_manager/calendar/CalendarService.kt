@@ -37,11 +37,11 @@ class CalendarService(val db: CalendarRepository) {
         db.save(calendar)
     }
 
-    fun getCalendar(id: String): CalendarEntityDAO? {
+    fun getCalendar(id: Long): CalendarEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
-    fun deleteCalendar(id: String) {
+    fun deleteCalendar(id: Long) {
         try {
             db.deleteById(id)
         } catch (e: Exception) {

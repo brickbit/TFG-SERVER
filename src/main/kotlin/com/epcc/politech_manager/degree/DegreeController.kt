@@ -37,7 +37,7 @@ class DegreeController(val service: DegreeService, val userService: UserService)
 
     @GetMapping("/degree/{id}")
     fun getDegree(@RequestHeader("Authorization") auth: String,
-                  @PathVariable id: String)
+                  @PathVariable id: Long)
     : DegreeEntityDTO {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -58,7 +58,7 @@ class DegreeController(val service: DegreeService, val userService: UserService)
 
     @PostMapping("/degree/delete/{id}")
     fun deleteDegree(@RequestHeader("Authorization") auth: String,
-                     @PathVariable id: String)
+                     @PathVariable id: Long)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {

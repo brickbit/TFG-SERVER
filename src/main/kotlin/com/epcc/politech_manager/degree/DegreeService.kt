@@ -13,11 +13,11 @@ class DegreeService(val db: DegreeRepository) {
         db.save(degree)
     }
 
-    fun getDegree(id: String): DegreeEntityDAO? {
+    fun getDegree(id: Long): DegreeEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
-    fun deleteDegree(id: String) {
+    fun deleteDegree(id: Long) {
         try {
             db.deleteById(id)
         } catch (e: Exception) {

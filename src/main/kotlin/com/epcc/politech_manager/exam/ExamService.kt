@@ -13,11 +13,11 @@ class ExamService(val db: ExamRepository) {
         db.save(exam)
     }
 
-    fun  getExam(id: String): ExamEntityDAO? {
+    fun  getExam(id: Long): ExamEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
-    fun  deleteExam(id: String) {
+    fun  deleteExam(id: Long) {
         try {
             db.deleteById(id)
         } catch (e: Exception) {
