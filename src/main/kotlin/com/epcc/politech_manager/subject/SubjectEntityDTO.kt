@@ -21,7 +21,7 @@ data class SubjectEntityDTO(
         val department: DepartmentEntityDTO,
         val degree: DegreeEntityDTO,
         val color: Int,
-        val id: String = UUID.randomUUID().toString()) {
+        val id: Long =-1) {
     override fun toString() = """{
             "name": "$name", 
             "acronym": "$acronym",
@@ -31,7 +31,7 @@ data class SubjectEntityDTO(
             "english": $english,
             "time": $time,
             "color": $color,
-            "id": "$id",
+            "id": $id,
             "semester": $semester,
             "degree": $degree,
             "classroom": $classroom,

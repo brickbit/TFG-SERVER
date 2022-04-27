@@ -14,12 +14,12 @@ class SubjectService(val db: SubjectRepository) {
         db.save(subject)
     }
 
-    fun getSubject(id: String): SubjectEntityDAO? {
+    fun getSubject(id: Long): SubjectEntityDAO? {
         return db.findById(id).orElse(null)
     }
 
     @Transactional
-    fun deleteSubject(id: String) {
+    fun deleteSubject(id: Long) {
         try {
             db.deleteById(id)
         } catch (e: Exception) {

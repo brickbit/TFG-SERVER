@@ -18,7 +18,7 @@ data class SubjectBO(
         val department: DepartmentBO,
         val degree: DegreeBO,
         val color: Int,
-        val id: String = UUID.randomUUID().toString()) {
+        val id: Long = -1) {
     override fun toString() = """{
             "name": "$name", 
             "acronym": "$acronym",

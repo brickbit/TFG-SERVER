@@ -51,7 +51,7 @@ data class SubjectEntityDAO(
         val color: Int,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="subject_id")
-        val id: String,
+        val id: Long,
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "uid")
         val userEntity: UserEntityDAO

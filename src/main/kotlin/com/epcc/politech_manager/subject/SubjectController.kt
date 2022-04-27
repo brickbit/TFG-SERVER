@@ -37,7 +37,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
 
     @GetMapping("/subject/{id}")
     fun getSubject(@RequestHeader("Authorization") auth: String,
-                   @PathVariable id: String)
+                   @PathVariable id: Long)
     : SubjectEntityDTO? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -58,7 +58,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
 
     @PostMapping("/subject/delete/{id}")
     fun deleteSubject(@RequestHeader("Authorization") auth: String,
-                      @PathVariable id: String)
+                      @PathVariable id: Long)
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
