@@ -16,7 +16,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
     fun index(@RequestHeader("Authorization") auth: String): List<ExamEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            return service.getAllExams().filter { it.user == user }.map { it.toDTO() }
+            return service.getAllExams().filter { it.userEntity == user }.map { it.toDTO() }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
@@ -45,7 +45,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
             if (exam == null) {
                 throw DataException(ExceptionDataModel.EXAM_NOT_EXIST)
             } else {
-                if (exam.user == user) {
+                if (exam.userEntity == user) {
                     return exam.toDTO()
                 } else {
                     throw UserException(ExceptionUserModel.WRONG_USER)

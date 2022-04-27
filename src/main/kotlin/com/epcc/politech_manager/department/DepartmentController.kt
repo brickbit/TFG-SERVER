@@ -16,7 +16,7 @@ class DepartmentController(val service: DepartmentService, val userService: User
     fun index(@RequestHeader("Authorization") auth: String): List<DepartmentEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            return service.getAllDepartments().filter { it.user == user }.map { it.toDTO() }
+            return service.getAllDepartments().filter { it.userEntity == user }.map { it.toDTO() }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
@@ -45,7 +45,7 @@ class DepartmentController(val service: DepartmentService, val userService: User
             if (department == null) {
                 throw DataException(ExceptionDataModel.DEPARTMENT_NOT_EXIST)
             } else {
-                if (department.user == user) {
+                if (department.userEntity == user) {
                     return department.toDTO()
                 } else {
                     throw UserException(ExceptionUserModel.WRONG_USER)

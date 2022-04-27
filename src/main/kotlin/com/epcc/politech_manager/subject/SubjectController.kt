@@ -16,7 +16,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
     fun index(@RequestHeader("Authorization") auth: String): List<SubjectEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            return service.getAllSubjects().filter { it.user == user }.map { it.toDTO() }
+            return service.getAllSubjects().filter { it.userEntity == user }.map { it.toDTO() }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
@@ -45,7 +45,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
             if (subject == null) {
                 throw DataException(ExceptionDataModel.SUBJECT_NOT_EXIST)
             } else {
-                if (subject?.user == user) {
+                if (subject?.userEntity == user) {
                     return subject.toDTO()
                 } else {
                     throw UserException(ExceptionUserModel.WRONG_USER)

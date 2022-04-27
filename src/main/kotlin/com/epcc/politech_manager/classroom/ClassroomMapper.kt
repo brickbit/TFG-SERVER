@@ -26,7 +26,7 @@ fun ClassroomEntityDTO.toDAO(user: UserEntityDAO) = ClassroomEntityDAO(
         pavilion = this.pavilion,
         acronym = this.acronym,
         id = this.id,
-        user = user
+        userEntity = user
 )
 
 fun ClassroomEntityDAO.toDTO() = ClassroomEntityDTO(

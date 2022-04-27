@@ -16,7 +16,7 @@ class DegreeController(val service: DegreeService, val userService: UserService)
     fun index(@RequestHeader("Authorization") auth: String): List<DegreeEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            return service.getAllDegrees().filter { it.user == user }.map { it.toDTO() }
+            return service.getAllDegrees().filter { it.userEntity == user }.map { it.toDTO() }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
@@ -45,7 +45,7 @@ class DegreeController(val service: DegreeService, val userService: UserService)
             if (degree == null) {
                 throw DataException(ExceptionDataModel.DEGREE_NOT_EXIST)
             } else {
-                if (degree.user == user) {
+                if (degree.userEntity == user) {
                     return degree.toDTO()
                 } else {
                     throw UserException(ExceptionUserModel.WRONG_USER)

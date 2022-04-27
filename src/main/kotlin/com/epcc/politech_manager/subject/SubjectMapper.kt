@@ -62,7 +62,7 @@ fun SubjectEntityDTO.toDAO(user: UserEntityDAO) = SubjectEntityDAO(
         degree = this.degree.toDAO(user),
         color = this.color,
         id = this.id,
-        user = user
+        userEntity = user
 )
 
 fun SubjectEntityDAO.toDTO() = SubjectEntityDTO(

@@ -22,7 +22,7 @@ fun DepartmentEntityDTO.toDAO(user: UserEntityDAO) = DepartmentEntityDAO(
         name = this.name,
         acronym = this.acronym,
         id = this.id,
-        user = user
+        userEntity = user
 )
 
 fun DepartmentEntityDAO.toDTO() = DepartmentEntityDTO(

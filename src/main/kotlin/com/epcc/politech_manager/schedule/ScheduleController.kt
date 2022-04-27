@@ -90,7 +90,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
             if (schedule == null) {
                 throw DataException(ExceptionDataModel.SCHEDULE_NOT_EXIST)
             } else {
-                if (schedule.user == user) {
+                if (schedule.userEntity == user) {
                     return schedule.toDTO()
                 } else {
                     throw UserException(ExceptionUserModel.WRONG_USER)

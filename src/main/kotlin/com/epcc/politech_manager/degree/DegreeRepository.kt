@@ -1,5 +1,5 @@
 package com.epcc.politech_manager.degree
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface DegreeRepository: CrudRepository<DegreeEntityDAO, String>
+interface DegreeRepository: JpaRepository<DegreeEntityDAO, String>

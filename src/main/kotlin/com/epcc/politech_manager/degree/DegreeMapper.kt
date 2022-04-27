@@ -25,7 +25,7 @@ fun DegreeEntityDTO.toDAO(user: UserEntityDAO) = DegreeEntityDAO(
         num_semesters = this.num_semesters,
         year = this.year,
         id = this.id,
-        user = user
+        userEntity = user
 )
 
 fun DegreeEntityDAO.toDTO() = DegreeEntityDTO(

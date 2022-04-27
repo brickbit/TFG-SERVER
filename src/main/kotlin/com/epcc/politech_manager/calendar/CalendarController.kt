@@ -55,7 +55,7 @@ class CalendarController(val service: CalendarService, val userService: UserServ
     fun index(@RequestHeader("Authorization") auth: String): List<CalendarEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            val calendars = service.getAllCalendars().filter { it.user == user }
+            val calendars = service.getAllCalendars().filter { it.userEntity == user }
             return calendars.map { it.toDTO() }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
@@ -86,7 +86,7 @@ class CalendarController(val service: CalendarService, val userService: UserServ
             if (calendar == null) {
                 throw DataException(ExceptionDataModel.CLASSROOM_NOT_EXIST)
             } else {
-                if (calendar.user == user) {
+                if (calendar.userEntity == user) {
                     return calendar.toDTO()
                 } else {
                     throw UserException(ExceptionUserModel.WRONG_USER)

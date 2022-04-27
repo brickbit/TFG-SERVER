@@ -16,7 +16,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
     fun index(@RequestHeader("Authorization") auth: String): List<ClassroomEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            return service.getAllClassrooms().filter { it.user == user }.map { it.toDTO() }
+            return service.getAllClassrooms().filter { it.userEntity == user }.map { it.toDTO() }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
@@ -45,7 +45,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
             if (classroom == null) {
                 throw DataException(ExceptionDataModel.CLASSROOM_NOT_EXIST)
             } else {
-                if (classroom.user == user) {
+                if (classroom.userEntity == user) {
                     return classroom.toDTO()
                 } else {
                     throw UserException(ExceptionUserModel.WRONG_USER)

@@ -17,7 +17,7 @@ fun CalendarEntityDTO.toDAO(user: UserEntityDAO): CalendarEntityDAO {
             endDate = this.endDate,
             call = this.call,
             id = this.id,
-            user = user
+            userEntity = user
     )
 }
 

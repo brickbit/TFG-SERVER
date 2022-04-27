@@ -13,7 +13,7 @@ fun ExamEntityDTO.toDAO(user: UserEntityDAO) = ExamEntityDAO(
         call = call,
         turn = this.turn,
         id = this.id,
-        user = user
+        userEntity = user
 )
 
 fun ExamEntityDAO.toDTO() = ExamEntityDTO(

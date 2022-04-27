@@ -30,7 +30,7 @@ fun ScheduleEntityDTO.toDAO(user: UserEntityDAO) = ScheduleEntityDAO(
         degree = this.degree,
         year = this.year,
         id = this.id,
-        user = user
+        userEntity = user
 )
 
 fun ScheduleEntityDAO.toDTO() = ScheduleEntityDTO(
