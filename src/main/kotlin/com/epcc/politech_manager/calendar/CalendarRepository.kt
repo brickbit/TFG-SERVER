@@ -1,5 +1,5 @@
 package com.epcc.politech_manager.calendar
 
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 
-interface CalendarRepository: JpaRepository<CalendarEntityDAO, Long>
+interface CalendarRepository: CrudRepository<CalendarEntityDAO, Long>

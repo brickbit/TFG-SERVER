@@ -1,5 +1,5 @@
 package com.epcc.politech_manager.exam
 
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 
-interface ExamRepository: JpaRepository<ExamEntityDAO, Long>
+interface ExamRepository: CrudRepository<ExamEntityDAO, Long>

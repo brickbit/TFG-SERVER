@@ -1,5 +1,5 @@
 package com.epcc.politech_manager.schedule
 
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 
-interface ScheduleRepository : JpaRepository<ScheduleEntityDAO, Long>
+interface ScheduleRepository : CrudRepository<ScheduleEntityDAO, Long>

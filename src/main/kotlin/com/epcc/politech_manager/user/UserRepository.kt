@@ -1,8 +1,8 @@
 package com.epcc.politech_manager.user
 
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 
-interface UserRepository : JpaRepository<UserEntityDAO, Long> {
+interface UserRepository : CrudRepository<UserEntityDAO, Long> {
     fun findByEmail(email: String?): UserEntityDAO?
 
     fun findByTokenForgotPassword(tokenForgotPassword: String?): UserEntityDAO?
