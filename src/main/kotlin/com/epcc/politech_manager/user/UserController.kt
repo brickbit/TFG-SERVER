@@ -1,14 +1,7 @@
 package com.epcc.politech_manager.user
 
-import com.epcc.politech_manager.calendar.CalendarService
-import com.epcc.politech_manager.classroom.ClassroomService
-import com.epcc.politech_manager.degree.DegreeService
-import com.epcc.politech_manager.department.DepartmentService
 import com.epcc.politech_manager.error.ExceptionUserModel
 import com.epcc.politech_manager.error.UserException
-import com.epcc.politech_manager.exam.ExamService
-import com.epcc.politech_manager.schedule.ScheduleService
-import com.epcc.politech_manager.subject.SubjectService
 import com.epcc.politech_manager.utils.ResponseOk
 import com.epcc.politech_manager.utils.TokenResponseOk
 import io.jsonwebtoken.Jwts
@@ -25,14 +18,7 @@ import java.util.stream.Collectors
 
 @RestController
 class UserController(
-        val service: UserService,
-        val degreeService: DegreeService,
-        val departmentService: DepartmentService,
-        val classroomService: ClassroomService,
-        val subjectService: SubjectService,
-        val scheduleService: ScheduleService,
-        val examService: ExamService,
-        val calendarService: CalendarService) {
+        val service: UserService) {
 
     @PostMapping("/user/register")
     fun signIn(@RequestParam("user") name: String,
@@ -54,15 +40,7 @@ class UserController(
                             null,
                             null,
                             null)
-                            .toDAO(
-                                    degreeService.getAllDegrees().toMutableList(),
-                                    departmentService.getAllDepartments().toMutableList(),
-                                    classroomService.getAllClassrooms().toMutableList(),
-                                    subjectService.getAllSubjects().toMutableList(),
-                                    scheduleService.getAllSchedules().toMutableList(),
-                                    examService.getAllExams().toMutableList(),
-                                    calendarService.getAllCalendars().toMutableList()
-                            )
+                            .toDAO()
             )
             return ResponseOk(200,"Registration completed successfully")
         } else if (!validUser) {
