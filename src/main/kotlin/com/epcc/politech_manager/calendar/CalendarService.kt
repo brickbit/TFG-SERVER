@@ -128,14 +128,15 @@ class CalendarService(val db: CalendarRepository) {
         var cell = row.createCell(0)
         cell.setCellValue(call)
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
-        cell = row.createCell(numRows - 8)
+        cell = row.createCell(if (numRows<=8) numRows else numRows - 8)
         cell.setCellValue(degree.uppercase(Locale.getDefault()))
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         cell = row.createCell(numRows)
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         sheet.addMergedRegion(CellRangeAddress(0, 0, 0, 2))
-        sheet.addMergedRegion(CellRangeAddress(0, 0, numRows - 8, numRows))
-
+        if (numRows > 8) {
+            sheet.addMergedRegion(CellRangeAddress(0, 0, numRows - 8, numRows))
+        }
     }
 
     private fun createHeader(sheet: Sheet, workbook: Workbook) {
