@@ -52,6 +52,7 @@ data class SubjectEntityDAO(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="subject_id")
         val id: Long,
+        @OnDelete(action = OnDeleteAction.CASCADE)
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "uid")
         val userEntity: UserEntityDAO

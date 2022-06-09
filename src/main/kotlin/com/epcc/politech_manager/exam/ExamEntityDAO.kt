@@ -28,6 +28,7 @@ data class ExamEntityDAO(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "exam_id")
         val id: Long,
+        @OnDelete(action = OnDeleteAction.CASCADE)
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "uid")
         val userEntity: UserEntityDAO)
