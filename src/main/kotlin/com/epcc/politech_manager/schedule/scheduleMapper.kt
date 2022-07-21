@@ -10,19 +10,6 @@ import com.epcc.politech_manager.utils.toScheduleType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-fun ScheduleEntityDAO.toBO(): ScheduleBO {
-    val listType = object : TypeToken<ArrayList<SubjectEntityDTO>>() {}.type
-
-    val list: List<SubjectEntityDTO> = Gson().fromJson(this.subjects, listType)
-    return ScheduleBO(
-            id = this.id,
-            subjects = expandMatrix(list, this.scheduleType.toScheduleType()),
-            scheduleType = this.scheduleType,
-            fileType = this.fileType,
-            degree = this.degree,
-            year = this.year)
-}
-
 fun ScheduleEntityDTO.toDAO(user: UserEntityDAO) = ScheduleEntityDAO(
         subjects = this.subjects,
         scheduleType = this.scheduleType,
@@ -41,6 +28,21 @@ fun ScheduleEntityDAO.toDTO() = ScheduleEntityDTO(
         year = this.year,
         id = this.id
 )
+
+fun ScheduleEntityDAO.toBO(): ScheduleBO {
+    val subjectsList: List<String> = this.subjects.split(";")
+    val list: List<SubjectBO?> = subjectsList.map {
+        Gson().fromJson(it,SubjectBO::class.java)
+    }
+    return ScheduleBO(
+            subjects = list,
+            scheduleType = this.scheduleType,
+            fileType = this.fileType,
+            degree = this.degree,
+            year = this.year,
+            id = this.id
+    )
+}
 
 fun expandMatrix(subjects: List<SubjectEntityDTO>, scheduletype: ScheduleType): List<List<List<SubjectBO?>>> {
     val matrix: Array<Array<Array<SubjectBO?>>> = when (scheduletype) {
@@ -72,54 +74,3 @@ fun expandMatrix(subjects: List<SubjectEntityDTO>, scheduletype: ScheduleType): 
     return matrix.map { hours -> hours.map { it.toList() }.toList() }.toList()
 }
 
-fun flatMatrix(matrix: List<List<List<SubjectBO?>>>): List<SubjectEntityDTO> {
-    val listSubject = mutableListOf<SubjectEntityDTO>()
-    matrix.mapIndexed { i, hour ->
-        hour.mapIndexed { j, turn ->
-            turn.mapIndexed { k, subject ->
-                subject?.let {
-                    listSubject.add(it.toDTO("$i","$j","$k"))
-                }
-            }
-        }
-    }
-    val groupedList = listSubject.groupBy {
-        it.id
-    }
-    val finalList = mutableListOf<SubjectEntityDTO>()
-    groupedList.values.map { groupedSubjects ->
-        var days = ""
-        var hours = ""
-        var turns = ""
-        var subjectToCopy: SubjectEntityDTO? = null
-        groupedSubjects.map {
-            days = days + it.days + ","
-            hours = hours + it.hours + ","
-            turns = turns + it.turns + ","
-            subjectToCopy = it
-        }
-        subjectToCopy?.let {
-            finalList.add(SubjectEntityDTO(
-                    it.name,
-                    it.acronym,
-                    it.classGroup,
-                    it.seminary,
-                    it.laboratory,
-                    it.english,
-                    it.time,
-                    it.semester,
-                    days,
-                    hours,
-                    turns,
-                    it.classroom,
-                    it.department,
-                    it.degree,
-                    it.color,
-                    it.id
-            )
-            )
-        }
-
-    }
-    return finalList
-}

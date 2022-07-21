@@ -4,7 +4,7 @@ import com.epcc.politech_manager.subject.SubjectBO
 
 data class ScheduleBO(
         val id: Long,
-        val subjects: List<List<List<SubjectBO?>>>,
+        val subjects: List<SubjectBO?>,
         val scheduleType: Int,
         val fileType: Int,
         val degree: String,

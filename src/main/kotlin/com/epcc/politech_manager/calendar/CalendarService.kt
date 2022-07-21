@@ -2,7 +2,6 @@ package com.epcc.politech_manager.calendar
 
 import com.epcc.politech_manager.error.DataException
 import com.epcc.politech_manager.error.ExceptionDataModel
-import com.epcc.politech_manager.exam.ExamBO
 import com.epcc.politech_manager.exam.ExamEntityDTO
 import com.epcc.politech_manager.utils.CellColor
 import org.apache.poi.ss.usermodel.*

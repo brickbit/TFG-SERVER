@@ -19,7 +19,7 @@ class ScheduleService(
 
         val db: ScheduleRepository
 ) {
-    var scheduleData: List<List<List<SubjectBO?>>> = emptyList()
+    var scheduleData: List<SubjectBO?> = emptyList()
     var fileType: FileType = FileType.SUBJECT
     var scheduleType: ScheduleType = ScheduleType.ONE_SUBJECT
     var degree: String = ""
@@ -52,7 +52,7 @@ class ScheduleService(
         }
     }
 
-    fun initData(scheduleData: List<List<List<SubjectBO?>>>,
+    fun initData(scheduleData: List<SubjectBO?>,
                  fileType: FileType,
                  scheduleType: ScheduleType,
                  degree: String,
@@ -64,25 +64,9 @@ class ScheduleService(
         this.year = year
     }
 
-    fun parseScheduleData():ScheduleFileData {
-        val matrix = flatMatrix(scheduleData)
-        val matrixWithNoEmptyColumns = deleteEmptyCols(matrix)
-        val deletedCols = getDeletedCols(matrix)
-        val subjectsForWeek = obtainSubjects(matrixWithNoEmptyColumns)
-        val sizeOfDays = getSizeOfEachDay(deletedCols)
-        val emptyRows = checkTurnEmpty(matrix)
-        val emptyMorning = emptyMorning(emptyRows,matrixWithNoEmptyColumns)
-        val emptyAfternoon = emptyAfternoon(emptyRows,matrixWithNoEmptyColumns)
-        val indexDeletedCols = getEmptyCols(matrix)
-        return ScheduleFileData(degree = degree, semester = 0, subjects = emptyAfternoon.first, subjectsName = subjectsForWeek,sizeOfDays = sizeOfDays,emptyMorning = emptyMorning.second, emptyAfternoon = emptyAfternoon.second, year = year, deletedCols = indexDeletedCols)
-
-    }
-
     fun createFile(): String {
-        val scheduleData = parseScheduleData()
-
         val workbook: Workbook = XSSFWorkbook()
-        val sheet: Sheet = workbook.createSheet(scheduleData.degree)
+        val sheet: Sheet = workbook.createSheet(degree)
 
         paint(scheduleData, sheet, workbook)
         when(fileType) {
@@ -104,63 +88,106 @@ class ScheduleService(
         }
     }
 
-    private fun paint(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
+    private fun paint(scheduleFileData: List<SubjectBO?>, sheet: Sheet, workbook: Workbook) {
         when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> { createRows(scheduleFileData,sheet, 5500) }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> { createRows(scheduleFileData,sheet, 1500) }
         }
-        createTitle(scheduleFileData,sheet,workbook)
+        createTitle(sheet,workbook)
         when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
-                createHeaderOneSubject(scheduleFileData, sheet.getRow(headerOffset), workbook)
+                createHeaderOneSubject(sheet.getRow(headerOffset), workbook)
             }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
-                createHeaderMultipleSubject(scheduleFileData, sheet.getRow(headerOffset), workbook, sheet)
+                createHeaderMultipleSubject(sheet.getRow(headerOffset), workbook, sheet)
             }
         }
         createHoursRow(scheduleFileData,sheet,workbook)
         createSubjectHeader(scheduleFileData,sheet.getRow(headerOffset + 1), workbook)
-        fillData(scheduleFileData,sheet,workbook)
+        when (scheduleType) {
+            ScheduleType.ONE_SUBJECT -> {
+                fillData(scheduleFileData,sheet,workbook)
+            }
+            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
+                fillMultipleData(scheduleFileData,sheet,workbook)
+                //eraseEmptyColumn(sheet)
+            }
+        }
         //mergeCells(scheduleFileData,sheet)
     }
+    private fun eraseEmptyColumn(sheet: Sheet) {
+        val emptyCells = Array(75) { IntArray(27) }
+        for (i in (headerOffset + headerSize) until (headerOffset + headerSize + 23)) {
+            val row = sheet.getRow(i)
+            for (j in 1 until 75 ) {
+                val cell = row.getCell(j)
+                if(cell.stringCellValue == "") {
+                    emptyCells[j][i] = -1
+                } else {
+                    emptyCells[j][i] = 1
+                }
 
-    private fun createRows(scheduleFileData: ScheduleFileData, sheet: Sheet, cellWidth: Int) {
-        val numRows = scheduleFileData.subjects.size + headerOffset + headerSize
+            }
+        }
+        val removeCellList = mutableListOf<Int>()
+        for (i in emptyCells.indices) {
+            if (emptyCells[i].count { it == -1} == 23) {
+                removeCellList.add(i)
+            }
+        }
+
+        for (i in 0 until 23 + headerOffset+ headerSize) {
+            val row = sheet.getRow(i)
+            for (j in 1 until 76) {
+                if(removeCellList.contains(j)) {
+                    row.createCell(j)
+                }
+            }
+        }
+
+        removeCellList.mapIndexed { index, _ ->
+            if(index>0) {
+                sheet.shiftRows(index, index, 1)
+            }
+        }
+    }
+
+    private fun createRows(scheduleFileData: List<SubjectBO?>, sheet: Sheet, cellWidth: Int) {
+        val numRows = scheduleFileData.size + headerOffset + headerSize
         for (i in 0..numRows) {
             sheet.createRow(i)
             sheet.setColumnWidth(i, cellWidth)
         }
     }
 
-    private fun createTitle(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
+    private fun createTitle( sheet: Sheet, workbook: Workbook) {
         val row = sheet.createRow(0)
         var cell = row.createCell(0)
         cell.setCellValue("Curso")
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         cell = row.createCell(1)
-        cell.setCellValue(ceil((scheduleFileData.semester+1)/2.0).toInt().toString())
+        cell.setCellValue(ceil(((this.scheduleData[0]?.semester ?: 0)+1)/2.0).toInt().toString())
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         cell = row.createCell(2)
-        cell.setCellValue(scheduleFileData.degree.uppercase(Locale.getDefault()))
+        cell.setCellValue(degree.uppercase(Locale.getDefault()))
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
         if(scheduleType == ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM) {
-            sheet.addMergedRegion(CellRangeAddress(0, 0, 2, 29))
+            sheet.addMergedRegion(CellRangeAddress(0, 0, 2, 73))
+            cell = row.createCell(74)
+            sheet.addMergedRegion(CellRangeAddress(0, 0, 74, 75))
+
         } else {
             sheet.addMergedRegion(CellRangeAddress(0, 0, 2, 4))
+            cell = row.createCell(5)
         }
-        cell = row.createCell(scheduleFileData.subjects[0].size)
-        cell.setCellValue(scheduleFileData.year)
+        cell.setCellValue("${year.toInt()-1} - $year")
         cell.cellStyle = setStyle(workbook,11, CellColor.WHITE,true)
-        /*if(scheduleType == ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM) {
-            sheet.addMergedRegion(CellRangeAddress(0, 0, scheduleFileData.subjects[0].size-1, scheduleFileData.subjects[0].size))
-        }*/
     }
 
-    private fun createHeaderMultipleSubject(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook, sheet: Sheet){
-        val numDays = scheduleFileData.subjects[0].size
+    private fun createHeaderMultipleSubject(row: Row, workbook: Workbook, sheet: Sheet){
         val days = listOf("Lunes","Martes","Miércoles","Jueves","Viernes")
 
-        val daysOfWeek = fillDaysOfWeek(scheduleFileData,numDays,days)
+        val daysOfWeek = fillDaysOfWeek(days)
         daysOfWeek.add(0,"")
         daysOfWeek.mapIndexed {  index, value ->
             for (i in 1..daysOfWeek.size) {
@@ -169,17 +196,14 @@ class ScheduleService(
                 headerCell.cellStyle = setStyle(workbook,10, CellColor.WHITE, true)
             }
         }
-        val list = scheduleFileData.sizeOfDays.toMutableList()
-        list.add(0,0)
-        var previousValue = 0
-
-        for(i in 1 until list.size) {
-            sheet.addMergedRegion(CellRangeAddress(row.rowNum, row.rowNum, previousValue +1, list[i] + previousValue))
-            previousValue += list[i]
-        }
+        sheet.addMergedRegion(CellRangeAddress(row.rowNum, row.rowNum, 1, 15))
+        sheet.addMergedRegion(CellRangeAddress(row.rowNum, row.rowNum, 16, 30))
+        sheet.addMergedRegion(CellRangeAddress(row.rowNum, row.rowNum, 31, 45))
+        sheet.addMergedRegion(CellRangeAddress(row.rowNum, row.rowNum, 46, 60))
+        sheet.addMergedRegion(CellRangeAddress(row.rowNum, row.rowNum, 61, 75))
     }
 
-    private fun createHeaderOneSubject(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook){
+    private fun createHeaderOneSubject( row: Row, workbook: Workbook){
         val days = mutableListOf("Lunes","Martes","Miércoles","Jueves","Viernes")
 
         days.add(0,"")
@@ -190,31 +214,23 @@ class ScheduleService(
                 headerCell.cellStyle = setStyle(workbook,10, CellColor.WHITE, true)
             }
         }
-        val list = scheduleFileData.sizeOfDays.toMutableList()
-        list.add(0,0)
     }
 
-    private fun fillDaysOfWeek(scheduleFileData: ScheduleFileData, numDays: Int, days: List<String>): MutableList<String> {
-        val sizeOfDays = scheduleFileData.sizeOfDays
-        val list = MutableList(numDays) { "" }
-        var previousSize = 0
-        sizeOfDays.mapIndexed { i,size ->
-            for (j in previousSize..(size + previousSize)) {
-                if(j < list.size) {
-                    list[j] = days[i]
-                }
+    private fun fillDaysOfWeek(days: List<String>): MutableList<String> {
+        val newList = mutableListOf<String>()
+        days.map {
+            for (i in 0..14) {
+                newList.add(it)
             }
-            previousSize += size
-
         }
-        return list
+        return newList
     }
 
-    private fun createHoursRow(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
+    private fun createHoursRow(scheduleFileData: List<SubjectBO?>, sheet: Sheet, workbook: Workbook) {
         val style = setStyle(workbook,8, CellColor.WHITE,false)
 
         val hours = listOf("","HORA","8:30\n","9:00\n","9:30\n","10:00\n","10:30\n","11:00\n","11:30\n","12:00\n","12:30\n","13:00\n","13:30\n","14:00\n","15:30\n","16:00\n","16:30\n","17:00\n","17:30\n","18:00\n","18:30\n","19:00\n","19:30\n","20:00\n","20:30\n","21:00\n")
-        val size = scheduleFileData.subjects.size
+        val size = scheduleFileData.size
         hours.mapIndexed { index, value ->
             if(index < size+ headerOffset) {
                 val row: Row = sheet.getRow(index + headerOffset)
@@ -225,7 +241,7 @@ class ScheduleService(
         }
     }
 
-    private fun createSubjectHeader(scheduleFileData: ScheduleFileData, row: Row, workbook: Workbook) {
+    private fun createSubjectHeader(scheduleFileData: List<SubjectBO?>, row: Row, workbook: Workbook) {
         when (scheduleType) {
             ScheduleType.ONE_SUBJECT -> {
                 val subjectsOfWeek = List(5) {"Asignatura"}
@@ -236,36 +252,33 @@ class ScheduleService(
                 }
             }
             ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
-                val subjectsOfWeek = scheduleFileData.subjectsName.filter { !it.laboratory && !it.seminary && !it.english }.distinctBy { it.acronym }
-                val subjectOfDay = mutableListOf<SubjectBO>()
+                val subjectsOfWeek = scheduleFileData.filterNotNull().filter { !it.laboratory && !it.seminary && !it.english }.distinctBy { it.acronym }.sortedBy { it.acronym }
+                subjectsOfWeek.size
+                val dayList = mutableListOf<SubjectBO>()
                 subjectsOfWeek.map {
-                    subjectOfDay.add(it)
-                    subjectOfDay.add(it)
-                    subjectOfDay.add(it)
+                    dayList.add(it)
+                    dayList.add(it)
+                    dayList.add(it)
                 }
-                val allSubjects = MutableList(5) { subjectOfDay }.flatten().toMutableList()
-
-                scheduleFileData.deletedCols.reversed().map {
-                    allSubjects.removeAt(it)
-                }
-
-                for (i in 1..allSubjects.size) {
+                val weekList = dayList + dayList + dayList + dayList + dayList
+                for (i in 1..weekList.size) {
                     val cell = row.createCell(i)
-                    cell.setCellValue(allSubjects[i-1].acronym)
-                    cell.cellStyle = setStyle(workbook,10,allSubjects[i-1].color.toCellColor(), true)
+                    cell.setCellValue(weekList[i-1].acronym)
+                    cell.cellStyle = setStyle(workbook,10,weekList[i-1].color.toCellColor(), true)
                 }
             }
         }
     }
 
-    private fun fillData(scheduleFileData: ScheduleFileData, sheet: Sheet, workbook: Workbook) {
-        val matrix = scheduleFileData.subjects
-        for (i in (headerSize+ headerOffset) until matrix.size + headerSize+ headerOffset) {
+    private fun fillData(list: List<SubjectBO?>, sheet: Sheet, workbook: Workbook) {
+        //Create cells
+        for (i in (headerSize+ headerOffset) until list.size/5 + headerSize+ headerOffset) {
             val row = sheet.getRow(i)
-            for(j in 1..matrix[0].size) {
+            for(j in 1..list.size/24) {
                 val cell = row.createCell(j)
-                val subject = matrix[i-(headerSize+ headerOffset)][j-1]
 
+                val pos = list.size/24*(i-headerSize - headerOffset)+j-1
+                val subject = list[pos]
                 when(fileType) {
                     FileType.SUBJECT -> {
                         val seminary: String = if (subject?.seminary == true) { "sem\n" } else { "" }
@@ -291,6 +304,79 @@ class ScheduleService(
                 }
                 cell.cellStyle = setStyle(workbook,9,subject?.color?.toCellColor() ?: CellColor.WHITE, false)
             }
+        }
+    }
+
+    fun <T> partition(list: List<T>, n: Int): Array<MutableList<T>?> {
+        val size = list.size
+        var m = size / n
+        if (size % n != 0) m++
+        val partition: Array<MutableList<T>?> = arrayOfNulls(m)
+        for (i in 0 until m) {
+            val fromIndex = i * n
+            val toIndex = if (i * n + n < size) i * n + n else size
+
+            partition[i] = list.subList(fromIndex, toIndex).toMutableList()
+        }
+        return partition
+    }
+
+    private fun combineGroupsOfDay(list1: List<SubjectBO?>, list2: List<SubjectBO?>, list3: List<SubjectBO?>): List<SubjectBO?> {
+        val newList = mutableListOf<SubjectBO?>()
+        for (i in list1.indices) {
+            newList.add(list1[i])
+            newList.add(list2[i])
+            newList.add(list3[i])
+        }
+        return newList
+    }
+
+    private fun paintDay(list: List<SubjectBO?>, day:Int, sheet: Sheet, workbook: Workbook) {
+        for(i in 0 until 24) {
+            val hoursDay = list.subList((list.size/24)*i,(list.size/24) * (i+1))
+            hoursDay.mapIndexed { index, subject ->
+                val row = sheet.getRow(headerOffset+headerSize+i)
+                val cell = row.createCell(index+15*day+1)
+                when(fileType) {
+                    FileType.SUBJECT -> {
+                        val seminary: String = if (subject?.seminary == true) { "sem\n" } else { "" }
+                        val laboratory: String = if (subject?.laboratory == true) { "lab\n" } else { "" }
+                        val english = if(subject?.english == true) { "ing"} else{ "" }
+                        val groupName = subject?.classGroup ?: ""
+                        val group: String = if (subject?.laboratory != true && subject?.seminary != true && subject?.english != true && subject!= null) { "gg " } else { "" }
+                        when (scheduleType) {
+                            ScheduleType.ONE_SUBJECT -> {
+                                cell.setCellValue( seminary + laboratory + english + (subject?.name?: "") + " " + groupName)
+                            }
+                            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
+                                cell.setCellValue(seminary + laboratory + group + english + groupName)
+                            }
+                        }
+                    }
+                    FileType.DEPARTMENT -> {
+                        cell.setCellValue(subject?.department?.acronym ?: "")
+                    }
+                    FileType.CLASSROOM -> {
+                        cell.setCellValue(subject?.classroom?.acronym ?: "")
+                    }
+                }
+                cell.cellStyle = setStyle(workbook,9,subject?.color?.toCellColor() ?: CellColor.WHITE, false)
+            }
+        }
+
+    }
+
+    private fun fillMultipleData(list: List<SubjectBO?>, sheet: Sheet, workbook: Workbook) {
+        val firstGroup = list.subList(0,list.size/3)
+        val secondGroup = list.subList(list.size/3,(list.size/3)*2)
+        val thirdGroup = list.subList((list.size/3)*2,list.size)
+
+        for (i in 0 until 5) {
+            val firstGroupDay = firstGroup.subList((firstGroup.size/5)*i,(firstGroup.size/5)*(i+1))
+            val secondGroupDay = secondGroup.subList((secondGroup.size/5)*i,(secondGroup.size/5)*(i+1))
+            val thirdGroupDay = thirdGroup.subList((thirdGroup.size/5)*i,(thirdGroup.size/5)*(i+1))
+            val dayList = combineGroupsOfDay(firstGroupDay,secondGroupDay,thirdGroupDay)
+            paintDay(dayList, i, sheet, workbook)
         }
     }
 
@@ -384,144 +470,8 @@ class ScheduleService(
         return transpose
     }
 
-    private fun checkTurnEmpty(matrix: MutableList<MutableList<SubjectBO?>>): List<Int> {
-        val positions: MutableList<Int> = mutableListOf()
-        matrix.mapIndexed { i, value ->
-            val nulls = value.count { subject -> subject == null }
-            when (scheduleType) {
-                ScheduleType.ONE_SUBJECT -> {
-                    if (nulls == numColumnsOneSubjectPerDay) {
-                        positions.add(i)
-                    }
-                }
-                ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
-                    if (nulls == numColumnsMultipleSubjectPerDay) {
-                        positions.add(i)
-                    }
-                }
-            }
-        }
-        return positions
-    }
-
-    private fun emptyMorning(positions: List<Int>, matrix: MutableList<MutableList<SubjectBO?>>): Pair<MutableList<MutableList<SubjectBO?>>,Boolean> {
-        val morning = listOf(11,10,9,8,7,6,5,4,3,2,1,0)
-        var isEmpty = false
-        if(positions.containsAll(morning)) {
-            isEmpty = true
-            morning.mapIndexed { i, _ ->
-                matrix.removeAt(morning[i])
-            }
-        }
-        return Pair(matrix,isEmpty)
-    }
-
-    private fun emptyAfternoon(positions: List<Int>, matrix: MutableList<MutableList<SubjectBO?>>): Pair<MutableList<MutableList<SubjectBO?>>,Boolean> {
-        val afternoon = listOf(23,22,21,20,19,18,17,16,15,14,13,12)
-        var isEmpty = false
-        if(positions.containsAll(afternoon)) {
-            isEmpty = true
-            afternoon.mapIndexed { i, _ ->
-                matrix.removeAt(afternoon[i])
-            }
-        }
-        return Pair(matrix,isEmpty)
-    }
-
-
-
-    private fun flatMatrix(subjects: List<List<List<SubjectBO?>>>): MutableList<MutableList<SubjectBO?>>{
-        val matrix: MutableList<MutableList<SubjectBO?>> = mutableListOf()
-        subjects.map { day ->
-            day.mapIndexed { i, hour ->
-                matrix.add(mutableListOf())
-                hour.map{ value ->
-                    matrix[i].add(value)
-                }
-            }
-        }
-        matrix.removeIf { it.isEmpty() }
-        return matrix
-    }
-
-
-    private fun deleteEmptyCols(matrix: MutableList<MutableList<SubjectBO?>>): MutableList<MutableList<SubjectBO?>> {
-        val transpose = makeTranspose(matrix)
-        transpose.removeIf { subjects ->
-                val nulls = subjects.count { subject -> subject == null }
-                return@removeIf nulls == numHourCells
-        }
-        return makeTranspose(transpose)
-    }
-
-    private fun getEmptyCols(matrix: MutableList<MutableList<SubjectBO?>>): MutableList<Int> {
-        val transpose = makeTranspose(matrix)
-        val listIndex = mutableListOf<Int>()
-        transpose.mapIndexed { index, subjects ->
-            val nulls = subjects.count { subject -> subject == null }
-            if (nulls == numHourCells) {
-                listIndex.add(index)
-            }
-        }
-        return listIndex
-    }
-
-
-
-    private fun obtainSubjects(matrix: MutableList<MutableList<SubjectBO?>>): List<SubjectBO> {
-        val transpose = makeTranspose(matrix)
-        var listSubjects = mutableListOf<SubjectBO>()
-        when (scheduleType) {
-            ScheduleType.ONE_SUBJECT -> {
-                transpose.map { subjects ->
-                    subjects.map {
-                        it?.let { subject ->
-                            listSubjects.add(subject)
-                        }
-                    }
-                }
-                listSubjects = listSubjects.toSet().toMutableList()
-            }
-            ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
-                transpose.map { subjects ->
-                    subjects.map {
-                        it?.let { subject ->
-                            listSubjects.add(subject)
-                        }
-                    }
-                }
-                listSubjects = listSubjects.toSet().toMutableList()
-            }
-        }
-        return listSubjects
-    }
-
-    private fun getDeletedCols(matrix: MutableList<MutableList<SubjectBO?>>): List<Int> {
-        val transpose = makeTranspose(matrix)
-        val positions: MutableList<Int> = mutableListOf()
-        transpose.mapIndexed { i, subjects ->
-            val nulls = subjects.count { subject -> subject == null }
-            if (nulls == numHourCells) {
-                positions.add(i)
-            }
-        }
-        return positions
-    }
-
-    private fun getSizeOfEachDay(deletedDays: List<Int>): List<Int> {
-        val monday = subjectPerDay - deletedDays.count { it  in 0..14 }
-        val tuesday = subjectPerDay - deletedDays.count { it in 15..29 }
-        val wednesday = subjectPerDay - deletedDays.count { it in 30..44 }
-        val thursday = subjectPerDay - deletedDays.count { it in 45..59 }
-        val friday = subjectPerDay - deletedDays.count { it in 60..74 }
-        return listOf(monday,tuesday,wednesday,thursday,friday)
-    }
-
     companion object {
         const val numHourCells = 24
-        const val subjectPerDay = 15
-        const val numColumnsMultipleSubjectPerDay = 75
-        const val numColumnsOneSubjectPerDay = 5
         const val headerOffset = 2
         const val headerSize = 2
     }

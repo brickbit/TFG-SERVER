@@ -53,10 +53,10 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            val list = flatMatrix(requestData.subjects)
+            val list = requestData.subjects.joinToString(separator = ";") { it.toString() }
             service.post(
                     ScheduleEntityDTO(
-                            Gson().toJson(list),
+                            list,
                             requestData.scheduleType,
                             requestData.fileType,
                             requestData.degree,
@@ -74,7 +74,9 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     : List<ScheduleBO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            return service.getAllSchedules().map { it.toBO() }
+            return service.getAllSchedules().map {
+                it.toBO()
+            }
         } else {
             throw UserException(ExceptionUserModel.WRONG_USER)
         }
@@ -120,7 +122,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
-            val list = flatMatrix(schedule.subjects)
+            val list = schedule.subjects.joinToString(separator = ";") { it.toString() }
             service.updateSchedule(
                     ScheduleEntityDTO(
                             Gson().toJson(list),
