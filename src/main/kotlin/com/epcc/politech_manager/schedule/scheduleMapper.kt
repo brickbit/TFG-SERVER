@@ -3,18 +3,16 @@ package com.epcc.politech_manager.schedule
 import com.epcc.politech_manager.subject.SubjectBO
 import com.epcc.politech_manager.subject.SubjectEntityDTO
 import com.epcc.politech_manager.subject.toBO
-import com.epcc.politech_manager.subject.toDTO
 import com.epcc.politech_manager.user.UserEntityDAO
 import com.epcc.politech_manager.utils.ScheduleType
-import com.epcc.politech_manager.utils.toScheduleType
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 fun ScheduleEntityDTO.toDAO(user: UserEntityDAO) = ScheduleEntityDAO(
         subjects = this.subjects,
         scheduleType = this.scheduleType,
         fileType = this.fileType,
         degree = this.degree,
+        semester = this.semester,
         year = this.year,
         id = this.id,
         userEntity = user
@@ -25,6 +23,7 @@ fun ScheduleEntityDAO.toDTO() = ScheduleEntityDTO(
         scheduleType = this.scheduleType,
         fileType = this.fileType,
         degree = this.degree,
+        semester = this.semester,
         year = this.year,
         id = this.id
 )
@@ -39,6 +38,7 @@ fun ScheduleEntityDAO.toBO(): ScheduleBO {
             scheduleType = this.scheduleType,
             fileType = this.fileType,
             degree = this.degree,
+            semester = this.semester,
             year = this.year,
             id = this.id
     )

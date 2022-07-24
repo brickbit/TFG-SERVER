@@ -5,5 +5,6 @@ data class ScheduleEntityDTO(
         val scheduleType: Int,
         val fileType: Int,
         val degree: String,
+        val semester: String,
         val year: String,
         val id: Long = -1)

@@ -8,4 +8,5 @@ data class ScheduleBO(
         val scheduleType: Int,
         val fileType: Int,
         val degree: String,
+        val semester: String,
         val year: String)

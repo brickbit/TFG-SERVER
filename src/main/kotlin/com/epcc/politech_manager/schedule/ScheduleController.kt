@@ -60,6 +60,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
                             requestData.scheduleType,
                             requestData.fileType,
                             requestData.degree,
+                            requestData.semester,
                             requestData.year
                     ).toDAO(user)
             )
@@ -129,6 +130,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
                             schedule.scheduleType,
                             schedule.fileType,
                             schedule.degree,
+                            schedule.semester,
                             schedule.year,
                             schedule.id
                     ).toDAO(user)
