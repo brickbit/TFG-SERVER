@@ -1,10 +1,7 @@
 package com.epcc.politech_manager.schedule
 
 import com.epcc.politech_manager.subject.SubjectBO
-import com.epcc.politech_manager.subject.SubjectEntityDTO
-import com.epcc.politech_manager.subject.toBO
 import com.epcc.politech_manager.user.UserEntityDAO
-import com.epcc.politech_manager.utils.ScheduleType
 import com.google.gson.Gson
 
 fun ScheduleEntityDTO.toDAO(user: UserEntityDAO) = ScheduleEntityDAO(
@@ -43,34 +40,3 @@ fun ScheduleEntityDAO.toBO(): ScheduleBO {
             id = this.id
     )
 }
-
-fun expandMatrix(subjects: List<SubjectEntityDTO>, scheduletype: ScheduleType): List<List<List<SubjectBO?>>> {
-    val matrix: Array<Array<Array<SubjectBO?>>> = when (scheduletype) {
-        ScheduleType.ONE_SUBJECT -> {
-            Array(5){ Array(24) {Array(1) {null} } }
-        }
-        ScheduleType.MULTIPLE_SUBJECT_MULTIPLE_CLASSROOM -> {
-            Array(15){ Array(24) {Array(1) {null} } }
-        }
-    }
-    val groupedList = subjects.groupBy { it.id }
-    groupedList.map { entries ->
-        entries.value.map { subject ->
-            val days = subject.days.split(",").map { num ->
-                if (num != "") num.toInt() else 0
-            }
-            val hours = subject.hours.split(",").map { num ->
-                if (num != "") num.toInt() else 0
-            }
-            val turns = subject.turns.split(",").map { num ->
-                if (num != "") num.toInt() else 0
-            }
-
-            days.mapIndexed { pos, value ->
-                matrix[value][hours[pos]][turns[pos]] = subject.toBO()
-            }
-        }
-    }
-    return matrix.map { hours -> hours.map { it.toList() }.toList() }.toList()
-}
-

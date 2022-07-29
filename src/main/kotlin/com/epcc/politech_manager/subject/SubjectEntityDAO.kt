@@ -29,12 +29,6 @@ data class SubjectEntityDAO(
         val time: Int,
         @Column
         val semester: Int,
-        @Column
-        val days: String,
-        @Column
-        val hours: String,
-        @Column
-        val turns: String,
         @OnDelete(action = OnDeleteAction.CASCADE)
         @JoinColumn(name = "classroom_id")
         @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH])

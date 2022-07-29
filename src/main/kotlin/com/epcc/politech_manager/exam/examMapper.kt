@@ -37,7 +37,7 @@ fun ExamEntityDTO.toBO() = ExamBO(
 )
 
 fun ExamBO.toDTO() = ExamEntityDTO(
-        subject = this.subject.toDTO("0","0", "0"),
+        subject = this.subject.toDTO(),
         acronym = this.acronym,
         semester = semester,
         date = date,
