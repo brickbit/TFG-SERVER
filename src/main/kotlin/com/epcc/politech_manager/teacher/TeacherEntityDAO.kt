@@ -16,7 +16,7 @@ data class TeacherEntityDAO(
         val name: String,
         @OnDelete(action = OnDeleteAction.CASCADE)
         @JoinColumn(name = "department_id")
-        @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
+        @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.REFRESH])
         val department: DepartmentEntityDAO,
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="teacher_id")
