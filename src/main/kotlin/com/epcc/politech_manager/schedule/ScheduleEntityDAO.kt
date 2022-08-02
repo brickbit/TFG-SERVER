@@ -28,7 +28,6 @@ data class ScheduleEntityDAO(
         @Column(name="schedule_id")
         val id: Long,
         @OnDelete(action = OnDeleteAction.CASCADE)
-        @Cascade(CascadeType.ALL)
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "uid")
         val userEntity: UserEntityDAO

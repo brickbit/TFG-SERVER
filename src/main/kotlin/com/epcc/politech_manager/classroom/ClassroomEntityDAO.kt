@@ -21,7 +21,6 @@ data class ClassroomEntityDAO(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="classroom_id")
         val id: Long,
-        @Cascade(CascadeType.ALL)
         @OnDelete(action = OnDeleteAction.CASCADE)
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "uid")

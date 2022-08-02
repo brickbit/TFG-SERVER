@@ -7,6 +7,7 @@ import com.epcc.politech_manager.error.UserException
 import com.epcc.politech_manager.user.UserEntityDAO
 import com.epcc.politech_manager.user.UserService
 import com.epcc.politech_manager.utils.ResponseOk
+import com.google.gson.Gson
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.http.HttpHeaders
