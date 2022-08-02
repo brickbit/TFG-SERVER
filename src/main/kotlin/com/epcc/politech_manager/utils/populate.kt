@@ -5,7 +5,7 @@ import com.epcc.politech_manager.classroom.Pavilion
 import com.epcc.politech_manager.degree.DegreeBO
 import com.epcc.politech_manager.department.DepartmentBO
 import com.epcc.politech_manager.subject.SubjectBO
-
+/*
 fun createBuildingSchedule(): List<List<List<SubjectBO?>>> {
     val mathematicsClassroom = ClassroomBO("C-1B", Pavilion.CIVIL_WORK, "C-1B", 1)
     val buildingClassroom = ClassroomBO("A-1", Pavilion.ARCHITECTURE, "A-1", 2)
@@ -391,3 +391,4 @@ fun createComputerScienceDegree(): List<List<List<SubjectBO?>>> {
             )
 
 }
+*/

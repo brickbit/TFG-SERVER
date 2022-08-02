@@ -1,6 +1,8 @@
 package com.epcc.politech_manager.classroom
 
 import com.epcc.politech_manager.user.UserEntityDAO
+import org.hibernate.annotations.Cascade
+import org.hibernate.annotations.CascadeType
 import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -19,6 +21,7 @@ data class ClassroomEntityDAO(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="classroom_id")
         val id: Long,
+        @Cascade(CascadeType.ALL)
         @OnDelete(action = OnDeleteAction.CASCADE)
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "uid")

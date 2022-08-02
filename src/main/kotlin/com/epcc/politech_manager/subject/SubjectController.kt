@@ -45,7 +45,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
             if (subject == null) {
                 throw DataException(ExceptionDataModel.SUBJECT_NOT_EXIST)
             } else {
-                if (subject?.userEntity == user) {
+                if (subject.userEntity == user) {
                     return subject.toDTO()
                 } else {
                     throw UserException(ExceptionUserModel.WRONG_USER)

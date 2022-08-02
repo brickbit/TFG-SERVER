@@ -3,6 +3,7 @@ package com.epcc.politech_manager.subject
 import com.epcc.politech_manager.classroom.ClassroomEntityDTO
 import com.epcc.politech_manager.degree.DegreeEntityDTO
 import com.epcc.politech_manager.department.DepartmentEntityDTO
+import com.epcc.politech_manager.teacher.TeacherEntityDTO
 import java.util.*
 
 data class SubjectEntityDTO(
@@ -16,6 +17,7 @@ data class SubjectEntityDTO(
         val semester: Int,
         val classroom: ClassroomEntityDTO,
         val department: DepartmentEntityDTO,
+        val teacher: TeacherEntityDTO?,
         val degree: DegreeEntityDTO,
         val color: Int,
         val id: Long =-1) {
@@ -32,6 +34,7 @@ data class SubjectEntityDTO(
             "semester": $semester,
             "degree": $degree,
             "classroom": $classroom,
-            "department": $department
+            "department": $department,
+            "teacher": $teacher
         }""".trimMargin()
 }
