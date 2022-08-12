@@ -117,6 +117,19 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
         }
     }
 
+    @PostMapping("/schedule/delete")
+    fun deleteAllSchedules(@RequestHeader("Authorization") auth: String)
+            : ResponseOk {
+        val user: UserEntityDAO? = userService.getUserWithToken(auth)
+        if (user != null) {
+            service.deleteAllSchedules()
+            return ResponseOk(200,"Schedule successfully deleted")
+        } else {
+            throw UserException(ExceptionUserModel.WRONG_USER)
+        }
+    }
+
+
     @PostMapping("/schedule/update")
     fun updateSchedule(@RequestHeader("Authorization") auth: String,
                        @RequestBody requestData: ScheduleBO)

@@ -44,6 +44,11 @@ class ScheduleService(
         }
     }
 
+    @Transactional
+    fun deleteAllSchedules() {
+        db.deleteAll()
+    }
+
     fun updateSchedule(schedule: ScheduleEntityDAO) {
         if(db.existsById(schedule.id)) {
             db.save(schedule)
