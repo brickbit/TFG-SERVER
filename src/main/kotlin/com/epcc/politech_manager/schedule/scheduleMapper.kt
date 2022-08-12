@@ -26,9 +26,9 @@ fun ScheduleEntityDAO.toDTO() = ScheduleEntityDTO(
 )
 
 fun ScheduleEntityDAO.toBO(): ScheduleBO {
-    val subjectsList: List<String> = this.subjects.split(";")
+    val subjectsList: List<String> = this.subjects.split(Regex(";"))
     val list: List<SubjectBO?> = subjectsList.map {
-        Gson().fromJson(it,SubjectBO::class.java)
+        Gson().fromJson(it, SubjectBO::class.java)
     }
     return ScheduleBO(
             subjects = list,
@@ -40,3 +40,4 @@ fun ScheduleEntityDAO.toBO(): ScheduleBO {
             id = this.id
     )
 }
+
