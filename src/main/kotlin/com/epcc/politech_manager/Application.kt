@@ -1,6 +1,5 @@
 package com.epcc.politech_manager
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -10,11 +9,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.CorsUtils
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
-
-
+import java.util.*
 
 
 @SpringBootApplication
@@ -38,32 +39,24 @@ fun main(args: Array<String>) {
 internal class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 	@Throws(Exception::class)
 	override fun configure(http: HttpSecurity) {
-		http.cors().and().csrf().disable()
+		http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable()
 				.addFilterAfter(JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter::class.java)
 				.authorizeRequests()
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers(HttpMethod.POST, "/user/**").permitAll()
 				.antMatchers(HttpMethod.PUT, "/user/**").permitAll()
-				.anyRequest().authenticated()
+				.anyRequest()
+				.authenticated()
 	}
-}
-
-@Configuration
-class WebServerConfiguration {
-
-	@Value("\${cors.originPatterns}")
-	private val corsOriginPatterns: String = ""
 
 	@Bean
-	fun addCorsConfig(): WebMvcConfigurer {
-		return object : WebMvcConfigurer {
-			override fun addCorsMappings(registry: CorsRegistry) {
-				val allowedOrigins = corsOriginPatterns.split(",").toTypedArray()
-				registry.addMapping("/**")
-						.allowedMethods("*")
-						.allowedOriginPatterns(*allowedOrigins)
-						.allowCredentials(true)
-			}
-		}
+	fun corsConfigurationSource(): CorsConfigurationSource? {
+		val configuration = CorsConfiguration()
+		configuration.allowedOrigins = listOf("https://politech-manager.herokuapp.com/","http://localhost:6000")
+		configuration.allowedMethods = listOf("GET", "POST")
+		configuration.allowedHeaders = Collections.singletonList("*")
+		val source = UrlBasedCorsConfigurationSource()
+		source.registerCorsConfiguration("/**", configuration)
+		return source
 	}
 }
