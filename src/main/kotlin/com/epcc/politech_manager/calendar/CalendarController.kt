@@ -21,6 +21,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 @RestController
+@CrossOrigin(origins = ["https://politech-manager.herokuapp.com/","http://localhost:6000"], maxAge = 3600)
 class CalendarController(val service: CalendarService, val userService: UserService) {
 
     private val root: Path = Paths.get("calendarFile")

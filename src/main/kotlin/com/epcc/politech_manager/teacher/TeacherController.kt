@@ -10,6 +10,7 @@ import com.epcc.politech_manager.utils.ResponseOk
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@CrossOrigin(origins = ["https://politech-manager.herokuapp.com/","http://localhost:6000"], maxAge = 3600)
 class TeacherController(val service: TeacherService, val userService: UserService) {
 
     @GetMapping("/teacher")

@@ -14,6 +14,7 @@ import java.util.stream.Collectors
 
 
 @RestController
+@CrossOrigin(origins = ["https://politech-manager.herokuapp.com/","http://localhost:6000"], maxAge = 3600)
 class UserController(
         val service: UserService) {
 
