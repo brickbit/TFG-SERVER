@@ -38,7 +38,7 @@ fun main(args: Array<String>) {
 internal class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 	@Throws(Exception::class)
 	override fun configure(http: HttpSecurity) {
-		http.csrf().disable()
+		http.cors().and().csrf().disable()
 				.addFilterAfter(JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter::class.java)
 				.authorizeRequests()
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
