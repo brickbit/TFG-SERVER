@@ -1,5 +1,6 @@
 package com.epcc.politech_manager
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -9,8 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsUtils
 import org.springframework.web.servlet.config.annotation.CorsRegistry
-
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
