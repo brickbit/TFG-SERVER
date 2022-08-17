@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*
 class ExamController(val service: ExamService, val userService: UserService) {
 
     @GetMapping("/exam")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun index(@RequestHeader("Authorization") auth: String): List<ExamEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -23,6 +24,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
     }
 
     @PostMapping("/exam")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun post(@RequestHeader("Authorization") auth: String,
              @RequestBody exam: ExamEntityDTO)
             : ResponseOk {
@@ -36,6 +38,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
     }
 
     @GetMapping("/exam/{id}")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun getExam(@RequestHeader("Authorization") auth: String,
                 @PathVariable id: Long)
             : ExamEntityDTO? {
@@ -57,6 +60,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
     }
 
     @PostMapping("/exam/delete/{id}")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteExam(@RequestHeader("Authorization") auth: String,
                    @PathVariable id: Long)
             : ResponseOk {
@@ -70,6 +74,7 @@ class ExamController(val service: ExamService, val userService: UserService) {
     }
 
     @PostMapping("/exam/update")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updateExam(@RequestHeader("Authorization") auth: String,
                    @RequestBody exam: ExamEntityDTO)
             : ResponseOk {

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*
 class ClassroomController(val service: ClassroomService, val userService: UserService) {
 
     @GetMapping("/classroom")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun index(@RequestHeader("Authorization") auth: String): List<ClassroomEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -23,6 +24,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
     }
 
     @PostMapping("/classroom")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun post(@RequestHeader("Authorization") auth: String,
              @RequestBody classroom: ClassroomEntityDTO)
     : ResponseOk {
@@ -36,6 +38,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
     }
 
     @GetMapping("/classroom/{id}")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun getClassroom(@RequestHeader("Authorization") auth: String,
                      @PathVariable id: Long)
     : ClassroomEntityDTO? {
@@ -57,6 +60,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
     }
 
     @PostMapping("/classroom/delete/{id}")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteClassroom(@RequestHeader("Authorization") auth: String,
                         @PathVariable id: Long)
     : ResponseOk {
@@ -70,6 +74,7 @@ class ClassroomController(val service: ClassroomService, val userService: UserSe
     }
 
     @PostMapping("/classroom/update")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updateClassroom(@RequestHeader("Authorization") auth: String,
                         @RequestBody classroom: ClassroomEntityDTO)
     : ResponseOk {

@@ -8,10 +8,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 import java.util.stream.Collectors
 
@@ -21,6 +18,7 @@ class UserController(
         val service: UserService) {
 
     @PostMapping("/user/register")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun signIn(@RequestParam("user") name: String,
                @RequestParam("email") email: String,
                @RequestParam("password") pwd: String,
@@ -56,6 +54,7 @@ class UserController(
     }
 
     @PostMapping("/user/login")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun login(@RequestParam("email") email: String,
               @RequestParam("password") pwd: String?)
     : TokenResponseOk {
@@ -70,6 +69,7 @@ class UserController(
     }
 
     @PostMapping("/update")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updatePassword(@RequestParam("email") email: String,
                        @RequestParam("oldPassword") oldPwd: String,
                        @RequestParam("newPassword") newPwd: String)
@@ -87,6 +87,7 @@ class UserController(
     }
 
     @PostMapping("/delete")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteUser(@RequestParam email: String): ResponseOk {
         if (service.getUser(email) != null) {
             service.deleteUser(service.getUser(email)!!.id)
@@ -97,6 +98,7 @@ class UserController(
     }
 
     @PostMapping("user/forgot-password")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun forgotPassword(@RequestParam email: String?): ResponseOk {
         var response: String = service.forgotPassword(email)!!
         var code = 400
@@ -110,6 +112,8 @@ class UserController(
     }
 
     @PutMapping("user/reset-password")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
+
     fun resetPassword(@RequestParam token: String,
                       @RequestParam password: String): ResponseOk {
         val message = service.resetPassword(token, password)

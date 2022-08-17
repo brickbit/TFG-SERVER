@@ -26,6 +26,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     private val root: Path = Paths.get("scheduleFile")
 
     @GetMapping("/schedule/download")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun downloadFileFromLocal(@RequestHeader("Authorization") auth: String,
                               @RequestBody requestData: ScheduleBO): ResponseEntity<*>? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
@@ -48,6 +49,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     }
 
     @PostMapping("/schedule")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun post(@RequestHeader("Authorization") auth: String,
              @RequestBody requestData: ScheduleBO)
     : ResponseOk {
@@ -71,6 +73,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     }
 
     @GetMapping("/schedule")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun index(@RequestHeader("Authorization") auth: String)
     : List<ScheduleBO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
@@ -84,6 +87,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     }
 
     @GetMapping("/schedule/{id}")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun getSchedule(@RequestHeader("Authorization") auth: String,
                     @PathVariable id: Long)
     : ScheduleEntityDTO? {
@@ -105,6 +109,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     }
 
     @PostMapping("/schedule/delete/{id}")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteSchedule(@RequestHeader("Authorization") auth: String,
                        @PathVariable id: Long)
     : ResponseOk {
@@ -118,6 +123,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
     }
 
     @PostMapping("/schedule/delete")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteAllSchedules(@RequestHeader("Authorization") auth: String)
             : ResponseOk {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
@@ -131,6 +137,7 @@ class ScheduleController(val service: ScheduleService, val userService: UserServ
 
 
     @PostMapping("/schedule/update")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updateSchedule(@RequestHeader("Authorization") auth: String,
                        @RequestBody requestData: ScheduleBO)
     : ResponseOk {

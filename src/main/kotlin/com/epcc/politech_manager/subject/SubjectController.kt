@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*
 class SubjectController(val service: SubjectService, val userService: UserService) {
 
     @GetMapping("/subject")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun index(@RequestHeader("Authorization") auth: String): List<SubjectEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -23,6 +24,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
     }
 
     @PostMapping("/subject")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun post(@RequestHeader("Authorization") auth: String,
              @RequestBody subject: SubjectEntityDTO)
     : ResponseOk {
@@ -36,6 +38,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
     }
 
     @GetMapping("/subject/{id}")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun getSubject(@RequestHeader("Authorization") auth: String,
                    @PathVariable id: Long)
     : SubjectEntityDTO? {
@@ -57,6 +60,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
     }
 
     @PostMapping("/subject/delete/{id}")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteSubject(@RequestHeader("Authorization") auth: String,
                       @PathVariable id: Long)
     : ResponseOk {
@@ -70,6 +74,7 @@ class SubjectController(val service: SubjectService, val userService: UserServic
     }
 
     @PostMapping("/subject/update")
+    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updateSubject(@RequestHeader("Authorization") auth: String,
                       @RequestBody subject: SubjectEntityDTO)
     : ResponseOk {
