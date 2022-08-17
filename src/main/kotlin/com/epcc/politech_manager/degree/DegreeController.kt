@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*
 class DegreeController(val service: DegreeService, val userService: UserService) {
 
     @GetMapping("/degree")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun index(@RequestHeader("Authorization") auth: String): List<DegreeEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -24,7 +23,6 @@ class DegreeController(val service: DegreeService, val userService: UserService)
     }
 
     @PostMapping("/degree")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun post(@RequestHeader("Authorization") auth: String,
              @RequestBody degree: DegreeEntityDTO)
     : ResponseOk {
@@ -38,7 +36,6 @@ class DegreeController(val service: DegreeService, val userService: UserService)
     }
 
     @GetMapping("/degree/{id}")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun getDegree(@RequestHeader("Authorization") auth: String,
                   @PathVariable id: Long)
     : DegreeEntityDTO {
@@ -60,7 +57,6 @@ class DegreeController(val service: DegreeService, val userService: UserService)
     }
 
     @PostMapping("/degree/delete/{id}")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteDegree(@RequestHeader("Authorization") auth: String,
                      @PathVariable id: Long)
     : ResponseOk {
@@ -74,7 +70,6 @@ class DegreeController(val service: DegreeService, val userService: UserService)
     }
 
     @PostMapping("/degree/update")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updateDegree(@RequestHeader("Authorization") auth: String,
                      @RequestBody degree: DegreeEntityDTO)
     : ResponseOk {

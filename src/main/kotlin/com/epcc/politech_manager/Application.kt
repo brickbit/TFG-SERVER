@@ -40,8 +40,29 @@ internal class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 		http.csrf().disable()
 				.addFilterAfter(JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter::class.java)
 				.authorizeRequests()
+				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers(HttpMethod.POST, "/user/**").permitAll()
 				.antMatchers(HttpMethod.PUT, "/user/**").permitAll()
 				.anyRequest().authenticated()
+	}
+}
+
+@Configuration
+class WebServerConfiguration {
+
+	@Value("\${cors.originPatterns}")
+	private val corsOriginPatterns: String = ""
+
+	@Bean
+	fun addCorsConfig(): WebMvcConfigurer {
+		return object : WebMvcConfigurer {
+			override fun addCorsMappings(registry: CorsRegistry) {
+				val allowedOrigins = corsOriginPatterns.split(",").toTypedArray()
+				registry.addMapping("/**")
+						.allowedMethods("*")
+						.allowedOriginPatterns(*allowedOrigins)
+						.allowCredentials(true)
+			}
+		}
 	}
 }

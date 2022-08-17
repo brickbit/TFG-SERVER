@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*
 class DepartmentController(val service: DepartmentService, val userService: UserService) {
 
     @GetMapping("/department")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun index(@RequestHeader("Authorization") auth: String): List<DepartmentEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -24,7 +23,6 @@ class DepartmentController(val service: DepartmentService, val userService: User
     }
 
     @PostMapping("/department")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun post(@RequestHeader("Authorization") auth: String,
              @RequestBody department: DepartmentEntityDTO)
     : ResponseOk {
@@ -38,7 +36,6 @@ class DepartmentController(val service: DepartmentService, val userService: User
     }
 
     @GetMapping("/department/{id}")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun getDepartment(@RequestHeader("Authorization") auth: String,
                       @PathVariable id: Long)
     : DepartmentEntityDTO? {
@@ -60,7 +57,6 @@ class DepartmentController(val service: DepartmentService, val userService: User
     }
 
     @PostMapping("/department/delete/{id}")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteDepartment(@RequestHeader("Authorization") auth: String,
                          @PathVariable id: Long)
     : ResponseOk {
@@ -74,7 +70,6 @@ class DepartmentController(val service: DepartmentService, val userService: User
     }
 
     @PostMapping("/department/update")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updateDepartment(@RequestHeader("Authorization") auth: String,
                          @RequestBody department: DepartmentEntityDTO)
     : ResponseOk {

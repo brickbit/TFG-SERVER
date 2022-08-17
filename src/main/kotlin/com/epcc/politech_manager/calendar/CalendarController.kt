@@ -26,7 +26,6 @@ class CalendarController(val service: CalendarService, val userService: UserServ
     private val root: Path = Paths.get("calendarFile")
 
     @GetMapping("/calendar/download")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun downloadFileFromLocal(@RequestHeader("Authorization") auth: String,
                               @RequestBody requestData: CalendarEntityDTO): ResponseEntity<*>? {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
@@ -54,7 +53,6 @@ class CalendarController(val service: CalendarService, val userService: UserServ
     }
 
     @GetMapping("/calendar")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun index(@RequestHeader("Authorization") auth: String): List<CalendarEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -66,7 +64,6 @@ class CalendarController(val service: CalendarService, val userService: UserServ
     }
 
     @PostMapping("/calendar")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun post(@RequestHeader("Authorization") auth: String,
              @RequestBody requestData: CalendarEntityDTO)
             : ResponseOk {
@@ -81,7 +78,6 @@ class CalendarController(val service: CalendarService, val userService: UserServ
     }
 
     @GetMapping("/calendar/{id}")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun getCalendar(@RequestHeader("Authorization") auth: String,
                   @PathVariable id: Long)
             : CalendarEntityDTO? {
@@ -103,7 +99,6 @@ class CalendarController(val service: CalendarService, val userService: UserServ
     }
 
     @PostMapping("/calendar/delete/{id}")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteCalendar(@RequestHeader("Authorization") auth: String,
                      @PathVariable id: Long)
             : ResponseOk {
@@ -117,7 +112,6 @@ class CalendarController(val service: CalendarService, val userService: UserServ
     }
 
     @PostMapping("/calendar/update")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updateCalendar(@RequestHeader("Authorization") auth: String,
                      @RequestBody calendar: CalendarEntityDTO)
             : ResponseOk {

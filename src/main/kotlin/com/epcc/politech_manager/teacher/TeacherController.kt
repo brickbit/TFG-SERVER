@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*
 class TeacherController(val service: TeacherService, val userService: UserService) {
 
     @GetMapping("/teacher")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun index(@RequestHeader("Authorization") auth: String): List<TeacherEntityDTO> {
         val user: UserEntityDAO? = userService.getUserWithToken(auth)
         if (user != null) {
@@ -24,7 +23,6 @@ class TeacherController(val service: TeacherService, val userService: UserServic
     }
 
     @PostMapping("/teacher")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun post(@RequestHeader("Authorization") auth: String,
              @RequestBody teacher: TeacherEntityDTO)
             : ResponseOk {
@@ -38,7 +36,6 @@ class TeacherController(val service: TeacherService, val userService: UserServic
     }
 
     @GetMapping("/teacher/{id}")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun getTeacher(@RequestHeader("Authorization") auth: String,
                    @PathVariable id: Long)
             : TeacherEntityDTO? {
@@ -60,7 +57,6 @@ class TeacherController(val service: TeacherService, val userService: UserServic
     }
 
     @PostMapping("/teacher/delete/{id}")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun deleteTeacher(@RequestHeader("Authorization") auth: String,
                       @PathVariable id: Long)
             : ResponseOk {
@@ -74,7 +70,6 @@ class TeacherController(val service: TeacherService, val userService: UserServic
     }
 
     @PostMapping("/teacher/update")
-    @CrossOrigin(origins = ["https://politech-manager.herokuapp.com/"])
     fun updateTeacher(@RequestHeader("Authorization") auth: String,
                       @RequestBody teacher: TeacherEntityDTO)
             : ResponseOk {
