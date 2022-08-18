@@ -14,7 +14,7 @@ import java.util.stream.Collectors
 
 
 @RestController
-@CrossOrigin(origins = ["https://politech-manager.herokuapp.com/","http://localhost:6000"], maxAge = 3600)
+@CrossOrigin(origins = ["*"], maxAge = 3600)
 class UserController(
         val service: UserService) {
 
@@ -51,6 +51,12 @@ class UserController(
             throw  UserException(ExceptionUserModel.UNKNOWN_ERROR)
         }
 
+    }
+
+    @PostMapping("/user/test")
+    fun test()
+            : ResponseOk {
+            return ResponseOk(200,"Registration completed successfully")
     }
 
     @PostMapping("/user/login")

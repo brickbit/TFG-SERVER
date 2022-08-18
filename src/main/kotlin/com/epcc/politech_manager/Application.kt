@@ -24,7 +24,7 @@ class Application {
 	fun corsConfigurer(): WebMvcConfigurer? {
 		return object : WebMvcConfigurer {
 			override fun addCorsMappings(registry: CorsRegistry) {
-				registry.addMapping("/").allowedOrigins("https://politech-manager.herokuapp.com/")
+				registry.addMapping("/").allowedOrigins("*")
 			}
 		}
 	}
@@ -52,7 +52,7 @@ internal class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 	@Bean
 	fun corsConfigurationSource(): CorsConfigurationSource? {
 		val configuration = CorsConfiguration()
-		configuration.allowedOrigins = listOf("https://politech-manager.herokuapp.com/","http://localhost:6000")
+		configuration.allowedOrigins = listOf("*")
 		configuration.allowedMethods = listOf("GET", "POST")
 		configuration.allowedHeaders = Collections.singletonList("*")
 		val source = UrlBasedCorsConfigurationSource()
